@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>La Marinella</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:wght@600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="hero">
+        <div class="hero-copy">
+          <div class="brand-row">
+            <p class="eyebrow">Stabilimento Balneare</p>
+            <span class="season-badge">Estate 2026</span>
+          </div>
+          <p class="brand-name">La Marinella</p>
+          <h1>La tua spiaggia, prenotata con stile e in un attimo.</h1>
+          <p class="hero-text">
+            Un pannello semplice e curato per gestire ombrelloni e sdraio,
+            controllare la disponibilita e accogliere ogni ospite con ordine.
+          </p>
+          <div class="hero-tags">
+            <span>Vista mare</span>
+            <span>Prenotazioni rapide</span>
+            <span>Gestione giornaliera</span>
+          </div>
+          <div class="stats">
+            <article>
+              <strong id="availableUmbrellas">24</strong>
+              <span>Ombrelloni disponibili</span>
+            </article>
+            <article>
+              <strong id="availableLoungers">60</strong>
+              <span>Sdraio disponibili</span>
+            </article>
+          </div>
+        </div>
+        <div class="hero-card">
+          <p class="card-label">La Marinella</p>
+          <h2 class="hero-card-title">Listino del giorno</h2>
+          <div class="price-row">
+            <span>Ombrellone</span>
+            <strong>€18</strong>
+          </div>
+          <div class="price-row">
+            <span>Sdraio</span>
+            <strong>€7</strong>
+          </div>
+          <p class="card-note">
+            Il totale viene calcolato automaticamente e la disponibilita viene
+            aggiornata in tempo reale per la data selezionata.
+          </p>
+          <div class="mini-highlight">
+            <strong>Servizio rapido</strong>
+            <span>Perfetta per reception, cassa o gestione interna.</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="showcase-grid">
+        <section class="panel beach-map-panel">
+          <div class="panel-heading">
+            <p class="eyebrow">Mappa spiaggia</p>
+            <h2>Vista rapida delle file</h2>
+            <p class="panel-text">
+              Una lettura semplice della disposizione di ombrelloni tra mare,
+              file e zona ingresso.
+            </p>
+          </div>
+
+          <div class="beach-map">
+            <div class="sea-strip">Mare</div>
+            <div class="row-block row-block-front">
+              <div class="row-label">Fila 1</div>
+              <div class="umbrella-grid">
+                <span class="umbrella-seat">A1</span>
+                <span class="umbrella-seat">A2</span>
+                <span class="umbrella-seat">A3</span>
+                <span class="umbrella-seat">A4</span>
+                <span class="umbrella-seat">A5</span>
+                <span class="umbrella-seat">A6</span>
+              </div>
+            </div>
+            <div class="row-block row-block-middle">
+              <div class="row-label">Fila 2</div>
+              <div class="umbrella-grid">
+                <span class="umbrella-seat">B1</span>
+                <span class="umbrella-seat">B2</span>
+                <span class="umbrella-seat">B3</span>
+                <span class="umbrella-seat">B4</span>
+                <span class="umbrella-seat">B5</span>
+                <span class="umbrella-seat">B6</span>
+              </div>
+            </div>
+            <div class="row-block row-block-back">
+              <div class="row-label">Fila 3</div>
+              <div class="umbrella-grid">
+                <span class="umbrella-seat">C1</span>
+                <span class="umbrella-seat">C2</span>
+                <span class="umbrella-seat">C3</span>
+                <span class="umbrella-seat">C4</span>
+                <span class="umbrella-seat">C5</span>
+                <span class="umbrella-seat">C6</span>
+              </div>
+            </div>
+            <div class="service-strip">Bar | Reception | Ingresso</div>
+          </div>
+        </section>
+
+        <section class="panel experience-panel">
+          <div class="panel-heading">
+            <p class="eyebrow">Esperienza cliente</p>
+            <h2>Un look piu premium</h2>
+            <p class="panel-text">
+              Pensata per sembrare una vera app da stabilimento, chiara per lo
+              staff e piacevole anche per il cliente finale.
+            </p>
+          </div>
+
+          <div class="experience-stack">
+            <article class="experience-card">
+              <strong>Prima fila</strong>
+              <span>Perfetta per chi vuole stare vicino al mare.</span>
+            </article>
+            <article class="experience-card">
+              <strong>Fila centrale</strong>
+              <span>Equilibrio tra comodita, vista e passaggio.</span>
+            </article>
+            <article class="experience-card">
+              <strong>Fila relax</strong>
+              <span>Piu tranquilla, comoda per famiglie e ospiti stabili.</span>
+            </article>
+          </div>
+        </section>
+      </section>
+
+      <section class="content-grid">
+        <section class="panel">
+          <div class="panel-heading">
+            <p class="eyebrow">Nuova prenotazione</p>
+            <h2>Accogli un nuovo cliente</h2>
+            <p class="panel-text">
+              Compila i dati principali e salva la prenotazione in pochi
+              secondi.
+            </p>
+          </div>
+
+          <form id="bookingForm" class="booking-form">
+            <label>
+              Nome cliente
+              <input type="text" id="customerName" placeholder="Mario Rossi" required />
+            </label>
+
+            <label>
+              Data
+              <input type="date" id="bookingDate" required />
+            </label>
+
+            <label>
+              Fila desiderata
+              <select id="rowSelect" required>
+                <option value="Fila 1">Fila 1 - fronte mare</option>
+                <option value="Fila 2" selected>Fila 2 - centrale</option>
+                <option value="Fila 3">Fila 3 - relax</option>
+              </select>
+            </label>
+
+            <div class="field-row">
+              <label>
+                Ombrelloni
+                <input type="number" id="umbrellas" min="1" max="6" value="1" required />
+              </label>
+
+              <label>
+                Sdraio
+                <input type="number" id="loungers" min="1" max="10" value="2" required />
+              </label>
+            </div>
+
+            <label>
+              Note
+              <textarea
+                id="notes"
+                rows="3"
+                placeholder="Vicino al mare, prima fila, famiglia con bambini..."
+              ></textarea>
+            </label>
+
+            <div class="summary-box">
+              <span>Totale prenotazione</span>
+              <strong id="bookingTotal">€32</strong>
+            </div>
+
+            <button type="submit">Salva prenotazione</button>
+          </form>
+        </section>
+
+        <section class="panel panel-secondary">
+          <div class="panel-heading">
+            <p class="eyebrow">Prenotazioni</p>
+            <h2>Agenda de La Marinella</h2>
+            <p class="panel-text">
+              Qui trovi l'elenco delle prenotazioni registrate, ordinate per
+              data e cliente.
+            </p>
+          </div>
+
+          <div id="emptyState" class="empty-state">
+            Nessuna prenotazione ancora inserita.
+          </div>
+
+          <div id="bookingList" class="booking-list"></div>
+        </section>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
