@@ -1,33 +1,28 @@
 const form = document.getElementById("bookingForm");
 const customerNameInput = document.getElementById("customerName");
 const bookingDateInput = document.getElementById("bookingDate");
-const rowSelect = document.getElementById("rowSelect");
-const umbrellasInput = document.getElementById("umbrellas");
+const durationInput = document.getElementById("duration");
+const selectedUmbrellaInput = document.getElementById("selectedUmbrella");
 const loungersInput = document.getElementById("loungers");
 const notesInput = document.getElementById("notes");
 const bookingTotal = document.getElementById("bookingTotal");
-const bookingList = document.getElementById("bookingList");
-const emptyState = document.getElementById("emptyState");
+const summaryText = document.getElementById("summaryText");
 const availableUmbrellas = document.getElementById("availableUmbrellas");
-const availableLoungers = document.getElementById("availableLoungers");
+const selectedSpotLabel = document.getElementById("selectedSpotLabel");
 
+const STORAGE_KEY = "la-marinella-client-bookings";
+const UMBRELLAS = ["A1", "A2", "A3", "A4", "A5", "A6", "B1", "B2", "B3", "B4", "B5", "B6", "C1", "C2", "C3", "C4", "C5", "C6"];
 const PRICES = {
-  umbrella: 18,
-  lounger: 7,
+  full: { umbrella: 25, lounger: 12 },
+  half: { umbrella: 18, lounger: 6 },
 };
-
-const STOCK = {
-  umbrellas: 24,
-  loungers: 60,
-};
-
-const STORAGE_KEY = "beach-booking-app-bookings";
 
 let bookings = loadBookings();
+let selectedUmbrella = "";
 
 setDefaultDate();
-updateTotal();
-renderBookings();
+renderUmbrellaMap();
+updateSummary();
 
 form.addEventListener("submit", (event) => {
   event.preventDefault();
@@ -36,8 +31,8 @@ form.addEventListener("submit", (event) => {
     id: crypto.randomUUID(),
     customerName: customerNameInput.value.trim(),
     date: bookingDateInput.value,
-    row: rowSelect.value,
-    umbrellas: Number(umbrellasInput.value),
+    duration: durationInput.value,
+    umbrella: selectedUmbrella,
     loungers: Number(loungersInput.value),
     notes: notesInput.value.trim(),
   };
@@ -48,132 +43,146 @@ form.addEventListener("submit", (event) => {
     return;
   }
 
-  booking.total = calculateTotal(booking.umbrellas, booking.loungers);
+  booking.total = calculateTotal(booking.duration, booking.loungers);
   bookings.unshift(booking);
   saveBookings();
-  renderBookings();
   form.reset();
+  selectedUmbrella = "";
   setDefaultDate();
-  rowSelect.value = "Fila 2";
-  umbrellasInput.value = 1;
+  durationInput.value = "full";
   loungersInput.value = 2;
-  updateTotal();
+  selectedUmbrellaInput.value = "";
+  selectedSpotLabel.textContent = "Nessuno";
+  updateSummary();
+  renderUmbrellaMap();
+  window.alert("Richiesta inviata. La Marinella ti ricontattera per la conferma.");
 });
 
-[umbrellasInput, loungersInput].forEach((input) => {
-  input.addEventListener("input", updateTotal);
+[bookingDateInput, durationInput, loungersInput].forEach((input) => {
+  input.addEventListener("input", () => {
+    updateSummary();
+    if (input === bookingDateInput) {
+      clearSelectionIfBooked();
+      renderUmbrellaMap();
+    }
+  });
 });
 
-bookingList.addEventListener("click", (event) => {
-  const target = event.target;
-  if (!(target instanceof HTMLButtonElement)) {
-    return;
-  }
+function renderUmbrellaMap() {
+  const rows = {
+    A: document.getElementById("row1"),
+    B: document.getElementById("row2"),
+    C: document.getElementById("row3"),
+  };
 
-  const bookingId = target.dataset.bookingId;
-  if (!bookingId) {
-    return;
-  }
+  Object.values(rows).forEach((row) => {
+    row.innerHTML = "";
+  });
 
-  bookings = bookings.filter((booking) => booking.id !== bookingId);
-  saveBookings();
-  renderBookings();
-});
+  const bookedForDate = new Set(
+    bookings
+      .filter((booking) => booking.date === bookingDateInput.value)
+      .map((booking) => booking.umbrella)
+  );
 
-function calculateTotal(umbrellas, loungers) {
-  return umbrellas * PRICES.umbrella + loungers * PRICES.lounger;
-}
+  UMBRELLAS.forEach((code) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "umbrella-seat";
+    button.textContent = code;
 
-function updateTotal() {
-  const umbrellas = Number(umbrellasInput.value) || 0;
-  const loungers = Number(loungersInput.value) || 0;
-  const total = calculateTotal(umbrellas, loungers);
-  bookingTotal.textContent = formatCurrency(total);
+    if (bookedForDate.has(code)) {
+      button.classList.add("booked");
+      button.disabled = true;
+    } else if (selectedUmbrella === code) {
+      button.classList.add("selected");
+    }
+
+    button.addEventListener("click", () => {
+      selectedUmbrella = code;
+      selectedUmbrellaInput.value = code;
+      selectedSpotLabel.textContent = code;
+      renderUmbrellaMap();
+      updateSummary();
+    });
+
+    rows[code.charAt(0)].appendChild(button);
+  });
+
+  availableUmbrellas.textContent = String(UMBRELLAS.length - bookedForDate.size);
 }
 
 function validateBooking(booking) {
   if (!booking.customerName) {
-    return "Inserisci il nome del cliente.";
+    return "Inserisci il nome.";
   }
 
   if (!booking.date) {
     return "Seleziona una data.";
   }
 
-  if (!booking.row) {
-    return "Seleziona una fila.";
+  if (!booking.umbrella) {
+    return "Seleziona un ombrellone dalla mappa.";
   }
 
-  if (booking.umbrellas < 1 || booking.loungers < 1) {
-    return "Serve almeno 1 ombrellone e 1 sdraio.";
+  if (!PRICES[booking.duration]) {
+    return "Seleziona una fascia valida.";
   }
 
-  const bookedForDate = bookings.filter((item) => item.date === booking.date);
-  const usedUmbrellas = bookedForDate.reduce((sum, item) => sum + item.umbrellas, 0);
-  const usedLoungers = bookedForDate.reduce((sum, item) => sum + item.loungers, 0);
-
-  if (usedUmbrellas + booking.umbrellas > STOCK.umbrellas) {
-    return "Non ci sono abbastanza ombrelloni disponibili per questa data.";
+  if (booking.loungers < 0 || booking.loungers > 4) {
+    return "Puoi scegliere da 0 a 4 sdraio.";
   }
 
-  if (usedLoungers + booking.loungers > STOCK.loungers) {
-    return "Non ci sono abbastanza sdraio disponibili per questa data.";
+  const alreadyBooked = bookings.some(
+    (item) => item.date === booking.date && item.umbrella === booking.umbrella
+  );
+
+  if (alreadyBooked) {
+    return "Questo ombrellone risulta gia occupato per la data scelta.";
   }
 
   return null;
 }
 
-function renderBookings() {
-  const sortedBookings = [...bookings].sort((a, b) => {
-    const dateCompare = a.date.localeCompare(b.date);
-    if (dateCompare !== 0) {
-      return dateCompare;
-    }
-
-    return a.customerName.localeCompare(b.customerName);
-  });
-
-  bookingList.innerHTML = "";
-  emptyState.style.display = sortedBookings.length ? "none" : "block";
-
-  sortedBookings.forEach((booking) => {
-    const item = document.createElement("article");
-    item.className = "booking-item";
-    item.innerHTML = `
-      <div class="booking-item-header">
-        <div class="booking-title">
-          <h3>${escapeHtml(booking.customerName)}</h3>
-          <span class="booking-row-badge">${escapeHtml(booking.row || "Fila non indicata")}</span>
-          <span class="booking-total">${formatCurrency(booking.total)}</span>
-        </div>
-        <button class="delete-button" type="button" data-booking-id="${booking.id}">
-          Elimina
-        </button>
-      </div>
-      <div class="booking-meta">
-        <span class="booking-date">${formatDate(booking.date)}</span>
-        <span>${booking.umbrellas} ombrellone/i</span>
-        <span>${booking.loungers} sdraio</span>
-      </div>
-      <p class="booking-notes">${booking.notes ? escapeHtml(booking.notes) : "Nessuna nota"}</p>
-    `;
-    bookingList.appendChild(item);
-  });
-
-  updateAvailability();
+function calculateTotal(duration, loungers) {
+  const prices = PRICES[duration];
+  return prices.umbrella + loungers * prices.lounger;
 }
 
-function updateAvailability() {
-  const selectedDate = bookingDateInput.value;
-  const bookedForDate = bookings.filter((booking) => booking.date === selectedDate);
-  const usedUmbrellas = bookedForDate.reduce((sum, item) => sum + item.umbrellas, 0);
-  const usedLoungers = bookedForDate.reduce((sum, item) => sum + item.loungers, 0);
+function updateSummary() {
+  const duration = durationInput.value;
+  const loungers = Number(loungersInput.value) || 0;
+  const total = calculateTotal(duration, loungers);
+  const durationLabel = duration === "half" ? "mezza giornata" : "giornata intera";
 
-  availableUmbrellas.textContent = String(STOCK.umbrellas - usedUmbrellas);
-  availableLoungers.textContent = String(STOCK.loungers - usedLoungers);
+  bookingTotal.textContent = formatCurrency(total);
+  summaryText.textContent = `1 ombrellone, ${loungers} sdraio, ${durationLabel}`;
 }
 
-bookingDateInput.addEventListener("input", updateAvailability);
+function clearSelectionIfBooked() {
+  if (!selectedUmbrella) {
+    return;
+  }
+
+  const alreadyBooked = bookings.some(
+    (item) => item.date === bookingDateInput.value && item.umbrella === selectedUmbrella
+  );
+
+  if (alreadyBooked) {
+    selectedUmbrella = "";
+    selectedUmbrellaInput.value = "";
+    selectedSpotLabel.textContent = "Nessuno";
+  }
+}
+
+function setDefaultDate() {
+  if (!bookingDateInput.value) {
+    const now = new Date();
+    bookingDateInput.value = new Date(now.getTime() - now.getTimezoneOffset() * 60000)
+      .toISOString()
+      .split("T")[0];
+  }
+}
 
 function loadBookings() {
   try {
@@ -188,39 +197,10 @@ function saveBookings() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(bookings));
 }
 
-function setDefaultDate() {
-  if (!bookingDateInput.value) {
-    const now = new Date();
-    const localDate = new Date(now.getTime() - now.getTimezoneOffset() * 60000)
-      .toISOString()
-      .split("T")[0];
-    const today = localDate;
-    bookingDateInput.value = today;
-  }
-  updateAvailability();
-}
-
 function formatCurrency(value) {
   return new Intl.NumberFormat("it-IT", {
     style: "currency",
     currency: "EUR",
     maximumFractionDigits: 0,
   }).format(value);
-}
-
-function formatDate(value) {
-  return new Intl.DateTimeFormat("it-IT", {
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-  }).format(new Date(value));
-}
-
-function escapeHtml(value) {
-  return value
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#39;");
 }
