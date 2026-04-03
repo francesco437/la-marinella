@@ -14,64 +14,91 @@
   </head>
   <body>
     <main class="app-shell">
-      <section class="hero">
-        <div class="hero-copy">
+      <section class="hero-banner">
+        <img
+          src="./assets/cover-small.jpg"
+          alt="Vista dello stabilimento balneare La Marinella"
+          class="hero-banner-photo"
+        />
+        <div class="hero-banner-overlay">
           <div class="brand-row">
-            <p class="eyebrow">Stabilimento Balneare</p>
-            <span class="season-badge">Estate 2026</span>
+            <p class="eyebrow">Prenotazione Online</p>
+            <span class="season-badge">La Marinella</span>
           </div>
-          <p class="brand-name">La Marinella</p>
-          <h1>La tua spiaggia, prenotata con stile e in un attimo.</h1>
+          <p class="brand-name">Albissola Marina</p>
+          <h1>Scegli il tuo ombrellone e prenota la giornata al mare.</h1>
           <p class="hero-text">
-            Un pannello semplice e curato per gestire ombrelloni e sdraio,
-            controllare la disponibilita e accogliere ogni ospite con ordine.
+            Una demo cliente semplice, elegante e chiara: scegli la data,
+            seleziona il tuo ombrellone preferito e personalizza la prenotazione
+            tra giornata intera o mezza giornata.
           </p>
           <div class="hero-tags">
-            <span>Vista mare</span>
-            <span>Prenotazioni rapide</span>
-            <span>Gestione giornaliera</span>
+            <span>Scelta ombrellone</span>
+            <span>Listino chiaro</span>
+            <span>Vista rapida spiaggia</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="hero-info-grid">
+        <div class="hero-copy">
+          <div class="panel-heading">
+            <p class="eyebrow">La tua giornata</p>
+            <h2>Prenotazione semplice e chiara</h2>
+            <p class="panel-text">
+              Scegli il posto, decidi la fascia oraria e visualizza subito il
+              totale della tua richiesta.
+            </p>
           </div>
           <div class="stats">
             <article>
-              <strong id="availableUmbrellas">24</strong>
-              <span>Ombrelloni disponibili</span>
+              <strong id="availableUmbrellas">18</strong>
+              <span>Ombrelloni liberi</span>
             </article>
             <article>
-              <strong id="availableLoungers">60</strong>
-              <span>Sdraio disponibili</span>
+              <strong id="selectedSpotLabel">Nessuno</strong>
+              <span>Posto selezionato</span>
             </article>
           </div>
         </div>
         <div class="hero-card">
-          <p class="card-label">La Marinella</p>
-          <h2 class="hero-card-title">Listino del giorno</h2>
-          <div class="price-row">
-            <span>Ombrellone</span>
-            <strong>€18</strong>
+          <p class="card-label">Listino Giornaliero</p>
+          <h2 class="hero-card-title">Tariffe cliente</h2>
+          <div class="price-group">
+            <div class="price-row">
+              <span>Ombrellone intera giornata</span>
+              <strong>€25</strong>
+            </div>
+            <div class="price-row">
+              <span>Ombrellone mezza giornata</span>
+              <strong>€18</strong>
+            </div>
           </div>
-          <div class="price-row">
-            <span>Sdraio</span>
-            <strong>€7</strong>
+          <div class="price-group">
+            <div class="price-row">
+              <span>Sdraio intera giornata</span>
+              <strong>€12</strong>
+            </div>
+            <div class="price-row">
+              <span>Sdraio mezza giornata</span>
+              <strong>€6</strong>
+            </div>
           </div>
           <p class="card-note">
-            Il totale viene calcolato automaticamente e la disponibilita viene
-            aggiornata in tempo reale per la data selezionata.
+            Il totale si aggiorna automaticamente in base alla fascia scelta e
+            al numero di sdraio.
           </p>
-          <div class="mini-highlight">
-            <strong>Servizio rapido</strong>
-            <span>Perfetta per reception, cassa o gestione interna.</span>
-          </div>
         </div>
       </section>
 
       <section class="showcase-grid">
         <section class="panel beach-map-panel">
           <div class="panel-heading">
-            <p class="eyebrow">Mappa spiaggia</p>
-            <h2>Vista rapida delle file</h2>
+            <p class="eyebrow">Vista Rapida</p>
+            <h2>Scegli il tuo ombrellone</h2>
             <p class="panel-text">
-              Una lettura semplice della disposizione di ombrelloni tra mare,
-              file e zona ingresso.
+              Tocca un posto dalla mappa per selezionarlo. I posti occupati per
+              la data scelta vengono segnati automaticamente.
             </p>
           </div>
 
@@ -79,82 +106,67 @@
             <div class="sea-strip">Mare</div>
             <div class="row-block row-block-front">
               <div class="row-label">Fila 1</div>
-              <div class="umbrella-grid">
-                <span class="umbrella-seat">A1</span>
-                <span class="umbrella-seat">A2</span>
-                <span class="umbrella-seat">A3</span>
-                <span class="umbrella-seat">A4</span>
-                <span class="umbrella-seat">A5</span>
-                <span class="umbrella-seat">A6</span>
-              </div>
+              <div id="row1" class="umbrella-grid"></div>
             </div>
             <div class="row-block row-block-middle">
               <div class="row-label">Fila 2</div>
-              <div class="umbrella-grid">
-                <span class="umbrella-seat">B1</span>
-                <span class="umbrella-seat">B2</span>
-                <span class="umbrella-seat">B3</span>
-                <span class="umbrella-seat">B4</span>
-                <span class="umbrella-seat">B5</span>
-                <span class="umbrella-seat">B6</span>
-              </div>
+              <div id="row2" class="umbrella-grid"></div>
             </div>
             <div class="row-block row-block-back">
               <div class="row-label">Fila 3</div>
-              <div class="umbrella-grid">
-                <span class="umbrella-seat">C1</span>
-                <span class="umbrella-seat">C2</span>
-                <span class="umbrella-seat">C3</span>
-                <span class="umbrella-seat">C4</span>
-                <span class="umbrella-seat">C5</span>
-                <span class="umbrella-seat">C6</span>
-              </div>
+              <div id="row3" class="umbrella-grid"></div>
             </div>
             <div class="service-strip">Bar | Reception | Ingresso</div>
+          </div>
+
+          <div class="map-legend">
+            <span><i class="legend available"></i>Disponibile</span>
+            <span><i class="legend selected"></i>Selezionato</span>
+            <span><i class="legend booked"></i>Occupato</span>
           </div>
         </section>
 
         <section class="panel experience-panel">
           <div class="panel-heading">
-            <p class="eyebrow">Esperienza cliente</p>
-            <h2>Un look piu premium</h2>
+            <p class="eyebrow">La tua giornata</p>
+            <h2>Prenota in modo semplice</h2>
             <p class="panel-text">
-              Pensata per sembrare una vera app da stabilimento, chiara per lo
-              staff e piacevole anche per il cliente finale.
+              Una scelta rapida e intuitiva, pensata per essere chiara anche da
+              cellulare.
             </p>
           </div>
 
           <div class="experience-stack">
             <article class="experience-card">
-              <strong>Prima fila</strong>
-              <span>Perfetta per chi vuole stare vicino al mare.</span>
+              <strong>Fila 1</strong>
+              <span>Piu vicina al mare, ideale per chi vuole stare fronte acqua.</span>
             </article>
             <article class="experience-card">
-              <strong>Fila centrale</strong>
-              <span>Equilibrio tra comodita, vista e passaggio.</span>
+              <strong>Fila 2</strong>
+              <span>La soluzione piu equilibrata, comoda e centrale.</span>
             </article>
             <article class="experience-card">
-              <strong>Fila relax</strong>
-              <span>Piu tranquilla, comoda per famiglie e ospiti stabili.</span>
+              <strong>Fila 3</strong>
+              <span>Piu riservata, perfetta per relax e famiglie.</span>
             </article>
           </div>
         </section>
       </section>
 
       <section class="content-grid">
-        <section class="panel">
+        <section class="panel booking-panel">
           <div class="panel-heading">
-            <p class="eyebrow">Nuova prenotazione</p>
-            <h2>Accogli un nuovo cliente</h2>
+            <p class="eyebrow">Prenota ora</p>
+            <h2>Completa la tua richiesta</h2>
             <p class="panel-text">
-              Compila i dati principali e salva la prenotazione in pochi
-              secondi.
+              Scegli data, fascia oraria e numero di sdraio. Il posto selezionato
+              sulla mappa viene associato automaticamente.
             </p>
           </div>
 
           <form id="bookingForm" class="booking-form">
             <label>
-              Nome cliente
+              Nome
               <input type="text" id="customerName" placeholder="Mario Rossi" required />
             </label>
 
@@ -164,59 +176,48 @@
             </label>
 
             <label>
-              Fila desiderata
-              <select id="rowSelect" required>
-                <option value="Fila 1">Fila 1 - fronte mare</option>
-                <option value="Fila 2" selected>Fila 2 - centrale</option>
-                <option value="Fila 3">Fila 3 - relax</option>
+              Fascia
+              <select id="duration" required>
+                <option value="full" selected>Giornata intera</option>
+                <option value="half">Mezza giornata</option>
               </select>
             </label>
 
-            <div class="field-row">
-              <label>
-                Ombrelloni
-                <input type="number" id="umbrellas" min="1" max="6" value="1" required />
-              </label>
+            <label>
+              Ombrellone scelto
+              <input
+                type="text"
+                id="selectedUmbrella"
+                placeholder="Seleziona un ombrellone dalla mappa"
+                readonly
+                required
+              />
+            </label>
 
-              <label>
-                Sdraio
-                <input type="number" id="loungers" min="1" max="10" value="2" required />
-              </label>
-            </div>
+            <label>
+              Sdraio
+              <input type="number" id="loungers" min="0" max="4" value="2" required />
+            </label>
 
             <label>
               Note
               <textarea
                 id="notes"
                 rows="3"
-                placeholder="Vicino al mare, prima fila, famiglia con bambini..."
+                placeholder="Esigenze particolari, bambini, preferenze..."
               ></textarea>
             </label>
 
             <div class="summary-box">
-              <span>Totale prenotazione</span>
-              <strong id="bookingTotal">€32</strong>
+              <div>
+                <span>Totale prenotazione</span>
+                <p id="summaryText" class="summary-text">1 ombrellone + 2 sdraio</p>
+              </div>
+              <strong id="bookingTotal">€49</strong>
             </div>
 
-            <button type="submit">Salva prenotazione</button>
+            <button type="submit">Conferma richiesta</button>
           </form>
-        </section>
-
-        <section class="panel panel-secondary">
-          <div class="panel-heading">
-            <p class="eyebrow">Prenotazioni</p>
-            <h2>Agenda de La Marinella</h2>
-            <p class="panel-text">
-              Qui trovi l'elenco delle prenotazioni registrate, ordinate per
-              data e cliente.
-            </p>
-          </div>
-
-          <div id="emptyState" class="empty-state">
-            Nessuna prenotazione ancora inserita.
-          </div>
-
-          <div id="bookingList" class="booking-list"></div>
         </section>
       </section>
     </main>
