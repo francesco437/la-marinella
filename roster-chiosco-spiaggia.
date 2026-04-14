@@ -1,1 +1,670 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Roster Chiosco e Spiaggia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --sand: #f6f1e6;
+      --paper: rgba(255, 252, 245, 0.92);
+      --panel: #fffdf9;
+      --ink: #20313b;
+      --muted: #61717b;
+      --line: #ddd1c0;
+      --sea: #9cc9d8;
+      --sea-deep: #2f6f88;
+      --sun: #d9792b;
+      --sun-soft: #fde8d7;
+      --ok: #336b52;
+      --shadow: 0 18px 40px rgba(62, 49, 31, 0.08);
+    }
 
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Atkinson Hyperlegible Next", "Segoe UI", Helvetica, Arial, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(255,255,255,0.7), transparent 28%),
+        linear-gradient(180deg, #f0e6d6 0%, var(--sand) 38%, #f4efe6 100%);
+    }
+
+    .shell {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 28px 18px 64px;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 28px;
+      border: 1px solid rgba(255,255,255,0.45);
+      border-radius: 28px;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.86), rgba(252,247,238,0.94)),
+        linear-gradient(90deg, rgba(156,201,216,0.22), transparent 50%);
+      box-shadow: var(--shadow);
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      right: -40px;
+      top: -28px;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(217,121,43,0.22), rgba(217,121,43,0) 70%);
+      pointer-events: none;
+    }
+
+    h1, h2 {
+      margin: 0 0 10px;
+      line-height: 1.08;
+    }
+
+    h1 {
+      font-size: clamp(2.2rem, 4.8vw, 4rem);
+      letter-spacing: -0.045em;
+      max-width: 10ch;
+    }
+
+    h2 {
+      font-size: 1.3rem;
+      letter-spacing: -0.02em;
+    }
+
+    p {
+      margin: 0 0 10px;
+      color: var(--muted);
+      line-height: 1.5;
+      max-width: 72ch;
+    }
+
+    strong {
+      color: var(--ink);
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .chip {
+      padding: 9px 13px;
+      border-radius: 999px;
+      border: 1px solid #ecd4bc;
+      background: var(--sun-soft);
+      color: #824513;
+      font-size: 0.94rem;
+      font-weight: 600;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    button {
+      appearance: none;
+      border: 0;
+      border-radius: 999px;
+      padding: 11px 17px;
+      cursor: pointer;
+      font: inherit;
+      font-weight: 600;
+      color: white;
+      background: var(--sun);
+      box-shadow: 0 10px 18px rgba(217,121,43,0.2);
+    }
+
+    button.alt {
+      background: var(--sea-deep);
+      box-shadow: 0 10px 18px rgba(47,111,136,0.2);
+    }
+
+    button.soft {
+      background: var(--ok);
+      box-shadow: 0 10px 18px rgba(51,107,82,0.18);
+    }
+
+    .status {
+      min-height: 1.2em;
+      margin-top: 10px;
+      color: var(--sea-deep);
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .grid {
+      display: grid;
+      gap: 18px;
+      margin-top: 24px;
+    }
+
+    .panel {
+      padding: 20px;
+      border-radius: 24px;
+      border: 1px solid rgba(222, 209, 192, 0.95);
+      background: var(--paper);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      overflow-x: auto;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .panel-header span {
+      color: var(--muted);
+      font-size: 0.93rem;
+    }
+
+    .roles {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .role {
+      padding: 14px;
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.85), rgba(250,244,235,0.95));
+      border: 1px solid var(--line);
+    }
+
+    .role strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 1rem;
+    }
+
+    table {
+      width: 100%;
+      min-width: 760px;
+      border-collapse: collapse;
+      margin-top: 12px;
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    th, td {
+      border: 1px solid var(--line);
+      padding: 12px 13px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: linear-gradient(180deg, #eef6f8, #e7f0f3);
+      color: #274454;
+      font-size: 0.94rem;
+    }
+
+    tbody tr:nth-child(even) td {
+      background: rgba(255,255,255,0.48);
+    }
+
+    td[contenteditable="true"],
+    .notes[contenteditable="true"] {
+      background: rgba(255,255,255,0.72);
+      transition: background 120ms ease, outline-color 120ms ease;
+    }
+
+    td[contenteditable="true"]:focus,
+    .notes[contenteditable="true"]:focus {
+      outline: 2px solid var(--sun);
+      outline-offset: -2px;
+      background: #fff7ef;
+    }
+
+    .notes {
+      min-height: 110px;
+      padding: 16px;
+      border-radius: 18px;
+      border: 1px dashed var(--line);
+      margin-top: 14px;
+      line-height: 1.55;
+    }
+
+    .footer-note {
+      margin-top: 18px;
+      font-size: 0.92rem;
+    }
+
+    @media (max-width: 700px) {
+      .hero,
+      .panel {
+        padding: 18px;
+        border-radius: 20px;
+      }
+
+      h1 {
+        max-width: none;
+      }
+    }
+
+    @media print {
+      body {
+        background: white;
+      }
+
+      .shell {
+        max-width: none;
+        padding: 0;
+      }
+
+      .hero,
+      .panel {
+        box-shadow: none;
+        border-radius: 0;
+        background: white;
+      }
+
+      .actions,
+      .status,
+      .print-hide {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="hero">
+      <h1>Roster chiosco e spiaggia</h1>
+      <p>Template modificabile dal browser per organizzare soci, dipendenti e copertura spiaggia. Le celle sono editabili: clicca dentro una tabella e cambia orari, nomi o note.</p>
+      <p>Impostazione attuale: chiosco aperto ogni giorno <strong>08:00 - 20:00</strong>, con weekend da estendere fino alle <strong>01:00</strong> in una versione successiva dedicata alle serate.</p>
+
+      <div class="chips">
+        <div class="chip">3 soci lavoratori</div>
+        <div class="chip">1 socio sempre presente per cassa</div>
+        <div class="chip">8 ore con pausa inclusa</div>
+        <div class="chip">2 bagnini + 1 part-time</div>
+      </div>
+
+      <div class="actions">
+        <button onclick="window.print()">Stampa o PDF</button>
+        <button class="alt" onclick="saveLocal()">Salva nel browser</button>
+        <button class="soft" onclick="loadLocal()">Ricarica salvataggio</button>
+      </div>
+
+      <div class="status" id="status"></div>
+      <p class="footer-note print-hide">Per GitHub Pages basta pubblicare questo file come <strong>index.html</strong> in un repository.</p>
+    </section>
+
+    <section class="grid">
+      <section class="panel">
+        <div class="panel-header">
+          <h2>Turni tipo giornalieri</h2>
+          <span>Base operativa senza serate, con 3 dipendenti fissi</span>
+        </div>
+
+        <div class="roles">
+          <div class="role">
+            <strong>Eugenio</strong>
+            Apertura, colazioni, forno, preparazione mattina, cassa prima fascia.
+          </div>
+          <div class="role">
+            <strong>Francesco</strong>
+            Supporto pranzo, sala, coordinamento, cassa centrale.
+          </div>
+          <div class="role">
+            <strong>Ska</strong>
+            Bar pomeriggio, aperitivo, chiusura, cassa finale.
+          </div>
+        </div>
+
+        <table id="giornaliero">
+          <thead>
+            <tr>
+              <th>Ruolo</th>
+              <th>Orario</th>
+              <th>Compiti principali</th>
+              <th>Note</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td contenteditable="true">Eugenio</td>
+              <td contenteditable="true">07:00 - 15:00</td>
+              <td contenteditable="true">Preparazione colazioni, infornare brioche, avvio bar, cassa iniziale</td>
+              <td contenteditable="true">Alle 08:00 entra il primo aiuto</td>
+            </tr>
+            <tr>
+              <td contenteditable="true">Francesco</td>
+              <td contenteditable="true">09:00 - 17:00</td>
+              <td contenteditable="true">Supporto pranzo, sala, coordinamento servizi, cassa fascia centrale</td>
+              <td contenteditable="true">Può anticipare alle 07:00 nel giorno libero di Eugenio</td>
+            </tr>
+            <tr>
+              <td contenteditable="true">Ska</td>
+              <td contenteditable="true">12:00 - 20:00</td>
+              <td contenteditable="true">Bar pomeriggio, aperitivi, chiusura, cassa finale</td>
+              <td contenteditable="true">Weekend da estendere con turno serale dedicato</td>
+            </tr>
+            <tr>
+              <td contenteditable="true">Dipendente 1</td>
+              <td contenteditable="true">08:00 - 16:00</td>
+              <td contenteditable="true">Supporto colazioni, banco bar, preparazione servizio mattina</td>
+              <td contenteditable="true">Giorno off a rotazione</td>
+            </tr>
+            <tr>
+              <td contenteditable="true">Dipendente 2</td>
+              <td contenteditable="true">09:00 - 17:00</td>
+              <td contenteditable="true">Ombrelloni, sparecchio, supporto sala e tempi morti</td>
+              <td contenteditable="true">Giorno off a rotazione</td>
+            </tr>
+            <tr>
+              <td contenteditable="true">Dipendente 3</td>
+              <td contenteditable="true">11:00 - 18:00</td>
+              <td contenteditable="true">Preparazione linea cucina, pranzo, supporto aperitivo</td>
+              <td contenteditable="true">Giorno off a rotazione, con aiuto cucina coperto dai soci se serve</td>
+            </tr>
+            <tr>
+              <td contenteditable="true">Bagnino A</td>
+              <td contenteditable="true">09:00 - 17:00</td>
+              <td contenteditable="true">Copertura spiaggia</td>
+              <td contenteditable="true">1 giorno di riposo</td>
+            </tr>
+            <tr>
+              <td contenteditable="true">Bagnino B</td>
+              <td contenteditable="true">09:00 - 17:00</td>
+              <td contenteditable="true">Copertura spiaggia</td>
+              <td contenteditable="true">1 giorno di riposo</td>
+            </tr>
+            <tr>
+              <td contenteditable="true">Bagnino PT</td>
+              <td contenteditable="true">09:00 - 17:00</td>
+              <td contenteditable="true">Sostituzione giorni off</td>
+              <td contenteditable="true">Interviene a copertura riposi</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header">
+          <h2>Roster settimanale soci</h2>
+          <span>1 giorno libero a testa</span>
+        </div>
+
+        <table id="settimanale-soci">
+          <thead>
+            <tr>
+              <th>Giorno</th>
+              <th>Eugenio</th>
+              <th>Francesco</th>
+              <th>Ska</th>
+              <th>Socio cassa principale</th>
+              <th>Note</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Lunedì</td>
+              <td contenteditable="true">07:00 - 15:00</td>
+              <td contenteditable="true">Riposo</td>
+              <td contenteditable="true">12:00 - 20:00</td>
+              <td contenteditable="true">Eugenio / Ska</td>
+              <td contenteditable="true">Giornata con 2 soci</td>
+            </tr>
+            <tr>
+              <td>Martedì</td>
+              <td contenteditable="true">07:00 - 15:00</td>
+              <td contenteditable="true">09:00 - 17:00</td>
+              <td contenteditable="true">Riposo</td>
+              <td contenteditable="true">Eugenio / Francesco</td>
+              <td contenteditable="true">Ska riposo</td>
+            </tr>
+            <tr>
+              <td>Mercoledì</td>
+              <td contenteditable="true">Riposo</td>
+              <td contenteditable="true">07:00 - 15:00</td>
+              <td contenteditable="true">12:00 - 20:00</td>
+              <td contenteditable="true">Francesco / Ska</td>
+              <td contenteditable="true">Francesco apre al posto di Eugenio</td>
+            </tr>
+            <tr>
+              <td>Giovedì</td>
+              <td contenteditable="true">07:00 - 15:00</td>
+              <td contenteditable="true">09:00 - 17:00</td>
+              <td contenteditable="true">12:00 - 20:00</td>
+              <td contenteditable="true">Eugenio / Francesco / Ska</td>
+              <td contenteditable="true">Copertura piena</td>
+            </tr>
+            <tr>
+              <td>Venerdì</td>
+              <td contenteditable="true">07:00 - 15:00</td>
+              <td contenteditable="true">09:00 - 17:00</td>
+              <td contenteditable="true">12:00 - 20:00</td>
+              <td contenteditable="true">Eugenio / Francesco / Ska</td>
+              <td contenteditable="true">Base feriale</td>
+            </tr>
+            <tr>
+              <td>Sabato</td>
+              <td contenteditable="true">07:00 - 15:00</td>
+              <td contenteditable="true">09:00 - 17:00</td>
+              <td contenteditable="true">12:00 - 20:00</td>
+              <td contenteditable="true">Eugenio / Francesco / Ska</td>
+              <td contenteditable="true">Da completare con squadra serale</td>
+            </tr>
+            <tr>
+              <td>Domenica</td>
+              <td contenteditable="true">07:00 - 15:00</td>
+              <td contenteditable="true">09:00 - 17:00</td>
+              <td contenteditable="true">12:00 - 20:00</td>
+              <td contenteditable="true">Eugenio / Francesco / Ska</td>
+              <td contenteditable="true">Da completare con squadra serale</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header">
+          <h2>Roster settimanale team e spiaggia</h2>
+          <span>3 dipendenti fissi + copertura bagnini</span>
+        </div>
+
+        <table id="settimanale-team">
+          <thead>
+            <tr>
+              <th>Giorno</th>
+              <th>Dipendente 1</th>
+              <th>Dipendente 2</th>
+              <th>Dipendente 3</th>
+              <th>Bagnino A</th>
+              <th>Bagnino B</th>
+              <th>Bagnino PT</th>
+              <th>Note</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Lunedì</td>
+              <td contenteditable="true">08:00 - 16:00</td>
+              <td contenteditable="true">09:00 - 17:00</td>
+              <td contenteditable="true">Riposo</td>
+              <td contenteditable="true">09:00 - 17:00</td>
+              <td contenteditable="true">Riposo</td>
+              <td contenteditable="true">09:00 - 17:00</td>
+              <td contenteditable="true">Dipendente 3 riposo, cucina alleggerita o coperta dai soci. PT copre Bagnino B</td>
+            </tr>
+            <tr>
+              <td>Martedì</td>
+              <td contenteditable="true">Riposo</td>
+              <td contenteditable="true">09:00 - 17:00</td>
+              <td contenteditable="true">11:00 - 18:00</td>
+              <td contenteditable="true">09:00 - 17:00</td>
+              <td contenteditable="true">09:00 - 17:00</td>
+              <td contenteditable="true">Riposo</td>
+              <td contenteditable="true">Dipendente 1 riposo, colazioni presidiate da Eugenio + Francesco</td>
+            </tr>
+            <tr>
+              <td>Mercoledì</td>
+              <td contenteditable="true">08:00 - 16:00</td>
+              <td contenteditable="true">Riposo</td>
+              <td contenteditable="true">11:00 - 18:00</td>
+              <td contenteditable="true">Riposo</td>
+              <td contenteditable="true">09:00 - 17:00</td>
+              <td contenteditable="true">09:00 - 17:00</td>
+              <td contenteditable="true">Dipendente 2 riposo, PT copre Bagnino A</td>
+            </tr>
+            <tr>
+              <td>Giovedì</td>
+              <td contenteditable="true">08:00 - 16:00</td>
+              <td contenteditable="true">09:00 - 17:00</td>
+              <td contenteditable="true">Riposo</td>
+              <td contenteditable="true">09:00 - 17:00</td>
+              <td contenteditable="true">09:00 - 17:00</td>
+              <td contenteditable="true">Riposo</td>
+              <td contenteditable="true">Dipendente 3 riposo, cucina coperta dai soci nella fascia pranzo</td>
+            </tr>
+            <tr>
+              <td>Venerdì</td>
+              <td contenteditable="true">Riposo</td>
+              <td contenteditable="true">09:00 - 17:00</td>
+              <td contenteditable="true">11:00 - 18:00</td>
+              <td contenteditable="true">09:00 - 17:00</td>
+              <td contenteditable="true">09:00 - 17:00</td>
+              <td contenteditable="true">Riposo</td>
+              <td contenteditable="true">Dipendente 1 riposo, bar mattina coperto dai soci</td>
+            </tr>
+            <tr>
+              <td>Sabato</td>
+              <td contenteditable="true">08:00 - 16:00</td>
+              <td contenteditable="true">Riposo</td>
+              <td contenteditable="true">11:00 - 18:00</td>
+              <td contenteditable="true">09:00 - 17:00</td>
+              <td contenteditable="true">09:00 - 17:00</td>
+              <td contenteditable="true">Riposo</td>
+              <td contenteditable="true">Dipendente 2 riposo, da rinforzare per servizio serale</td>
+            </tr>
+            <tr>
+              <td>Domenica</td>
+              <td contenteditable="true">08:00 - 16:00</td>
+              <td contenteditable="true">09:00 - 17:00</td>
+              <td contenteditable="true">Riposo</td>
+              <td contenteditable="true">09:00 - 17:00</td>
+              <td contenteditable="true">09:00 - 17:00</td>
+              <td contenteditable="true">Riposo</td>
+              <td contenteditable="true">Dipendente 3 riposo, da rinforzare per servizio serale</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header">
+          <h2>Note operative</h2>
+          <span>Campo libero per aggiunte</span>
+        </div>
+
+        <div class="notes" id="note-operative" contenteditable="true">
+Picchi operativi:
+07:00 Eugenio apre e prepara colazioni
+08:00 entra Dipendente 1
+09:00 parte spiaggia con ombrelloni e Dipendente 2 flessibile
+11:00 picco cucina e pranzi: Dipendente 3 presidia la cucina quando presente
+14:30 - 18:00 attività bar normale
+Dalle 18:00 focus aperitivi
+Nella versione minima i 3 dipendenti hanno 1 giorno off a rotazione
+Nei giorni off di Dipendente 3 la cucina va alleggerita oppure coperta dai soci
+Weekend serale ancora da aggiungere
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    const editableSelectors = [
+      "#giornaliero td[contenteditable='true']",
+      "#settimanale-soci td[contenteditable='true']",
+      "#settimanale-team td[contenteditable='true']",
+      "#note-operative"
+    ];
+
+    function getEditableElements() {
+      return editableSelectors.flatMap((selector) => [...document.querySelectorAll(selector)]);
+    }
+
+    function saveLocal() {
+      const data = getEditableElements().map((el) => el.innerHTML);
+      localStorage.setItem("rosterChioscoSpiaggiaV2", JSON.stringify(data));
+      setStatus("Modifiche salvate nel browser.");
+    }
+
+    function loadLocal() {
+      const raw = localStorage.getItem("rosterChioscoSpiaggiaV2");
+      if (!raw) {
+        setStatus("Nessun salvataggio trovato su questo browser.");
+        return;
+      }
+
+      const data = JSON.parse(raw);
+      getEditableElements().forEach((el, index) => {
+        if (typeof data[index] !== "undefined") {
+          el.innerHTML = data[index];
+        }
+      });
+
+      setStatus("Dati ricaricati dal browser.");
+    }
+
+    function setStatus(message) {
+      const target = document.getElementById("status");
+      target.textContent = message;
+      clearTimeout(window.statusTimer);
+      window.statusTimer = setTimeout(() => {
+        target.textContent = "";
+      }, 2600);
+    }
+  </script>
+</body>
+</html>
+# Roster Chiosco e Spiaggia
+
+Mini progetto statico pronto da aprire nel browser o pubblicare su GitHub Pages.
+
+## Contenuto
+
+- `index.html`: roster modificabile direttamente dal browser
+
+## Come usarlo in locale
+
+1. Apri `index.html` nel browser.
+2. Clicca dentro le celle della tabella per cambiare turni, nomi e note.
+3. Usa `Salva nel browser` per mantenere le modifiche su questo dispositivo.
+4. Usa `Stampa o PDF` se vuoi esportare una versione stampabile.
+
+## Come metterlo su GitHub
+
+1. Crea un nuovo repository.
+2. Carica dentro questa cartella.
+3. Mantieni `index.html` nella root del repository.
+4. Se vuoi pubblicarlo, attiva GitHub Pages dalle impostazioni del repository.
+
+## Note
+
+- Il file funziona senza backend.
+- I dati salvati dal pulsante restano nel browser locale tramite `localStorage`.
+- La versione attuale copre il roster base senza i turni serali del weekend fino all'1:00.
