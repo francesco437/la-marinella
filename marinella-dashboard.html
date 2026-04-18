@@ -1,1 +1,3022 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>La Marinella — Dashboard</title>
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+/* ============================================================
+   LA MARINELLA — Design system
+   Coastal mediterranean · sabbia, mare ligure, coralli
+   ============================================================ */
+:root {
+  --sand-50:  #FBF7F0;
+  --sand-100: #F4ECDD;
+  --sand-200: #E8D9BE;
+  --sand-300: #D4BE96;
+  --sand-400: #B89768;
+  --sand-700: #6B5437;
+  --sand-900: #2B2212;
+
+  --sea-50:   #E8F2F2;
+  --sea-100:  #C9E1E2;
+  --sea-200:  #9DC5C5;
+  --sea-400:  #4A8E93;
+  --sea-600:  #1F6268;
+  --sea-800:  #0E3A40;
+
+  --coral:    #E85A4F;
+  --coral-dk: #C4423A;
+  --sunshine: #F2C14E;
+
+  --ok:       #3A9B7A;
+  --warn:     #E89B3C;
+  --err:      var(--coral);
+
+  --sh-sm: 0 1px 2px rgba(107,84,55,.08);
+  --sh-md: 0 4px 12px rgba(107,84,55,.12);
+  --sh-lg: 0 12px 32px rgba(107,84,55,.18);
+
+  --r-sm: 8px;
+  --r-md: 14px;
+  --r-lg: 22px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  height: 100%;
+  background: var(--sand-50);
+  color: var(--sand-900);
+  font-family: 'Inter Tight', sans-serif;
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+h1, h2, h3, h4 { font-family: 'Fraunces', serif; font-weight: 500; letter-spacing: -0.01em; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+input, select, textarea {
+  font-family: inherit; font-size: 14px;
+  border: 1px solid var(--sand-200);
+  background: white;
+  padding: 10px 12px;
+  border-radius: var(--r-sm);
+  color: var(--sand-900);
+  width: 100%;
+  transition: border-color .15s, box-shadow .15s;
+}
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--sea-400);
+  box-shadow: 0 0 0 3px rgba(74,142,147,.15);
+}
+label { font-size: 12px; color: var(--sand-700); font-weight: 500; display: block; margin-bottom: 5px; letter-spacing: .02em; }
+
+/* LAYOUT */
+.app { display: grid; grid-template-columns: 220px 1fr; height: 100vh; }
+
+/* SIDEBAR */
+.sidebar {
+  background: linear-gradient(180deg, var(--sea-800) 0%, var(--sea-600) 100%);
+  color: var(--sand-50);
+  padding: 24px 16px;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.brand {
+  display: flex; align-items: center; gap: 10px;
+  padding: 4px 8px 22px;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  margin-bottom: 16px;
+}
+.brand .logo {
+  width: 38px; height: 38px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, var(--sunshine) 0%, var(--coral) 55%, var(--coral-dk) 100%);
+  box-shadow: inset -2px -3px 6px rgba(0,0,0,.15);
+  flex-shrink: 0;
+}
+.brand h1 { font-size: 20px; color: white; line-height: 1; }
+.brand span { font-size: 11px; color: var(--sea-200); letter-spacing: .2em; text-transform: uppercase; }
+
+.nav-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 12px; border-radius: var(--r-sm);
+  color: rgba(255,255,255,.7); font-weight: 500; font-size: 14px;
+  text-align: left; width: 100%;
+  transition: all .15s;
+}
+.nav-item:hover { background: rgba(255,255,255,.06); color: white; }
+.nav-item.active { background: rgba(255,255,255,.12); color: white; }
+.nav-item svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+.sidebar-footer {
+  margin-top: auto; padding-top: 14px;
+  border-top: 1px solid rgba(255,255,255,.08);
+  font-size: 11px; color: var(--sea-200); letter-spacing: .05em;
+}
+
+/* MAIN */
+.main { overflow: hidden; display: flex; flex-direction: column; background: var(--sand-50); }
+.topbar {
+  background: white; border-bottom: 1px solid var(--sand-200);
+  padding: 14px 28px;
+  display: flex; align-items: center; gap: 20px;
+}
+.topbar h2 { font-size: 22px; margin-right: auto; }
+
+.date-picker {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--sand-100); border-radius: var(--r-sm); padding: 2px;
+}
+.date-picker button {
+  width: 32px; height: 32px; border-radius: 6px;
+  color: var(--sand-700); font-weight: 600;
+  transition: background .15s;
+}
+.date-picker button:hover { background: white; }
+.date-picker input[type="date"] {
+  border: none; background: transparent; font-weight: 600; font-size: 14px;
+  width: auto; padding: 6px 4px; color: var(--sand-900);
+}
+.date-picker input[type="date"]:focus { box-shadow: none; }
+
+.view { flex: 1; overflow: auto; padding: 24px 28px 28px; }
+.view.hidden { display: none; }
+
+/* KPI */
+.kpi-row {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px;
+}
+.kpi {
+  background: white; border-radius: var(--r-md);
+  padding: 18px 20px; box-shadow: var(--sh-sm);
+  border: 1px solid var(--sand-100);
+  position: relative; overflow: hidden;
+}
+.kpi::before {
+  content: ''; position: absolute; top: 0; right: 0;
+  width: 80px; height: 80px; border-radius: 50%;
+  opacity: .08; transform: translate(30%, -30%);
+}
+.kpi.k-booked::before   { background: var(--sea-600); }
+.kpi.k-free::before     { background: var(--ok); }
+.kpi.k-revenue::before  { background: var(--sunshine); }
+.kpi.k-occupancy::before{ background: var(--coral); }
+.kpi-label { font-size: 11px; color: var(--sand-700); text-transform: uppercase; letter-spacing: .1em; font-weight: 600; }
+.kpi-value { font-family: 'Fraunces', serif; font-size: 32px; margin-top: 4px; line-height: 1; font-weight: 500; }
+.kpi-value small { font-family: 'Inter Tight'; font-size: 14px; color: var(--sand-700); margin-left: 4px; font-weight: 500; }
+
+/* BEACH MAP */
+.map-wrap {
+  background:
+    radial-gradient(circle at top right, rgba(93,173,182,.18), transparent 45%),
+    linear-gradient(180deg, #FFFFFF 0%, #F8F2E7 100%);
+  border-radius: var(--r-lg);
+  padding: 20px;
+  box-shadow: var(--sh-md);
+  border: 1px solid rgba(184,151,104,.25);
+}
+.map-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+.map-toolbar h3 { font-size: 18px; margin-right: auto; }
+.legend { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.legend-item {
+  display: flex; align-items: center; gap: 6px; font-size: 12px;
+  color: var(--sand-700);
+  background: rgba(255,255,255,.75);
+  border: 1px solid rgba(184,151,104,.2);
+  padding: 6px 10px;
+  border-radius: 999px;
+}
+.legend-dot { width: 12px; height: 12px; border-radius: 50%; }
+.legend-dot.free    { background: var(--ok); }
+.legend-dot.booked  { background: var(--coral); }
+.legend-dot.arrived { background: var(--sea-600); }
+.legend-dot.off     { background: var(--sand-300); }
+
+.map-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-left: auto;
+}
+.map-mode-toggle, .layout-toggle {
+  display: flex;
+  background: rgba(43,34,18,.07);
+  border-radius: 999px;
+  padding: 3px;
+  border: 1px solid rgba(184,151,104,.2);
+}
+.map-mode-toggle button, .layout-toggle button {
+  padding: 7px 13px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .01em;
+  color: var(--sand-700);
+  transition: all .16s;
+}
+.map-mode-toggle button.active {
+  background: white;
+  color: var(--sea-800);
+  box-shadow: var(--sh-sm);
+}
+.map-mode-toggle button:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+.layout-toggle button.layout-active {
+  background: linear-gradient(135deg, var(--sea-600), var(--sea-400));
+  color: white;
+  box-shadow: var(--sh-sm);
+}
+.layout-commit-actions {
+  display: none;
+  gap: 6px;
+}
+.layout-commit-actions.show { display: flex; }
+.layout-commit-actions button {
+  padding: 7px 13px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .01em;
+  border: 1px solid rgba(184,151,104,.3);
+}
+.layout-commit-actions .primary {
+  background: linear-gradient(135deg, #2F8D76, #26715E);
+  color: white;
+  border-color: transparent;
+}
+.layout-commit-actions .ghost {
+  background: white;
+  color: var(--sand-700);
+}
+.map-hint {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 12px;
+  padding: 9px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(31,98,104,.25);
+  background: rgba(31,98,104,.09);
+  color: var(--sea-800);
+  font-size: 12px;
+  font-weight: 600;
+}
+.map-hint::before {
+  content: '↕';
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(31,98,104,.18);
+  font-size: 11px;
+}
+.map-hint.show { display: flex; }
+
+.beach {
+  position: relative;
+  aspect-ratio: 16/9;
+  border-radius: 18px;
+  overflow: hidden;
+  background:
+    linear-gradient(180deg,
+      #3E8B96 0%,
+      #5FB1BC 7%,
+      #91D5DD 13%,
+      #C8EBEE 16%,
+      #E7D7B9 17%,
+      #EADBC0 23%,
+      #F4E9D4 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.35),
+    inset 0 28px 40px rgba(14,58,64,.14),
+    inset 0 -22px 35px rgba(107,84,55,.12);
+  user-select: none;
+}
+.beach::before {
+  content: '';
+  position: absolute;
+  top: 14.2%;
+  left: -4%;
+  right: -4%;
+  height: 26px;
+  background:
+    radial-gradient(80% 120% at 50% 40%, rgba(255,255,255,.86) 0%, rgba(255,255,255,0) 72%),
+    repeating-linear-gradient(90deg, rgba(255,255,255,.42) 0 18px, rgba(255,255,255,0) 18px 34px);
+  opacity: .95;
+  mix-blend-mode: screen;
+}
+.beach::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 20% 58%, rgba(184,151,104,.09) 0, transparent 2px),
+    radial-gradient(circle at 80% 72%, rgba(184,151,104,.08) 0, transparent 2px),
+    radial-gradient(circle at 50% 92%, rgba(184,151,104,.08) 0, transparent 2px),
+    linear-gradient(180deg, rgba(255,255,255,.16) 0%, rgba(255,255,255,0) 30%);
+  background-size: 42px 42px, 65px 65px, 30px 30px, 100% 100%;
+  pointer-events: none;
+}
+.beach.layout-active {
+  box-shadow:
+    inset 0 0 0 2px rgba(31,98,104,.35),
+    inset 0 28px 40px rgba(14,58,64,.14),
+    inset 0 -22px 35px rgba(107,84,55,.12),
+    0 14px 32px rgba(14,58,64,.16);
+}
+
+.row-labels {
+  position: absolute; left: 10px; top: 18%; bottom: 0;
+  display: flex; flex-direction: column;
+  justify-content: space-around; padding: 2% 0; z-index: 2;
+}
+.row-labels span {
+  font-family: 'Fraunces', serif; font-size: 15px; font-weight: 700;
+  color: var(--sand-700); background: rgba(255,255,255,.85);
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid rgba(184,151,104,.35);
+  backdrop-filter: blur(4px);
+}
+
+.sea-label {
+  position: absolute; top: 3.8%; left: 50%; transform: translateX(-50%);
+  font-family: 'Fraunces', serif; font-style: italic; font-size: 14px;
+  color: rgba(255,255,255,.94); letter-spacing: .35em; z-index: 2;
+  text-shadow: 0 2px 10px rgba(14,58,64,.35);
+}
+
+/* UMBRELLA */
+.umbrella {
+  position: absolute; transform: translate(-50%, -50%);
+  cursor: pointer;
+  z-index: 3;
+  touch-action: none;
+  transition: transform .2s cubic-bezier(.34,1.56,.64,1), filter .15s;
+}
+.umbrella:hover { transform: translate(-50%, -50%) scale(1.15); z-index: 10; }
+.umbrella.selected { transform: translate(-50%, -50%) scale(1.2); z-index: 11; }
+.umbrella.selected .u-canopy {
+  box-shadow: 0 0 0 3px white, 0 0 0 5px var(--sea-600), 0 6px 14px rgba(0,0,0,.3);
+}
+.umbrella.multi-selected .u-canopy {
+  box-shadow: 0 0 0 3px white, 0 0 0 5px var(--sunshine), 0 6px 14px rgba(0,0,0,.3);
+}
+#beachMap.layout-active .umbrella { cursor: grab; }
+#beachMap.layout-active .umbrella:hover { transform: translate(-50%, -50%) scale(1.08); z-index: 14; }
+#beachMap.layout-active .umbrella.dragging {
+  cursor: grabbing;
+  transform: translate(-50%, -50%) scale(1.16);
+  z-index: 22;
+  filter: drop-shadow(0 10px 12px rgba(14,58,64,.35));
+}
+
+.u-canopy {
+  width: 40px; height: 40px; border-radius: 50%;
+  box-shadow: 0 6px 10px rgba(0,0,0,.22);
+  position: relative;
+  background-image: conic-gradient(
+    from 0deg, rgba(255,255,255,.25) 0deg, transparent 45deg,
+    rgba(255,255,255,.25) 90deg, transparent 135deg,
+    rgba(255,255,255,.25) 180deg, transparent 225deg,
+    rgba(255,255,255,.25) 270deg, transparent 315deg,
+    rgba(255,255,255,.25) 360deg
+  );
+}
+.u-canopy::after {
+  content: ''; position: absolute; top: 50%; left: 50%;
+  width: 6px; height: 6px; background: var(--sand-700);
+  border-radius: 50%; transform: translate(-50%, -50%);
+  box-shadow: 0 0 0 1px rgba(255,255,255,.3);
+}
+.umbrella[data-status="free"]    .u-canopy { background-color: var(--ok); }
+.umbrella[data-status="booked"]  .u-canopy { background-color: var(--coral); }
+.umbrella[data-status="arrived"] .u-canopy { background-color: var(--sea-600); }
+.umbrella[data-status="off"]     .u-canopy { background-color: var(--sand-300); opacity: .5; }
+
+.u-number {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  color: white; font-weight: 800; font-size: 11px;
+  font-family: 'Inter Tight'; z-index: 2;
+  text-shadow: 0 1px 2px rgba(0,0,0,.3);
+}
+
+.u-arrived-dot {
+  position: absolute; top: -2px; right: -2px;
+  width: 12px; height: 12px; border-radius: 50%;
+  background: var(--ok); border: 2px solid white; z-index: 3;
+}
+
+.u-tip {
+  position: absolute; bottom: calc(100% + 6px); left: 50%;
+  transform: translateX(-50%);
+  background: rgba(43,34,18,.95); color: white;
+  padding: 7px 11px; border-radius: 8px;
+  font-size: 12px; font-weight: 500; white-space: nowrap;
+  opacity: 0; pointer-events: none; transition: opacity .15s;
+  z-index: 20;
+}
+.u-tip::after {
+  content: ''; position: absolute; top: 100%; left: 50%;
+  transform: translateX(-50%);
+  border: 4px solid transparent; border-top-color: var(--sand-900);
+}
+.umbrella:hover .u-tip { opacity: 1; }
+
+/* HEATMAP OVERLAY */
+.heatmap-overlay {
+  position: absolute; width: 60px; height: 60px;
+  border-radius: 50%; transform: translate(-50%, -50%);
+  pointer-events: none; z-index: 1;
+  filter: blur(10px);
+  transition: opacity .3s;
+}
+
+/* Rubber band selection */
+.selection-box {
+  position: absolute; border: 2px dashed var(--sea-600);
+  background: rgba(31,98,104,.08); pointer-events: none;
+  z-index: 5; border-radius: 4px;
+}
+
+/* MULTI-SELECT BAR */
+.multi-bar {
+  position: fixed; bottom: 24px; left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: var(--sand-900); color: white;
+  padding: 10px 16px; border-radius: 30px;
+  box-shadow: var(--sh-lg);
+  display: flex; align-items: center; gap: 12px;
+  z-index: 90; opacity: 0; transition: all .3s;
+}
+.multi-bar.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+.multi-bar .count { font-weight: 600; }
+.multi-bar button {
+  padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;
+  background: rgba(255,255,255,.15); color: white;
+}
+.multi-bar button:hover { background: rgba(255,255,255,.25); }
+.multi-bar button.primary { background: var(--sunshine); color: var(--sand-900); }
+
+/* PLANNER (Gantt) */
+.planner-wrap {
+  background: white; border-radius: var(--r-lg);
+  box-shadow: var(--sh-sm); border: 1px solid var(--sand-100);
+  overflow: hidden;
+}
+.planner-header-bar {
+  padding: 16px 20px; border-bottom: 1px solid var(--sand-100);
+  display: flex; align-items: center; gap: 14px;
+}
+.planner-header-bar h3 { font-size: 18px; margin-right: auto; }
+.planner-nav {
+  display: flex; background: var(--sand-100);
+  border-radius: var(--r-sm); padding: 2px;
+}
+.planner-nav button {
+  padding: 6px 10px; border-radius: 6px; font-size: 12px;
+  font-weight: 600; color: var(--sand-700);
+}
+.planner-nav button:hover { background: white; }
+.planner-zoom {
+  display: flex; background: var(--sand-100);
+  border-radius: var(--r-sm); padding: 2px;
+}
+.planner-zoom button {
+  padding: 6px 12px; border-radius: 6px; font-size: 12px;
+  font-weight: 600; color: var(--sand-700);
+}
+.planner-zoom button.active { background: white; color: var(--sea-800); box-shadow: var(--sh-sm); }
+
+.planner-scroll {
+  overflow: auto; max-height: calc(100vh - 260px);
+  position: relative;
+}
+.planner-grid {
+  display: grid; grid-template-columns: 80px 1fr;
+  min-width: 100%;
+}
+.planner-umbrella-col {
+  position: sticky; left: 0; z-index: 5;
+  background: var(--sand-50);
+  border-right: 2px solid var(--sand-200);
+}
+.planner-umbrella-head {
+  height: 48px; padding: 12px;
+  background: var(--sand-100); border-bottom: 1px solid var(--sand-200);
+  font-size: 11px; font-weight: 700; color: var(--sand-700);
+  text-transform: uppercase; letter-spacing: .08em;
+  position: sticky; top: 0; z-index: 6;
+  display: flex; align-items: center;
+}
+.planner-umbrella-cell {
+  height: 36px; padding: 0 12px;
+  border-bottom: 1px solid var(--sand-100);
+  display: flex; align-items: center; gap: 6px;
+  font-size: 13px; font-weight: 600;
+}
+.planner-umbrella-cell .tier-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+}
+.tier-dot.front    { background: var(--coral); }
+.tier-dot.standard { background: var(--sand-400); }
+.tier-dot.back     { background: var(--sand-300); }
+
+.planner-days-col { position: relative; }
+.planner-days-head {
+  display: grid; height: 48px;
+  background: var(--sand-100);
+  border-bottom: 1px solid var(--sand-200);
+  position: sticky; top: 0; z-index: 4;
+}
+.planner-day-head {
+  border-right: 1px solid var(--sand-200);
+  padding: 6px 4px; text-align: center;
+  font-size: 11px; color: var(--sand-700); font-weight: 600;
+  display: flex; flex-direction: column; justify-content: center;
+}
+.planner-day-head.weekend { background: var(--sand-200); }
+.planner-day-head.today { background: var(--sea-100); color: var(--sea-800); }
+.planner-day-head .d-num {
+  font-family: 'Fraunces', serif; font-size: 16px; font-weight: 600;
+  color: var(--sand-900); line-height: 1;
+}
+.planner-day-head.today .d-num { color: var(--sea-800); }
+
+.planner-row {
+  display: grid;
+  height: 36px;
+  border-bottom: 1px solid var(--sand-100);
+  position: relative;
+}
+.planner-row:hover { background: var(--sand-50); }
+.planner-cell {
+  border-right: 1px solid var(--sand-100);
+  cursor: pointer;
+  transition: background .1s;
+}
+.planner-cell:hover { background: rgba(74,142,147,.08); }
+.planner-cell.weekend { background: rgba(184,151,104,.04); }
+.planner-cell.today { background: rgba(31,98,104,.06); }
+
+.planner-booking {
+  position: absolute;
+  top: 4px; bottom: 4px;
+  border-radius: 6px;
+  padding: 0 8px;
+  display: flex; align-items: center;
+  font-size: 12px; font-weight: 600;
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0,0,0,.15);
+  transition: all .15s;
+  z-index: 2;
+  overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+}
+.planner-booking:hover { transform: translateY(-1px); box-shadow: 0 3px 8px rgba(0,0,0,.2); z-index: 3; }
+.planner-booking.daily     { background: linear-gradient(135deg, var(--coral), var(--coral-dk)); }
+.planner-booking.half_day_am, .planner-booking.half_day_pm { background: linear-gradient(135deg, var(--warn), #C77C2E); }
+.planner-booking.weekly    { background: linear-gradient(135deg, var(--sea-400), var(--sea-600)); }
+.planner-booking.monthly   { background: linear-gradient(135deg, #6B4C87, #553869); }
+.planner-booking.seasonal  { background: linear-gradient(135deg, #2B6E53, #1E5039); }
+.planner-booking.checked_in::before {
+  content: '●'; margin-right: 5px; color: white;
+}
+
+/* HEATMAP LEGEND */
+.heatmap-legend {
+  display: flex; align-items: center; gap: 10px; font-size: 12px;
+  color: var(--sand-700);
+}
+.heatmap-legend-bar {
+  width: 120px; height: 10px; border-radius: 5px;
+  background: linear-gradient(90deg, var(--sea-100), var(--sunshine), var(--coral), var(--coral-dk));
+}
+
+/* MODAL */
+.modal-backdrop {
+  position: fixed; inset: 0;
+  background: rgba(43,34,18,.55);
+  backdrop-filter: blur(4px);
+  display: none; align-items: center; justify-content: center;
+  z-index: 100;
+}
+.modal-backdrop.open { display: flex; }
+.modal {
+  background: white; border-radius: var(--r-lg);
+  width: 640px; max-width: 92vw; max-height: 88vh;
+  overflow: auto; box-shadow: var(--sh-lg);
+  animation: pop .2s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes pop { from { transform: scale(.95); opacity: 0 } to { transform: scale(1); opacity: 1 } }
+
+.modal-head {
+  padding: 22px 24px 16px; border-bottom: 1px solid var(--sand-100);
+  display: flex; align-items: center; gap: 14px;
+}
+.modal-head .badge {
+  width: 48px; height: 48px; border-radius: 14px;
+  background: linear-gradient(135deg, var(--sea-400), var(--sea-600));
+  color: white;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Fraunces', serif; font-size: 20px; font-weight: 600;
+}
+.modal-head h3 { font-size: 20px; }
+.modal-head p { font-size: 13px; color: var(--sand-700); margin-top: 2px; }
+.modal-close {
+  margin-left: auto; width: 32px; height: 32px; border-radius: 8px;
+  color: var(--sand-700); font-size: 20px;
+  display: flex; align-items: center; justify-content: center;
+}
+.modal-close:hover { background: var(--sand-100); }
+
+.modal-body { padding: 22px 24px; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.form-grid.full { grid-template-columns: 1fr; }
+.form-grid.triple { grid-template-columns: 1fr 1fr 1fr; }
+.form-section {
+  padding-bottom: 18px; margin-bottom: 18px;
+  border-bottom: 1px dashed var(--sand-200);
+}
+.form-section:last-child { border: none; margin-bottom: 0; padding-bottom: 0; }
+.form-section h4 {
+  font-size: 13px; text-transform: uppercase; letter-spacing: .1em;
+  color: var(--sea-600); margin-bottom: 12px;
+  font-family: 'Inter Tight'; font-weight: 600;
+}
+
+.type-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 8px; margin-bottom: 10px;
+}
+.type-btn {
+  padding: 10px 6px;
+  border: 1.5px solid var(--sand-200); border-radius: var(--r-sm);
+  background: white; font-size: 12px; font-weight: 600;
+  color: var(--sand-700); text-align: center;
+  transition: all .15s;
+}
+.type-btn:hover { border-color: var(--sea-400); color: var(--sea-600); }
+.type-btn.active { border-color: var(--sea-600); background: var(--sea-50); color: var(--sea-800); }
+.type-btn small { display: block; font-size: 10px; font-weight: 500; color: var(--sand-700); margin-top: 2px; }
+.type-btn.active small { color: var(--sea-600); }
+
+/* EXTRAS */
+.extras-list {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+}
+.extra-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 10px;
+  border: 1.5px solid var(--sand-200); border-radius: var(--r-sm);
+  background: white; cursor: pointer;
+  transition: all .15s;
+}
+.extra-item:hover { border-color: var(--sea-400); }
+.extra-item.active { border-color: var(--sea-600); background: var(--sea-50); }
+.extra-item .emoji { font-size: 18px; }
+.extra-item .info { flex: 1; }
+.extra-item .name { font-size: 12px; font-weight: 600; color: var(--sand-900); }
+.extra-item .price { font-size: 11px; color: var(--sand-700); }
+.extra-qty {
+  margin-left: auto;
+  width: 28px; text-align: center;
+  font-weight: 700; font-size: 13px; color: var(--sea-600);
+  display: none;
+}
+.extra-item.active .extra-qty { display: block; }
+
+.price-box {
+  background: linear-gradient(135deg, var(--sand-50), var(--sand-100));
+  border-radius: var(--r-md);
+  padding: 14px 16px;
+}
+.price-row { display: flex; justify-content: space-between; padding: 3px 0; font-size: 13px; }
+.price-row.total {
+  margin-top: 6px; padding-top: 10px;
+  border-top: 1px solid var(--sand-300);
+  font-size: 16px; font-weight: 700;
+}
+.price-row.total .v {
+  font-family: 'Fraunces', serif; font-size: 24px;
+  font-weight: 600; color: var(--sea-800);
+}
+
+.deposit-box {
+  margin-top: 10px;
+  background: linear-gradient(135deg, #FEF3DC, #FDE9B8);
+  border: 1px solid var(--sunshine);
+  border-radius: var(--r-md);
+  padding: 12px 14px;
+  font-size: 13px;
+  color: #8E5F13;
+}
+.deposit-box strong { color: var(--sand-900); }
+.deposit-input-row { display: flex; gap: 8px; margin-top: 8px; align-items: center; }
+.deposit-input-row input { flex: 1; }
+.deposit-input-row .pct-btn {
+  padding: 6px 10px; font-size: 11px;
+  background: white; border: 1px solid var(--sand-200);
+  border-radius: 6px; font-weight: 600; color: var(--sand-700);
+}
+.deposit-input-row .pct-btn:hover { border-color: var(--sunshine); }
+
+.modal-foot {
+  padding: 16px 24px; border-top: 1px solid var(--sand-100);
+  display: flex; justify-content: flex-end; gap: 10px;
+  background: var(--sand-50); flex-wrap: wrap;
+}
+.btn {
+  padding: 10px 18px; border-radius: var(--r-sm);
+  font-weight: 600; font-size: 14px;
+  transition: all .15s;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.btn-primary { background: var(--sea-600); color: white; }
+.btn-primary:hover { background: var(--sea-800); transform: translateY(-1px); box-shadow: var(--sh-md); }
+.btn-whatsapp { background: #25D366; color: white; }
+.btn-whatsapp:hover { background: #1da851; }
+.btn-ghost { color: var(--sand-700); }
+.btn-ghost:hover { background: var(--sand-100); }
+.btn-danger { color: var(--coral-dk); }
+.btn-danger:hover { background: #FBEDEC; }
+.btn-success { background: var(--ok); color: white; }
+.btn-success:hover { background: #2F7E63; }
+
+/* TABLE */
+.table-wrap {
+  background: white; border-radius: var(--r-md);
+  box-shadow: var(--sh-sm); border: 1px solid var(--sand-100);
+  overflow: auto;
+}
+table { width: 100%; border-collapse: collapse; }
+thead { background: var(--sand-50); }
+th {
+  text-align: left; padding: 12px 16px;
+  font-size: 11px; text-transform: uppercase; letter-spacing: .1em;
+  color: var(--sand-700); font-weight: 600;
+  border-bottom: 1px solid var(--sand-200);
+}
+td { padding: 14px 16px; border-bottom: 1px solid var(--sand-100); font-size: 14px; }
+tr:hover { background: var(--sand-50); cursor: pointer; }
+tr:last-child td { border-bottom: none; }
+
+.status-pill {
+  display: inline-block; padding: 3px 10px;
+  border-radius: 20px; font-size: 11px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: .05em;
+}
+.status-pill.confirmed  { background: #E6F4EE; color: #1F6248; }
+.status-pill.pending    { background: #FEF3DC; color: #8E5F13; }
+.status-pill.checked_in { background: var(--sea-100); color: var(--sea-800); }
+.status-pill.cancelled  { background: #FBEDEC; color: var(--coral-dk); }
+.status-pill.no_show    { background: var(--sand-100); color: var(--sand-700); }
+
+.pay-pill {
+  display: inline-block; padding: 3px 8px;
+  border-radius: 4px; font-size: 10px; font-weight: 700;
+  letter-spacing: .05em; text-transform: uppercase;
+}
+.pay-pill.pending { background: #FEF3DC; color: #8E5F13; }
+.pay-pill.partial { background: #FFE4E1; color: #C4423A; }
+.pay-pill.paid { background: #E6F4EE; color: #1F6248; }
+
+/* ARRIVALS/DEPARTURES VIEW */
+.arrivals-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+}
+.arrivals-panel {
+  background: white; border-radius: var(--r-md);
+  box-shadow: var(--sh-sm); border: 1px solid var(--sand-100);
+  overflow: hidden;
+}
+.arrivals-head {
+  padding: 16px 20px; border-bottom: 1px solid var(--sand-100);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.arrivals-head h3 { font-size: 16px; }
+.arrivals-count {
+  background: var(--sand-100); color: var(--sand-700);
+  padding: 3px 10px; border-radius: 20px;
+  font-size: 12px; font-weight: 700;
+}
+.arrival-item {
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--sand-100);
+  display: flex; align-items: center; gap: 12px;
+}
+.arrival-item:last-child { border: none; }
+.arrival-umbrella {
+  width: 42px; height: 42px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--sea-400), var(--sea-600));
+  color: white; display: flex; align-items: center; justify-content: center;
+  font-family: 'Fraunces', serif; font-size: 16px; font-weight: 700;
+  flex-shrink: 0;
+}
+.arrival-item.arrived .arrival-umbrella {
+  background: linear-gradient(135deg, var(--ok), #2F7E63);
+}
+.arrival-info { flex: 1; min-width: 0; }
+.arrival-name { font-size: 14px; font-weight: 600; color: var(--sand-900); }
+.arrival-meta { font-size: 12px; color: var(--sand-700); margin-top: 2px; }
+.arrival-actions { display: flex; gap: 6px; flex-shrink: 0; }
+.arrival-btn {
+  padding: 6px 10px; border-radius: var(--r-sm);
+  font-size: 11px; font-weight: 600;
+  background: var(--sand-100); color: var(--sand-700);
+  transition: all .15s;
+}
+.arrival-btn:hover { background: var(--sea-600); color: white; }
+.arrival-btn.success { background: var(--ok); color: white; }
+.arrival-btn.success:hover { background: #2F7E63; }
+
+/* TOAST */
+.toast {
+  position: fixed; bottom: 24px; left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: var(--sand-900); color: white;
+  padding: 12px 20px; border-radius: var(--r-sm);
+  box-shadow: var(--sh-lg);
+  font-weight: 500; z-index: 200;
+  opacity: 0; transition: all .3s;
+  max-width: 90vw;
+}
+.toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+.toast.err { background: var(--coral-dk); }
+.toast.ok  { background: #2B6E53; }
+
+.loading {
+  display: flex; align-items: center; justify-content: center;
+  padding: 40px; color: var(--sand-700); font-style: italic;
+}
+
+.setup-banner {
+  background: linear-gradient(135deg, #FEF3DC, #FDE9B8);
+  border: 1px solid var(--sunshine); border-radius: var(--r-md);
+  padding: 14px 18px; margin-bottom: 16px;
+  font-size: 13px; color: #8E5F13;
+  display: flex; align-items: center; gap: 10px;
+}
+.setup-banner code {
+  background: white; padding: 2px 6px;
+  border-radius: 4px; font-size: 12px;
+}
+
+/* LOGIN SCREEN */
+.login-screen {
+  position: fixed; inset: 0;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(93,173,182,.25), transparent 40%),
+    radial-gradient(circle at 80% 80%, rgba(232,90,79,.15), transparent 40%),
+    linear-gradient(135deg, var(--sea-800) 0%, var(--sea-600) 60%, var(--sea-400) 100%);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 500;
+  padding: 20px;
+}
+.login-card {
+  background: white; border-radius: var(--r-lg);
+  padding: 40px 36px 32px;
+  width: 400px; max-width: 100%;
+  box-shadow: 0 24px 60px rgba(14,58,64,.4);
+  animation: pop .3s cubic-bezier(.34,1.56,.64,1);
+}
+.login-brand {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 12px; margin-bottom: 28px;
+}
+.login-brand .logo {
+  width: 64px; height: 64px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, var(--sunshine) 0%, var(--coral) 55%, var(--coral-dk) 100%);
+  box-shadow: inset -3px -4px 10px rgba(0,0,0,.15), 0 8px 20px rgba(232,90,79,.3);
+}
+.login-brand h1 {
+  font-family: 'Fraunces', serif; font-size: 32px; font-weight: 500;
+  color: var(--sand-900); letter-spacing: -0.02em;
+}
+.login-brand span {
+  font-size: 12px; letter-spacing: .3em; text-transform: uppercase;
+  color: var(--sand-700); font-weight: 500;
+}
+.login-form { display: flex; flex-direction: column; gap: 14px; }
+.login-form input {
+  padding: 12px 14px; font-size: 15px;
+}
+.login-form button {
+  background: linear-gradient(135deg, var(--sea-600), var(--sea-400));
+  color: white; padding: 12px 20px;
+  border-radius: var(--r-sm); font-weight: 600; font-size: 15px;
+  margin-top: 6px;
+  transition: all .15s;
+  box-shadow: 0 4px 12px rgba(31,98,104,.25);
+}
+.login-form button:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(31,98,104,.35); }
+.login-form button:disabled { opacity: .6; cursor: wait; transform: none; }
+.login-error {
+  background: #FBEDEC; color: var(--coral-dk);
+  padding: 10px 12px; border-radius: var(--r-sm);
+  font-size: 13px; font-weight: 500;
+  display: none;
+}
+.login-error.show { display: block; }
+.login-footer {
+  margin-top: 20px; text-align: center;
+  font-size: 11px; color: var(--sand-700); letter-spacing: .05em;
+}
+
+/* LOGOUT BUTTON in sidebar */
+.nav-logout {
+  margin-top: 8px;
+  color: rgba(255,255,255,.5) !important;
+  font-size: 13px;
+}
+.nav-logout:hover {
+  background: rgba(232,90,79,.2) !important;
+  color: white !important;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .app { grid-template-columns: 64px 1fr; }
+  .sidebar { padding: 16px 8px; }
+  .brand h1, .brand span, .nav-item span, .sidebar-footer { display: none; }
+  .nav-item { justify-content: center; }
+  .kpi-row { grid-template-columns: repeat(2, 1fr); }
+  .arrivals-grid { grid-template-columns: 1fr; }
+  .extras-list { grid-template-columns: repeat(2, 1fr); }
+  .map-toolbar h3 { width: 100%; margin-right: 0; }
+  .legend { width: 100%; }
+  .map-actions { width: 100%; margin-left: 0; }
+  .map-mode-toggle, .layout-toggle, .layout-commit-actions { width: 100%; }
+  .map-mode-toggle button,
+  .layout-toggle button,
+  .layout-commit-actions button {
+    flex: 1;
+    justify-content: center;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-card">
+    <div class="login-brand">
+      <div class="logo"></div>
+      <h1>Marinella</h1>
+      <span>Albisola Superiore</span>
+    </div>
+    <form class="login-form" id="loginForm" onsubmit="handleLogin(event)">
+      <div>
+        <label>Email</label>
+        <input type="email" id="loginEmail" required autocomplete="email" placeholder="email@esempio.it" />
+      </div>
+      <div>
+        <label>Password</label>
+        <input type="password" id="loginPassword" required autocomplete="current-password" />
+      </div>
+      <div class="login-error" id="loginError"></div>
+      <button type="submit" id="loginBtn">Accedi</button>
+    </form>
+    <div class="login-footer">
+      Stabilimento Balneare · Gestionale Prenotazioni
+    </div>
+  </div>
+</div>
+
+<div class="app" id="appContainer" style="display:none">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="logo"></div>
+      <div>
+        <h1>Marinella</h1>
+        <span>Albisola</span>
+      </div>
+    </div>
+
+    <button class="nav-item active" data-view="map">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3 6 6 .9-4.5 4.4 1 6.2L12 17l-5.5 2.5 1-6.2L3 8.9 9 8l3-6z"/></svg>
+      <span>Mappa</span>
+    </button>
+    <button class="nav-item" data-view="planner">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z"/></svg>
+      <span>Planner</span>
+    </button>
+    <button class="nav-item" data-view="arrivals">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      <span>Arrivi/Partenze</span>
+    </button>
+    <button class="nav-item" data-view="heatmap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v6M12 17v6M4.22 4.22l4.24 4.24M15.54 15.54l4.24 4.24M1 12h6M17 12h6M4.22 19.78l4.24-4.24M15.54 8.46l4.24-4.24"/></svg>
+      <span>Heatmap</span>
+    </button>
+    <button class="nav-item" data-view="bookings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+      <span>Prenotazioni</span>
+    </button>
+    <button class="nav-item" data-view="customers">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+      <span>Clienti</span>
+    </button>
+    <button class="nav-item" data-view="pricing">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      <span>Tariffe</span>
+    </button>
+
+    <div class="sidebar-footer">
+      Fase 1 — MVP<br>
+      <span id="connStatus">● demo mode</span>
+    </div>
+    <button class="nav-item nav-logout" onclick="handleLogout()" id="btnLogout" style="display:none">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      <span>Esci</span>
+    </button>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="topbar">
+      <h2 id="viewTitle">Mappa spiaggia</h2>
+      <div class="date-picker" id="datePicker">
+        <button onclick="shiftDate(-1)">‹</button>
+        <input type="date" id="currentDate" />
+        <button onclick="shiftDate(1)">›</button>
+        <button onclick="goToday()" style="width: auto; padding: 0 10px; font-size: 12px;">Oggi</button>
+      </div>
+    </div>
+
+    <!-- VIEW: MAP -->
+    <section class="view" id="view-map">
+      <div id="setupBanner" class="setup-banner" style="display:none">
+        <strong>Setup richiesto</strong> — inserisci le credenziali Supabase in fondo al file HTML, poi esegui <code>schema.sql</code> nel pannello SQL di Supabase.
+      </div>
+
+      <div class="kpi-row">
+        <div class="kpi k-booked">
+          <div class="kpi-label">Prenotati</div>
+          <div class="kpi-value" id="kpiBooked">–<small>/45</small></div>
+        </div>
+        <div class="kpi k-free">
+          <div class="kpi-label">Liberi</div>
+          <div class="kpi-value" id="kpiFree">–</div>
+        </div>
+        <div class="kpi k-occupancy">
+          <div class="kpi-label">Occupazione</div>
+          <div class="kpi-value" id="kpiOccupancy">–<small>%</small></div>
+        </div>
+        <div class="kpi k-revenue">
+          <div class="kpi-label">Incasso giorno</div>
+          <div class="kpi-value" id="kpiRevenue">–<small>€</small></div>
+        </div>
+      </div>
+
+      <div class="map-wrap">
+        <div class="map-toolbar">
+          <h3>Vista dall'alto</h3>
+          <div class="legend">
+            <div class="legend-item"><div class="legend-dot free"></div>Libero</div>
+            <div class="legend-item"><div class="legend-dot booked"></div>Prenotato</div>
+            <div class="legend-item"><div class="legend-dot arrived"></div>Arrivato</div>
+            <div class="legend-item"><div class="legend-dot off"></div>Fuori servizio</div>
+          </div>
+          <div class="map-actions">
+            <div class="map-mode-toggle">
+              <button class="active" data-mode="single" onclick="setMapMode('single')">Singolo</button>
+              <button data-mode="multi" onclick="setMapMode('multi')">Multi-select</button>
+            </div>
+            <div class="layout-toggle">
+              <button id="btnLayoutToggle" onclick="toggleLayoutMode()">Layout DnD</button>
+            </div>
+            <div class="layout-commit-actions" id="layoutCommitActions">
+              <button class="primary" id="btnLayoutSave" onclick="saveLayoutChanges()">Salva layout</button>
+              <button class="ghost" id="btnLayoutCancel" onclick="cancelLayoutChanges()">Annulla</button>
+            </div>
+          </div>
+        </div>
+        <div class="map-hint" id="mapHint">Trascina gli ombrelloni per riposizionarli. Salva per rendere permanente il nuovo layout.</div>
+
+        <div class="beach" id="beachMap">
+          <div class="sea-label">M A R E</div>
+          <div class="row-labels">
+            <span>A</span><span>B</span><span>C</span><span>D</span><span>E</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW: PLANNER -->
+    <section class="view hidden" id="view-planner">
+      <div class="planner-wrap">
+        <div class="planner-header-bar">
+          <h3>Planner prenotazioni</h3>
+          <div class="planner-nav">
+            <button onclick="plannerShift(-7)">‹ Sett.</button>
+            <button onclick="plannerShift(-1)">‹</button>
+            <button onclick="plannerToday()">Oggi</button>
+            <button onclick="plannerShift(1)">›</button>
+            <button onclick="plannerShift(7)">Sett. ›</button>
+          </div>
+          <div class="planner-zoom">
+            <button data-days="7" onclick="setPlannerDays(7)">7g</button>
+            <button class="active" data-days="14" onclick="setPlannerDays(14)">14g</button>
+            <button data-days="30" onclick="setPlannerDays(30)">30g</button>
+          </div>
+        </div>
+        <div class="planner-scroll" id="plannerScroll"></div>
+      </div>
+    </section>
+
+    <!-- VIEW: ARRIVALS -->
+    <section class="view hidden" id="view-arrivals">
+      <div class="arrivals-grid">
+        <div class="arrivals-panel">
+          <div class="arrivals-head">
+            <h3>📥 Arrivi di oggi</h3>
+            <span class="arrivals-count" id="arrivalsCount">0</span>
+          </div>
+          <div id="arrivalsList"></div>
+        </div>
+        <div class="arrivals-panel">
+          <div class="arrivals-head">
+            <h3>📤 In partenza oggi</h3>
+            <span class="arrivals-count" id="departuresCount">0</span>
+          </div>
+          <div id="departuresList"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW: HEATMAP -->
+    <section class="view hidden" id="view-heatmap">
+      <div class="kpi-row">
+        <div class="kpi k-booked">
+          <div class="kpi-label">Prenotazioni totali</div>
+          <div class="kpi-value" id="hmTotalBookings">–</div>
+        </div>
+        <div class="kpi k-revenue">
+          <div class="kpi-label">Revenue totale</div>
+          <div class="kpi-value" id="hmTotalRevenue">–<small>€</small></div>
+        </div>
+        <div class="kpi k-free">
+          <div class="kpi-label">Ombrellone top</div>
+          <div class="kpi-value" id="hmTopUmbrella" style="font-size: 22px;">–</div>
+        </div>
+        <div class="kpi k-occupancy">
+          <div class="kpi-label">Ticket medio</div>
+          <div class="kpi-value" id="hmAvgTicket">–<small>€</small></div>
+        </div>
+      </div>
+
+      <div class="map-wrap">
+        <div class="map-toolbar">
+          <h3>Heatmap produttività (anno corrente)</h3>
+          <div class="heatmap-legend">
+            <span>€ min</span>
+            <div class="heatmap-legend-bar"></div>
+            <span>€ max</span>
+          </div>
+        </div>
+        <div class="beach" id="heatmapBeach">
+          <div class="sea-label">M A R E</div>
+          <div class="row-labels">
+            <span>A</span><span>B</span><span>C</span><span>D</span><span>E</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW: BOOKINGS -->
+    <section class="view hidden" id="view-bookings">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Ombr.</th><th>Cliente</th><th>Tipo</th>
+              <th>Dal</th><th>Al</th><th>Stato</th><th>Pag.</th>
+              <th style="text-align:right">Totale</th>
+            </tr>
+          </thead>
+          <tbody id="bookingsTable">
+            <tr><td colspan="8" class="loading">Caricamento…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- VIEW: CUSTOMERS -->
+    <section class="view hidden" id="view-customers">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Nome</th><th>Telefono</th><th>Email</th><th>Registrato</th></tr>
+          </thead>
+          <tbody id="customersTable">
+            <tr><td colspan="4" class="loading">Caricamento…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- VIEW: PRICING -->
+    <section class="view hidden" id="view-pricing">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Anno</th><th>Fila</th><th>Tipo</th><th>Periodo</th><th style="text-align:right">Prezzo</th><th>Stato</th></tr>
+          </thead>
+          <tbody id="pricingTable"><tr><td colspan="6" class="loading">Caricamento…</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- MULTI-SELECT BAR -->
+<div class="multi-bar" id="multiBar">
+  <span class="count" id="multiCount">0 selezionati</span>
+  <button onclick="multiClear()">Deseleziona</button>
+  <button class="primary" onclick="multiBook()">Prenotazione multipla</button>
+</div>
+
+<!-- MODAL PRENOTAZIONE -->
+<div class="modal-backdrop" id="bookingModal">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="badge" id="mBadge">–</div>
+      <div>
+        <h3 id="mTitle">Ombrellone</h3>
+        <p id="mSubtitle">Fila – · Tariffa –</p>
+      </div>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+
+    <div class="modal-body">
+
+      <!-- Prenotazione esistente -->
+      <div class="form-section" id="existingBookingBox" style="display:none">
+        <h4>Prenotazione attiva</h4>
+        <div id="existingBookingInfo"></div>
+      </div>
+
+      <!-- Tipo -->
+      <div class="form-section">
+        <h4>Tipo prenotazione</h4>
+        <div class="type-grid" id="typeGrid">
+          <button class="type-btn active" data-type="daily">Giornaliera<small>1 giorno</small></button>
+          <button class="type-btn" data-type="half_day_am">Mattina<small>8–13</small></button>
+          <button class="type-btn" data-type="half_day_pm">Pomeriggio<small>13–19</small></button>
+          <button class="type-btn" data-type="weekly">Settimanale<small>7 giorni</small></button>
+          <button class="type-btn" data-type="monthly">Mensile<small>30 giorni</small></button>
+          <button class="type-btn" data-type="seasonal">Stagionale<small>mag–set</small></button>
+        </div>
+      </div>
+
+      <!-- Date -->
+      <div class="form-section">
+        <h4>Date</h4>
+        <div class="form-grid">
+          <div><label>Dal</label><input type="date" id="mDateFrom"></div>
+          <div><label>Al</label><input type="date" id="mDateTo"></div>
+        </div>
+      </div>
+
+      <!-- Cliente -->
+      <div class="form-section">
+        <h4>Cliente</h4>
+        <div class="form-grid">
+          <div><label>Nome</label><input type="text" id="mFirstName" placeholder="Mario"></div>
+          <div><label>Cognome</label><input type="text" id="mLastName" placeholder="Rossi"></div>
+          <div><label>Telefono (con prefisso)</label><input type="tel" id="mPhone" placeholder="+39 333 1234567"></div>
+          <div><label>Email</label><input type="email" id="mEmail" placeholder="mario@email.it"></div>
+        </div>
+      </div>
+
+      <!-- Dettagli -->
+      <div class="form-section">
+        <h4>Dettagli</h4>
+        <div class="form-grid triple">
+          <div>
+            <label>Sdraio</label>
+            <select id="mSunbeds">
+              <option value="2">2 sdraio</option>
+              <option value="1">1 sdraio</option>
+              <option value="0">Nessuna</option>
+            </select>
+          </div>
+          <div><label>Adulti</label><input type="number" id="mAdults" min="1" value="2"></div>
+          <div><label>Bambini</label><input type="number" id="mChildren" min="0" value="0"></div>
+        </div>
+      </div>
+
+      <!-- Extras -->
+      <div class="form-section">
+        <h4>Servizi extra</h4>
+        <div class="extras-list" id="extrasList"></div>
+      </div>
+
+      <!-- Prezzo + Acconto -->
+      <div class="form-section">
+        <h4>Riepilogo</h4>
+        <div class="price-box">
+          <div class="price-row"><span>Ombrellone + sdraio</span><span><span id="pxBase">0</span> €</span></div>
+          <div class="price-row"><span>Servizi extra</span><span><span id="pxExtras">0</span> €</span></div>
+          <div class="price-row total"><span>Totale</span><span class="v"><span id="pxTotal">0</span> €</span></div>
+        </div>
+
+        <div class="deposit-box">
+          <strong>Acconto (opzionale)</strong> — invia link pagamento al cliente.
+          <div class="deposit-input-row">
+            <input type="number" id="mDeposit" min="0" step="5" placeholder="0">
+            <button class="pct-btn" onclick="setDepositPct(30)">30%</button>
+            <button class="pct-btn" onclick="setDepositPct(50)">50%</button>
+            <button class="pct-btn" onclick="setDepositPct(100)">100%</button>
+          </div>
+        </div>
+
+        <div style="margin-top:12px">
+          <label>Pagamento immediato</label>
+          <select id="mPayment">
+            <option value="">Nessuno / in sospeso</option>
+            <option value="cash">Contanti</option>
+            <option value="card_pos">Carta (POS fisico)</option>
+            <option value="sumup">SumUp</option>
+            <option value="nexi">Nexi</option>
+            <option value="satispay">Satispay</option>
+            <option value="bank_transfer">Bonifico</option>
+            <option value="stripe">Stripe (online)</option>
+            <option value="other">Altro</option>
+          </select>
+        </div>
+
+        <div style="margin-top:12px">
+          <label>Note</label>
+          <textarea id="mNotes" rows="2" placeholder="Note interne…"></textarea>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="modal-foot">
+      <button class="btn btn-danger" id="btnDelete" onclick="deleteBooking()" style="display:none">Elimina</button>
+      <button class="btn btn-ghost" onclick="closeModal()">Annulla</button>
+      <button class="btn btn-whatsapp" id="btnWhatsapp" onclick="sendDepositWA()" style="display:none">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.2-1.7-.8-2-.9s-.5-.2-.7.2-.8.9-1 1.1-.4.2-.7.1c-.9-.4-1.7-.9-2.4-1.7-.7-.8-1.2-1.6-1.5-2.5-.2-.4 0-.6.2-.8.2-.2.4-.4.5-.6.1-.2.2-.3.3-.5.1-.2 0-.4 0-.6l-.9-2.1c-.2-.5-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.3s1 2.7 1.2 2.9c.1.2 2 3.1 5 4.3.7.3 1.2.5 1.7.6.7.2 1.3.2 1.8.1.6-.1 1.7-.7 2-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.4zM12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.4 1.3 4.9L2 22l5.2-1.4c1.4.8 3 1.2 4.8 1.2 5.5 0 10-4.5 10-10S17.5 2 12 2z"/></svg>
+        WhatsApp
+      </button>
+      <button class="btn btn-success" id="btnCheckIn" onclick="checkIn()" style="display:none">✓ Check-in</button>
+      <button class="btn btn-primary" id="btnSave" onclick="saveBooking()">Prenota</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================================
+// SUPABASE CONFIG
+// ============================================================
+const SUPABASE_URL      = 'https://aupzdwkrvjoibphowmnp.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_VUmZIAFnHt36sKI4s6ESIg_x6WyxPHU';
+
+let sb = null;
+const isConfigured = !SUPABASE_URL.includes('YOUR-PROJECT');
+
+if (isConfigured) {
+  sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      storage: window.localStorage,
+      storageKey: 'marinella-auth',
+    }
+  });
+}
+
+// ============================================================
+// AUTH FLOW
+// ============================================================
+let currentUser = null;
+
+async function checkAuth() {
+  if (!isConfigured) {
+    // Demo mode: mostra direttamente l'app e carica dati demo
+    showApp();
+    loadAll();
+    return;
+  }
+
+  const { data: { session } } = await sb.auth.getSession();
+  if (session?.user) {
+    currentUser = session.user;
+    showApp();
+    loadAll();
+  } else {
+    showLogin();
+  }
+}
+
+function showLogin() {
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('appContainer').style.display = 'none';
+}
+
+function showApp() {
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('appContainer').style.display = 'grid';
+
+  if (isConfigured) {
+    document.getElementById('connStatus').textContent = '● connesso';
+    document.getElementById('connStatus').style.color = '#3A9B7A';
+    document.getElementById('btnLogout').style.display = 'flex';
+    document.getElementById('setupBanner').style.display = 'none';
+  } else {
+    document.getElementById('connStatus').textContent = '● demo mode';
+    document.getElementById('setupBanner').style.display = 'flex';
+  }
+}
+
+async function handleLogin(event) {
+  event.preventDefault();
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  const errorEl = document.getElementById('loginError');
+  const btn = document.getElementById('loginBtn');
+
+  errorEl.classList.remove('show');
+  btn.disabled = true;
+  btn.textContent = 'Accesso in corso…';
+
+  try {
+    const { data, error } = await sb.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+    currentUser = data.user;
+    showApp();
+    await loadAll();
+  } catch (e) {
+    errorEl.textContent = e.message === 'Invalid login credentials'
+      ? 'Email o password errate'
+      : 'Errore: ' + (e.message || 'accesso fallito');
+    errorEl.classList.add('show');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Accedi';
+  }
+}
+
+async function handleLogout() {
+  if (!confirm('Uscire dal gestionale?')) return;
+  if (isConfigured) {
+    await sb.auth.signOut();
+  }
+  currentUser = null;
+  document.getElementById('loginEmail').value = '';
+  document.getElementById('loginPassword').value = '';
+  showLogin();
+}
+
+// ============================================================
+// STATE
+// ============================================================
+const state = {
+  currentDate: new Date().toISOString().slice(0,10),
+  umbrellas: [],
+  bookings: [],          // prenotazioni che toccano currentDate
+  allBookings: [],
+  customers: [],
+  pricing: [],
+  pricingPeriods: [],
+  extras: [],
+  heatmapData: [],
+  selected: null,        // {umbrella, existingBooking, isMulti, umbrellas:[]}
+  selectedExtras: {},    // {extraId: quantity}
+  mapMode: 'single',
+  multiSelection: new Set(),
+  layoutMode: false,
+  layoutSnapshot: null,  // [{id, x, y}]
+  activeDrag: null,      // { umbrellaId, pointerId, el }
+  plannerDays: 14,
+  plannerStart: new Date().toISOString().slice(0,10),
+};
+
+// ============================================================
+// DEMO DATA
+// ============================================================
+const DEMO_UMBRELLAS = [];
+(function() {
+  const rows = ['A','B','C','D','E'];
+  let id = 1;
+  for (let r = 0; r < 5; r++) {
+    for (let c = 1; c <= 9; c++) {
+      DEMO_UMBRELLAS.push({
+        id: id++, row_label: rows[r], col_number: c,
+        tier: r === 0 ? 'front' : r === 4 ? 'back' : 'standard',
+        x: 10 + (c - 1) * 10,
+        y: 20 + r * 15,
+        active: true
+      });
+    }
+  }
+})();
+
+const today = new Date().toISOString().slice(0,10);
+const DEMO_BOOKINGS = [
+  { id:'d1', umbrella_id:1,  customer_name:'Rossi Mario',    customer_phone:'+39 333 1234567', date_from:today, date_to:today, booking_type:'daily', status:'confirmed',  price_total:35, price_paid:0, deposit_amount:0, arrived_at:null, departed_at:null },
+  { id:'d2', umbrella_id:5,  customer_name:'Verdi Paolo',    customer_phone:'+39 340 9988776', date_from:today, date_to:today, booking_type:'daily', status:'checked_in', price_total:35, price_paid:35, deposit_amount:0, arrived_at: new Date().toISOString(), departed_at:null },
+  { id:'d3', umbrella_id:14, customer_name:'Bianchi Laura',  customer_phone:'+39 340 1122334', date_from:today, date_to: addDays(today, 6),  booking_type:'weekly',   status:'confirmed', price_total:195, price_paid:58, deposit_amount:58, arrived_at:null, departed_at:null },
+  { id:'d4', umbrella_id:23, customer_name:'Neri Giulia',    customer_phone:'+39 333 7777777', date_from:today, date_to: addDays(today, 29), booking_type:'monthly',  status:'checked_in', price_total:680, price_paid:680, deposit_amount:0, arrived_at: new Date().toISOString(), departed_at:null },
+  { id:'d5', umbrella_id:10, customer_name:'Ferrari Luca',   customer_phone:'+39 347 5551234', date_from:today, date_to: addDays(today, 120), booking_type:'seasonal', status:'confirmed', price_total:1900, price_paid:1900, deposit_amount:0, arrived_at:null, departed_at:null },
+  { id:'d6', umbrella_id:7,  customer_name:'Galli Anna',     customer_phone:'+39 348 2223344', date_from:addDays(today, -6), date_to: today, booking_type:'weekly', status:'checked_in', price_total:250, price_paid:250, deposit_amount:0, arrived_at: addDays(today, -6) + 'T09:00', departed_at:null },
+];
+
+const DEMO_PRICING = [
+  { tier:'front', booking_type:'daily', period:'mid', price:45 },
+  { tier:'standard', booking_type:'daily', period:'mid', price:35 },
+  { tier:'back', booking_type:'daily', period:'mid', price:28 },
+  { tier:'front', booking_type:'half_day_am', period:'mid', price:28 },
+  { tier:'standard', booking_type:'half_day_am', period:'mid', price:22 },
+  { tier:'back', booking_type:'half_day_am', period:'mid', price:18 },
+  { tier:'front', booking_type:'half_day_pm', period:'mid', price:28 },
+  { tier:'standard', booking_type:'half_day_pm', period:'mid', price:22 },
+  { tier:'back', booking_type:'half_day_pm', period:'mid', price:18 },
+  { tier:'front', booking_type:'weekly', period:null, price:250 },
+  { tier:'standard', booking_type:'weekly', period:null, price:195 },
+  { tier:'back', booking_type:'weekly', period:null, price:160 },
+  { tier:'front', booking_type:'monthly', period:null, price:850 },
+  { tier:'standard', booking_type:'monthly', period:null, price:680 },
+  { tier:'back', booking_type:'monthly', period:null, price:540 },
+  { tier:'front', booking_type:'seasonal', period:null, price:2400 },
+  { tier:'standard', booking_type:'seasonal', period:null, price:1900 },
+  { tier:'back', booking_type:'seasonal', period:null, price:1500 },
+];
+
+const DEMO_EXTRAS = [
+  { id:1, name:'Lettino extra', price:8, icon:'🛏️', sort_order:1 },
+  { id:2, name:'Sedia regista extra', price:5, icon:'🪑', sort_order:2 },
+  { id:3, name:'Cassaforte', price:3, icon:'🔒', sort_order:3 },
+  { id:4, name:'Passeggino', price:5, icon:'🚼', sort_order:4 },
+  { id:5, name:'Tavolino', price:4, icon:'🪵', sort_order:5 },
+  { id:6, name:'Asciugamano', price:6, icon:'🧺', sort_order:6 },
+];
+
+const DEMO_HEATMAP = DEMO_UMBRELLAS.map(u => ({
+  umbrella_id: u.id, row_label: u.row_label, col_number: u.col_number,
+  tier: u.tier, x: u.x, y: u.y,
+  total_bookings: Math.floor(Math.random() * 60 + 10),
+  total_revenue: Math.floor(Math.random() * 4000 + 500) * (u.tier === 'front' ? 1.5 : u.tier === 'back' ? 0.7 : 1),
+  avg_ticket: 35 + Math.random() * 40,
+  no_shows: Math.floor(Math.random() * 5),
+}));
+
+// ============================================================
+// INIT
+// ============================================================
+document.getElementById('currentDate').value = state.currentDate;
+
+document.querySelectorAll('.nav-item').forEach(btn => {
+  btn.addEventListener('click', () => switchView(btn.dataset.view));
+});
+
+document.getElementById('currentDate').addEventListener('change', e => {
+  state.currentDate = e.target.value;
+  loadForDate();
+});
+
+document.getElementById('typeGrid').addEventListener('click', e => {
+  const btn = e.target.closest('.type-btn');
+  if (!btn) return;
+  document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  autoSetDates(btn.dataset.type);
+  updatePrice();
+});
+
+['mSunbeds','mDateFrom','mDateTo'].forEach(id =>
+  document.getElementById(id).addEventListener('change', updatePrice)
+);
+
+document.getElementById('bookingModal').addEventListener('click', e => {
+  if (e.target.id === 'bookingModal') closeModal();
+});
+
+// ============================================================
+// LOAD
+// ============================================================
+async function loadAll() {
+  await loadUmbrellas();
+  await loadPricing();
+  await loadExtras();
+  await loadForDate();
+  setupRealtime();
+}
+
+async function loadUmbrellas() {
+  if (!isConfigured) { state.umbrellas = DEMO_UMBRELLAS; return; }
+  const { data, error } = await sb.from('umbrellas').select('*').order('id');
+  if (error) { toast('Errore ombrelloni', 'err'); return; }
+  // Normalizza al formato usato dal codice: active = true se state='active' e non c'è outage
+  state.umbrellas = (data || []).map(u => ({
+    ...u,
+    active: u.state === 'active',
+  }));
+  await loadOutagesForDate();
+}
+
+async function loadOutagesForDate() {
+  if (!isConfigured) return;
+  const date = state.currentDate;
+  const { data, error } = await sb
+    .from('umbrella_outages')
+    .select('*')
+    .lte('date_from', date)
+    .or(`date_to.gte.${date},date_to.is.null`);
+  if (error) { console.warn('Errore outages:', error); return; }
+  const outByUmb = new Map((data || []).map(o => [o.umbrella_id, o]));
+  state.umbrellas = state.umbrellas.map(u => ({
+    ...u,
+    active: u.state === 'active' && !outByUmb.has(u.id),
+    outage: outByUmb.get(u.id) || null,
+  }));
+}
+
+async function loadPricing() {
+  if (!isConfigured) {
+    state.pricing = DEMO_PRICING;
+    state.pricingPeriods = [];
+    return;
+  }
+  const year = new Date().getFullYear();
+  const [periodsRes, pricingRes] = await Promise.all([
+    sb.from('pricing_periods').select('*').eq('year', year).eq('active', true).order('date_from'),
+    sb.from('pricing').select('*').eq('year', year).eq('active', true),
+  ]);
+  state.pricingPeriods = periodsRes.data || [];
+  state.pricing = pricingRes.data || [];
+}
+
+async function loadExtras() {
+  if (!isConfigured) { state.extras = DEMO_EXTRAS; return; }
+  const { data } = await sb.from('extras').select('*').eq('active', true).order('sort_order');
+  state.extras = data || [];
+}
+
+async function loadForDate() {
+  if (!isConfigured) {
+    state.bookings = DEMO_BOOKINGS.filter(b =>
+      b.date_from <= state.currentDate && b.date_to >= state.currentDate
+    );
+    render();
+    return;
+  }
+  // Ricarica outages per la nuova data
+  await loadOutagesForDate();
+
+  const { data } = await sb
+    .from('bookings')
+    .select(`*, customers(first_name, last_name, phone, email)`)
+    .lte('date_from', state.currentDate)
+    .gte('date_to', state.currentDate)
+    .in('status', ['pending','confirmed','checked_in']);
+  state.bookings = (data || []).map(b => ({
+    ...b,
+    customer_name: b.customers ? `${b.customers.last_name} ${b.customers.first_name}` : '—',
+    customer_phone: b.customers?.phone,
+    customer_email: b.customers?.email,
+  }));
+  render();
+}
+
+async function loadAllBookings() {
+  if (!isConfigured) { state.allBookings = DEMO_BOOKINGS; renderBookings(); return; }
+  const { data } = await sb
+    .from('bookings')
+    .select(`*, customers(first_name, last_name, phone)`)
+    .order('date_from', { ascending: false })
+    .limit(200);
+  state.allBookings = (data || []).map(b => ({
+    ...b,
+    customer_name: b.customers ? `${b.customers.last_name} ${b.customers.first_name}` : '—',
+    customer_phone: b.customers?.phone,
+  }));
+  renderBookings();
+}
+
+async function loadCustomers() {
+  if (!isConfigured) {
+    state.customers = [
+      { id:'c1', first_name:'Mario', last_name:'Rossi', phone:'+39 333 1234567', email:'m.rossi@email.it', created_at:'2026-04-10' },
+      { id:'c2', first_name:'Laura', last_name:'Bianchi', phone:'+39 340 9988776', email:'laura@b.it', created_at:'2026-04-15' },
+      { id:'c3', first_name:'Luca', last_name:'Ferrari', phone:'+39 347 5551234', email:'luca.f@email.it', created_at:'2026-04-12' },
+    ];
+    renderCustomers(); return;
+  }
+  const { data } = await sb.from('customers').select('*').order('created_at', { ascending: false }).limit(200);
+  state.customers = data || [];
+  renderCustomers();
+}
+
+async function loadPlannerBookings() {
+  const endDate = addDays(state.plannerStart, state.plannerDays - 1);
+
+  if (!isConfigured) {
+    const inRange = DEMO_BOOKINGS.filter(b =>
+      b.date_to >= state.plannerStart && b.date_from <= endDate
+    );
+    renderPlanner(inRange);
+    return;
+  }
+  const { data } = await sb
+    .from('bookings')
+    .select(`*, customers(first_name, last_name)`)
+    .lte('date_from', endDate)
+    .gte('date_to', state.plannerStart)
+    .in('status', ['pending','confirmed','checked_in']);
+  const bookings = (data || []).map(b => ({
+    ...b,
+    customer_name: b.customers ? `${b.customers.last_name} ${b.customers.first_name}` : '—',
+  }));
+  renderPlanner(bookings);
+}
+
+async function loadHeatmap() {
+  if (!isConfigured) { state.heatmapData = DEMO_HEATMAP; renderHeatmap(); return; }
+  const { data } = await sb.from('v_umbrella_heatmap').select('*');
+  state.heatmapData = data || [];
+  renderHeatmap();
+}
+
+// ============================================================
+// REALTIME
+// ============================================================
+function setupRealtime() {
+  if (!isConfigured) return;
+  sb.channel('bookings-changes')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'bookings' }, () => {
+      loadForDate();
+      const visible = [...document.querySelectorAll('.view:not(.hidden)')][0]?.id;
+      if (visible === 'view-bookings')  loadAllBookings();
+      if (visible === 'view-planner')   loadPlannerBookings();
+      if (visible === 'view-arrivals')  renderArrivals();
+    })
+    .subscribe();
+}
+
+// ============================================================
+// RENDER: MAP + KPI
+// ============================================================
+function render() {
+  renderMap();
+  renderKPIs();
+  renderArrivals();
+}
+
+function renderMap() {
+  const beach = document.getElementById('beachMap');
+  beach.classList.toggle('layout-active', state.layoutMode);
+  beach.querySelectorAll('.umbrella').forEach(u => u.remove());
+
+  state.umbrellas.forEach(u => {
+    const booking = state.bookings.find(b => b.umbrella_id === u.id);
+    let status = 'free';
+    if (!u.active) status = 'off';
+    else if (booking?.arrived_at && !booking.departed_at) status = 'arrived';
+    else if (booking) status = 'booked';
+
+    const el = document.createElement('div');
+    el.className = 'umbrella';
+    el.style.left = u.x + '%';
+    el.style.top  = u.y + '%';
+    el.dataset.status = status;
+    el.dataset.id = u.id;
+
+    if (state.multiSelection.has(u.id)) el.classList.add('multi-selected');
+
+    el.innerHTML = `
+      <div class="u-canopy"></div>
+      <div class="u-number">${u.id}</div>
+      ${booking?.arrived_at && !booking.departed_at ? '<div class="u-arrived-dot"></div>' : ''}
+      <div class="u-tip">
+        ${u.row_label}${u.col_number} · ${tierLabel(u.tier)}
+        ${booking ? '<br>' + booking.customer_name : '<br>libero'}
+      </div>
+    `;
+    if (state.layoutMode && u.active) {
+      el.classList.add('draggable');
+      el.addEventListener('pointerdown', (e) => startUmbrellaDrag(e, u.id));
+    }
+    el.onclick = (e) => handleUmbrellaClick(u, booking, e);
+    beach.appendChild(el);
+  });
+
+  updateLayoutUI();
+}
+
+function renderKPIs() {
+  const total = state.umbrellas.filter(u => u.active).length;
+  const booked = state.bookings.length;
+  const free = total - booked;
+  const occ = total > 0 ? Math.round((booked / total) * 100) : 0;
+  const revenue = state.bookings.reduce((s,b) => {
+    if (b.booking_type === 'daily' || (b.booking_type || '').startsWith('half_day')) {
+      return s + (b.price_total || 0);
+    }
+    const days = daysBetween(b.date_from, b.date_to) + 1;
+    return s + ((b.price_total || 0) / days);
+  }, 0);
+
+  document.getElementById('kpiBooked').innerHTML = `${booked}<small>/${total}</small>`;
+  document.getElementById('kpiFree').textContent = free;
+  document.getElementById('kpiOccupancy').innerHTML = `${occ}<small>%</small>`;
+  document.getElementById('kpiRevenue').innerHTML = `${Math.round(revenue)}<small>€</small>`;
+}
+
+// ============================================================
+// MAP MODE: single vs multi
+// ============================================================
+function setMapMode(mode) {
+  if (state.layoutMode) {
+    toast('Esci da Layout DnD prima di cambiare modalità', 'err');
+    return;
+  }
+  state.mapMode = mode;
+  document.querySelectorAll('.map-mode-toggle button').forEach(b =>
+    b.classList.toggle('active', b.dataset.mode === mode));
+  if (mode === 'single') multiClear();
+}
+
+function updateLayoutUI() {
+  const toggle = document.getElementById('btnLayoutToggle');
+  const hint = document.getElementById('mapHint');
+  const actions = document.getElementById('layoutCommitActions');
+  if (!toggle || !hint || !actions) return;
+
+  toggle.classList.toggle('layout-active', state.layoutMode);
+  toggle.textContent = state.layoutMode ? 'Layout attivo' : 'Layout DnD';
+  actions.classList.toggle('show', state.layoutMode);
+  hint.classList.toggle('show', state.layoutMode);
+  document.querySelectorAll('.map-mode-toggle button').forEach(b => {
+    b.disabled = state.layoutMode;
+  });
+}
+
+function toggleLayoutMode() {
+  if (state.layoutMode) {
+    toast('Usa Salva layout o Annulla per uscire', 'err');
+    return;
+  }
+  state.layoutSnapshot = state.umbrellas.map(u => ({ id: u.id, x: u.x, y: u.y }));
+  if (state.mapMode !== 'single') setMapMode('single');
+  state.multiSelection.clear();
+  state.layoutMode = true;
+  updateMultiBar();
+  renderMap();
+  toast('Layout DnD attivo: trascina gli ombrelloni', 'ok');
+}
+
+function restoreLayoutSnapshot() {
+  if (!state.layoutSnapshot) return;
+  const byId = new Map(state.layoutSnapshot.map(u => [u.id, u]));
+  state.umbrellas.forEach(u => {
+    const snap = byId.get(u.id);
+    if (!snap) return;
+    u.x = snap.x;
+    u.y = snap.y;
+  });
+}
+
+function stopDragListeners() {
+  window.removeEventListener('pointermove', onUmbrellaDragMove);
+  window.removeEventListener('pointerup', onUmbrellaDragEnd);
+  window.removeEventListener('pointercancel', onUmbrellaDragEnd);
+}
+
+function cancelLayoutChanges(silent = false) {
+  if (!state.layoutMode && !state.layoutSnapshot) return;
+  restoreLayoutSnapshot();
+  if (state.activeDrag?.el) state.activeDrag.el.classList.remove('dragging');
+  state.activeDrag = null;
+  stopDragListeners();
+  state.layoutMode = false;
+  state.layoutSnapshot = null;
+  renderMap();
+  if (!silent) toast('Layout annullato', 'ok');
+}
+
+async function saveLayoutChanges() {
+  if (!state.layoutMode) return;
+
+  const base = new Map((state.layoutSnapshot || []).map(u => [u.id, u]));
+  const changed = state.umbrellas.filter(u => {
+    const snap = base.get(u.id);
+    if (!snap) return true;
+    return Math.abs(u.x - snap.x) > 0.001 || Math.abs(u.y - snap.y) > 0.001;
+  });
+
+  if (!changed.length) {
+    state.layoutMode = false;
+    state.layoutSnapshot = null;
+    renderMap();
+    toast('Nessuna modifica da salvare', 'ok');
+    return;
+  }
+
+  if (!isConfigured) {
+    state.layoutMode = false;
+    state.layoutSnapshot = null;
+    if (state.activeDrag?.el) state.activeDrag.el.classList.remove('dragging');
+    state.activeDrag = null;
+    stopDragListeners();
+    renderMap();
+    toast(`Layout salvato in demo (${changed.length} ombrelloni)`, 'ok');
+    return;
+  }
+
+  try {
+    for (const u of changed) {
+      const { error } = await sb
+        .from('umbrellas')
+        .update({ x: roundPct(u.x), y: roundPct(u.y) })
+        .eq('id', u.id);
+      if (error) throw error;
+    }
+    if (state.activeDrag?.el) state.activeDrag.el.classList.remove('dragging');
+    state.activeDrag = null;
+    stopDragListeners();
+    state.layoutMode = false;
+    state.layoutSnapshot = null;
+    renderMap();
+    toast(`Layout salvato (${changed.length} ombrelloni)`, 'ok');
+  } catch (e) {
+    console.error(e);
+    toast('Errore salvataggio layout', 'err');
+  }
+}
+
+function startUmbrellaDrag(e, umbrellaId) {
+  if (!state.layoutMode) return;
+  if (e.button !== 0) return;
+  e.preventDefault();
+  e.stopPropagation();
+
+  if (state.activeDrag?.el) state.activeDrag.el.classList.remove('dragging');
+
+  const el = e.currentTarget;
+  state.activeDrag = { umbrellaId, pointerId: e.pointerId, el };
+  el.classList.add('dragging');
+  if (el.setPointerCapture) {
+    try { el.setPointerCapture(e.pointerId); } catch (_) {}
+  }
+
+  moveUmbrellaToPointer(umbrellaId, e.clientX, e.clientY);
+  window.addEventListener('pointermove', onUmbrellaDragMove);
+  window.addEventListener('pointerup', onUmbrellaDragEnd);
+  window.addEventListener('pointercancel', onUmbrellaDragEnd);
+}
+
+function onUmbrellaDragMove(e) {
+  if (!state.activeDrag) return;
+  if (e.pointerId !== state.activeDrag.pointerId) return;
+  moveUmbrellaToPointer(state.activeDrag.umbrellaId, e.clientX, e.clientY);
+}
+
+function onUmbrellaDragEnd(e) {
+  if (!state.activeDrag) return;
+  if (e.pointerId !== state.activeDrag.pointerId) return;
+  const drag = state.activeDrag;
+  if (drag.el) {
+    drag.el.classList.remove('dragging');
+    if (drag.el.releasePointerCapture) {
+      try { drag.el.releasePointerCapture(e.pointerId); } catch (_) {}
+    }
+  }
+  state.activeDrag = null;
+  stopDragListeners();
+}
+
+function moveUmbrellaToPointer(umbrellaId, clientX, clientY) {
+  const beach = document.getElementById('beachMap');
+  const rect = beach.getBoundingClientRect();
+  if (!rect.width || !rect.height) return;
+
+  const x = clamp(((clientX - rect.left) / rect.width) * 100, 5, 95);
+  const y = clamp(((clientY - rect.top) / rect.height) * 100, 18, 94);
+  const umbrella = state.umbrellas.find(u => u.id === umbrellaId);
+  if (!umbrella) return;
+
+  umbrella.x = roundPct(x);
+  umbrella.y = roundPct(y);
+
+  const el = beach.querySelector(`.umbrella[data-id="${umbrellaId}"]`);
+  if (!el) return;
+  el.style.left = umbrella.x + '%';
+  el.style.top = umbrella.y + '%';
+}
+
+function handleUmbrellaClick(u, booking, e) {
+  if (state.layoutMode) return;
+  if (state.mapMode === 'multi' && !booking) {
+    // Toggle selection
+    if (state.multiSelection.has(u.id)) {
+      state.multiSelection.delete(u.id);
+    } else {
+      state.multiSelection.add(u.id);
+    }
+    renderMap();
+    updateMultiBar();
+    return;
+  }
+  openModal(u, booking);
+}
+
+function updateMultiBar() {
+  const bar = document.getElementById('multiBar');
+  const count = state.multiSelection.size;
+  if (count > 0) {
+    document.getElementById('multiCount').textContent = `${count} ombrelloni selezionati`;
+    bar.classList.add('show');
+  } else {
+    bar.classList.remove('show');
+  }
+}
+
+function multiClear() {
+  state.multiSelection.clear();
+  renderMap();
+  updateMultiBar();
+}
+
+function multiBook() {
+  if (state.multiSelection.size === 0) return;
+  const umbrellas = state.umbrellas.filter(u => state.multiSelection.has(u.id));
+  openMultiModal(umbrellas);
+}
+
+// ============================================================
+// RENDER: PLANNER (GANTT)
+// ============================================================
+function renderPlanner(bookings) {
+  const scroll = document.getElementById('plannerScroll');
+  const days = state.plannerDays;
+  const dayWidth = Math.max(60, Math.min(120, Math.floor((scroll.clientWidth - 80) / days)));
+
+  let daysHeadHtml = '';
+  for (let i = 0; i < days; i++) {
+    const d = new Date(state.plannerStart);
+    d.setDate(d.getDate() + i);
+    const dayOfWeek = d.getDay();
+    const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+    const isToday = d.toISOString().slice(0,10) === new Date().toISOString().slice(0,10);
+    const cls = (isWeekend ? 'weekend ' : '') + (isToday ? 'today' : '');
+    daysHeadHtml += `
+      <div class="planner-day-head ${cls}" style="width:${dayWidth}px">
+        <div style="font-size:10px">${['dom','lun','mar','mer','gio','ven','sab'][dayOfWeek]}</div>
+        <div class="d-num">${d.getDate()}</div>
+        <div style="font-size:9px">${d.toLocaleDateString('it-IT',{month:'short'})}</div>
+      </div>`;
+  }
+
+  let rowsHtml = '';
+  state.umbrellas.forEach(u => {
+    let cellsHtml = '';
+    for (let i = 0; i < days; i++) {
+      const d = new Date(state.plannerStart);
+      d.setDate(d.getDate() + i);
+      const dayOfWeek = d.getDay();
+      const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+      const isToday = d.toISOString().slice(0,10) === new Date().toISOString().slice(0,10);
+      const cls = (isWeekend ? 'weekend ' : '') + (isToday ? 'today' : '');
+      cellsHtml += `<div class="planner-cell ${cls}" style="width:${dayWidth}px" data-umbrella="${u.id}" data-date="${d.toISOString().slice(0,10)}" onclick="plannerCellClick(${u.id}, '${d.toISOString().slice(0,10)}')"></div>`;
+    }
+
+    // bookings su questa riga
+    let bookingsHtml = '';
+    const uBookings = bookings.filter(b => b.umbrella_id === u.id);
+    uBookings.forEach(b => {
+      const startDay = Math.max(0, daysBetween(state.plannerStart, b.date_from));
+      const endDay = Math.min(days - 1, daysBetween(state.plannerStart, b.date_to));
+      if (endDay < 0 || startDay >= days) return;
+      const left = startDay * dayWidth + 2;
+      const width = (endDay - startDay + 1) * dayWidth - 4;
+      const cls = b.booking_type + (b.status === 'checked_in' ? ' checked_in' : '');
+      const label = (b.customer_name || '—').split(' ')[0] + ' · ' + (b.price_total || 0) + '€';
+      bookingsHtml += `
+        <div class="planner-booking ${cls}"
+             style="left:${left}px;width:${width}px"
+             onclick="event.stopPropagation(); openBookingFromPlanner('${b.id}', ${u.id})"
+             title="${b.customer_name} · ${typeLabel(b.booking_type)} · ${formatDate(b.date_from)} → ${formatDate(b.date_to)}">
+          ${label}
+        </div>`;
+    });
+
+    rowsHtml += `
+      <div class="planner-row" style="grid-template-columns: repeat(${days}, ${dayWidth}px)">
+        ${cellsHtml}
+        ${bookingsHtml}
+      </div>`;
+  });
+
+  let umbrellaColHtml = '<div class="planner-umbrella-head">Ombrellone</div>';
+  state.umbrellas.forEach(u => {
+    umbrellaColHtml += `
+      <div class="planner-umbrella-cell">
+        <span class="tier-dot ${u.tier}"></span>
+        <span>#${u.id}</span>
+        <small style="color:var(--sand-700);margin-left:auto">${u.row_label}${u.col_number}</small>
+      </div>`;
+  });
+
+  scroll.innerHTML = `
+    <div class="planner-grid">
+      <div class="planner-umbrella-col">${umbrellaColHtml}</div>
+      <div class="planner-days-col">
+        <div class="planner-days-head" style="grid-template-columns: repeat(${days}, ${dayWidth}px)">
+          ${daysHeadHtml}
+        </div>
+        ${rowsHtml}
+      </div>
+    </div>`;
+}
+
+function plannerShift(delta) {
+  const d = new Date(state.plannerStart);
+  d.setDate(d.getDate() + delta);
+  state.plannerStart = d.toISOString().slice(0,10);
+  loadPlannerBookings();
+}
+
+function plannerToday() {
+  state.plannerStart = new Date().toISOString().slice(0,10);
+  loadPlannerBookings();
+}
+
+function setPlannerDays(n) {
+  state.plannerDays = n;
+  document.querySelectorAll('.planner-zoom button').forEach(b =>
+    b.classList.toggle('active', parseInt(b.dataset.days) === n));
+  loadPlannerBookings();
+}
+
+function plannerCellClick(umbrellaId, date) {
+  const u = state.umbrellas.find(x => x.id === umbrellaId);
+  state.currentDate = date;
+  document.getElementById('currentDate').value = date;
+  // cerca prenotazione esistente su questa data
+  const booking = (state.allBookings.length ? state.allBookings : state.bookings).find(b =>
+    b.umbrella_id === umbrellaId && b.date_from <= date && b.date_to >= date &&
+    ['pending','confirmed','checked_in'].includes(b.status)
+  );
+  openModal(u, booking);
+}
+
+function openBookingFromPlanner(bookingId, umbrellaId) {
+  const u = state.umbrellas.find(x => x.id === umbrellaId);
+  const booking = [...state.bookings, ...state.allBookings].find(b => b.id === bookingId);
+  openModal(u, booking);
+}
+
+// ============================================================
+// RENDER: ARRIVALS
+// ============================================================
+function renderArrivals() {
+  // Arrivi attesi: prenotazioni con date_from = oggi, non ancora arrivate
+  // Partenze: prenotazioni con date_to = oggi
+  const todayStr = new Date().toISOString().slice(0,10);
+
+  const arrivals = state.bookings.filter(b =>
+    b.date_from === todayStr && !b.arrived_at && b.status !== 'cancelled'
+  );
+  const arrived = state.bookings.filter(b =>
+    b.arrived_at && !b.departed_at
+  );
+  const departures = state.bookings.filter(b =>
+    b.date_to === todayStr && b.status !== 'cancelled'
+  );
+
+  const arrivalsList = document.getElementById('arrivalsList');
+  const departuresList = document.getElementById('departuresList');
+
+  document.getElementById('arrivalsCount').textContent = arrivals.length + arrived.length;
+  document.getElementById('departuresCount').textContent = departures.length;
+
+  // ARRIVI
+  if (arrivals.length === 0 && arrived.length === 0) {
+    arrivalsList.innerHTML = '<div class="loading">Nessun arrivo</div>';
+  } else {
+    let html = '';
+    arrivals.forEach(b => {
+      html += `
+        <div class="arrival-item">
+          <div class="arrival-umbrella">${b.umbrella_id}</div>
+          <div class="arrival-info">
+            <div class="arrival-name">${b.customer_name}</div>
+            <div class="arrival-meta">${typeLabel(b.booking_type)} · ${b.price_total}€ · ${b.customer_phone || '—'}</div>
+          </div>
+          <div class="arrival-actions">
+            <button class="arrival-btn success" onclick="quickCheckIn('${b.id}')">✓ Check-in</button>
+          </div>
+        </div>`;
+    });
+    arrived.forEach(b => {
+      html += `
+        <div class="arrival-item arrived">
+          <div class="arrival-umbrella">${b.umbrella_id}</div>
+          <div class="arrival-info">
+            <div class="arrival-name">${b.customer_name} <span style="color:var(--ok);font-size:11px;font-weight:700">● presente</span></div>
+            <div class="arrival-meta">Arrivato ${formatTime(b.arrived_at)} · ${typeLabel(b.booking_type)}</div>
+          </div>
+          <div class="arrival-actions">
+            <button class="arrival-btn" onclick="quickDepart('${b.id}')">Partenza →</button>
+          </div>
+        </div>`;
+    });
+    arrivalsList.innerHTML = html;
+  }
+
+  // PARTENZE
+  if (departures.length === 0) {
+    departuresList.innerHTML = '<div class="loading">Nessuna partenza oggi</div>';
+  } else {
+    departuresList.innerHTML = departures.map(b => `
+      <div class="arrival-item ${b.arrived_at ? 'arrived' : ''}">
+        <div class="arrival-umbrella">${b.umbrella_id}</div>
+        <div class="arrival-info">
+          <div class="arrival-name">${b.customer_name}</div>
+          <div class="arrival-meta">
+            ${typeLabel(b.booking_type)} ·
+            ${b.arrived_at && !b.departed_at ? '<span style="color:var(--ok)">presente</span>' : b.departed_at ? '<span style="color:var(--sand-700)">partito</span>' : '<span style="color:var(--warn)">non arrivato</span>'}
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+}
+
+async function quickCheckIn(bookingId) {
+  if (!isConfigured) {
+    const b = DEMO_BOOKINGS.find(x => x.id === bookingId);
+    if (b) b.arrived_at = new Date().toISOString();
+    loadForDate();
+    toast('Check-in registrato (demo)', 'ok');
+    return;
+  }
+  const { error } = await sb.from('bookings')
+    .update({ arrived_at: new Date().toISOString(), status: 'checked_in' })
+    .eq('id', bookingId);
+  if (error) { toast('Errore check-in', 'err'); return; }
+  toast('Check-in registrato', 'ok');
+  loadForDate();
+}
+
+async function quickDepart(bookingId) {
+  if (!isConfigured) {
+    const b = DEMO_BOOKINGS.find(x => x.id === bookingId);
+    if (b) b.departed_at = new Date().toISOString();
+    loadForDate();
+    toast('Partenza registrata (demo)', 'ok');
+    return;
+  }
+  const { error } = await sb.from('bookings')
+    .update({ departed_at: new Date().toISOString() })
+    .eq('id', bookingId);
+  if (error) { toast('Errore partenza', 'err'); return; }
+  toast('Partenza registrata', 'ok');
+  loadForDate();
+}
+
+// ============================================================
+// RENDER: HEATMAP
+// ============================================================
+function renderHeatmap() {
+  const beach = document.getElementById('heatmapBeach');
+  beach.querySelectorAll('.umbrella, .heatmap-overlay').forEach(el => el.remove());
+
+  if (!state.heatmapData.length) return;
+
+  const maxRev = Math.max(...state.heatmapData.map(h => h.total_revenue), 1);
+
+  state.heatmapData.forEach(h => {
+    // Cerchio di calore
+    const glow = document.createElement('div');
+    glow.className = 'heatmap-overlay';
+    glow.style.left = h.x + '%';
+    glow.style.top = h.y + '%';
+    const pct = h.total_revenue / maxRev;
+    const color = revenueToColor(pct);
+    glow.style.background = color;
+    glow.style.opacity = 0.3 + pct * 0.5;
+    beach.appendChild(glow);
+
+    // Ombrellone
+    const el = document.createElement('div');
+    el.className = 'umbrella';
+    el.style.left = h.x + '%';
+    el.style.top = h.y + '%';
+    el.dataset.status = 'free';
+    el.innerHTML = `
+      <div class="u-canopy" style="background-color:${color}"></div>
+      <div class="u-number">${h.umbrella_id}</div>
+      <div class="u-tip">
+        #${h.umbrella_id} · ${h.row_label}${h.col_number}<br>
+        ${Math.round(h.total_revenue)}€ · ${h.total_bookings} prenot.<br>
+        Ticket medio: ${Math.round(h.avg_ticket || 0)}€
+      </div>
+    `;
+    beach.appendChild(el);
+  });
+
+  // KPI heatmap
+  const totalBookings = state.heatmapData.reduce((s,h) => s + (h.total_bookings || 0), 0);
+  const totalRevenue = state.heatmapData.reduce((s,h) => s + (h.total_revenue || 0), 0);
+  const top = [...state.heatmapData].sort((a,b) => b.total_revenue - a.total_revenue)[0];
+  const avgTicket = totalBookings ? Math.round(totalRevenue / totalBookings) : 0;
+
+  document.getElementById('hmTotalBookings').textContent = totalBookings;
+  document.getElementById('hmTotalRevenue').innerHTML = `${Math.round(totalRevenue)}<small>€</small>`;
+  document.getElementById('hmTopUmbrella').textContent = top ? `#${top.umbrella_id} (${top.row_label}${top.col_number})` : '–';
+  document.getElementById('hmAvgTicket').innerHTML = `${avgTicket}<small>€</small>`;
+}
+
+function revenueToColor(pct) {
+  // Gradient: sea-100 → sunshine → coral → coral-dk
+  if (pct < 0.33) {
+    const t = pct / 0.33;
+    return lerpColor('#C9E1E2', '#F2C14E', t);
+  } else if (pct < 0.66) {
+    const t = (pct - 0.33) / 0.33;
+    return lerpColor('#F2C14E', '#E85A4F', t);
+  } else {
+    const t = (pct - 0.66) / 0.34;
+    return lerpColor('#E85A4F', '#C4423A', t);
+  }
+}
+
+function lerpColor(c1, c2, t) {
+  const h1 = c1.match(/\w\w/g).map(x => parseInt(x, 16));
+  const h2 = c2.match(/\w\w/g).map(x => parseInt(x, 16));
+  const r = Math.round(h1[0] + (h2[0] - h1[0]) * t);
+  const g = Math.round(h1[1] + (h2[1] - h1[1]) * t);
+  const b = Math.round(h1[2] + (h2[2] - h1[2]) * t);
+  return `rgb(${r},${g},${b})`;
+}
+
+// ============================================================
+// RENDER: BOOKINGS / CUSTOMERS / PRICING
+// ============================================================
+function renderBookings() {
+  const tbody = document.getElementById('bookingsTable');
+  if (!state.allBookings.length) {
+    tbody.innerHTML = '<tr><td colspan="8" class="loading">Nessuna prenotazione</td></tr>';
+    return;
+  }
+  tbody.innerHTML = state.allBookings.map(b => {
+    const payStatus = b.price_paid >= b.price_total ? 'paid' : b.price_paid > 0 ? 'partial' : 'pending';
+    return `
+    <tr onclick="openBookingFromPlanner('${b.id}', ${b.umbrella_id})">
+      <td><strong>#${b.umbrella_id}</strong></td>
+      <td>${b.customer_name}<br><small style="color:var(--sand-700)">${b.customer_phone || ''}</small></td>
+      <td>${typeLabel(b.booking_type)}</td>
+      <td>${formatDate(b.date_from)}</td>
+      <td>${formatDate(b.date_to)}</td>
+      <td><span class="status-pill ${b.status}">${statusLabel(b.status)}</span></td>
+      <td><span class="pay-pill ${payStatus}">${payStatus === 'paid' ? 'pagato' : payStatus === 'partial' ? 'parziale' : 'da pagare'}</span></td>
+      <td style="text-align:right"><strong>${b.price_total} €</strong></td>
+    </tr>`;
+  }).join('');
+}
+
+function renderCustomers() {
+  const tbody = document.getElementById('customersTable');
+  if (!state.customers.length) {
+    tbody.innerHTML = '<tr><td colspan="4" class="loading">Nessun cliente</td></tr>';
+    return;
+  }
+  tbody.innerHTML = state.customers.map(c => `
+    <tr>
+      <td><strong>${c.last_name} ${c.first_name}</strong></td>
+      <td>${c.phone || '—'}</td>
+      <td>${c.email || '—'}</td>
+      <td>${formatDate(c.created_at)}</td>
+    </tr>
+  `).join('');
+}
+
+function renderPricing() {
+  const tbody = document.getElementById('pricingTable');
+
+  // Modalità demo: mostra DEMO_PRICING come prima
+  if (!isConfigured) {
+    const rows = DEMO_PRICING.map(p => ({...p, year:2026, active:true}));
+    tbody.innerHTML = rows.map(p => `
+      <tr>
+        <td>${p.year}</td>
+        <td>${tierLabel(p.tier)}</td>
+        <td>${typeLabel(p.booking_type)}</td>
+        <td>${p.period ? periodLabel(p.period) : '—'}</td>
+        <td style="text-align:right"><strong>${p.price} €</strong></td>
+        <td><span class="status-pill confirmed">Attiva (demo)</span></td>
+      </tr>
+    `).join('');
+    return;
+  }
+
+  // Modalità reale: mostra pricing del DB con join su pricing_periods per il nome
+  if (!state.pricing.length) {
+    tbody.innerHTML = `
+      <tr><td colspan="6" style="text-align:center; padding:40px; color:var(--sand-700)">
+        <strong>Nessuna tariffa configurata</strong><br>
+        <small>L'editor delle tariffe sarà disponibile a breve. Nel frattempo puoi inserire i periodi e i prezzi dal Table Editor di Supabase.</small>
+      </td></tr>
+    `;
+    return;
+  }
+
+  const periodById = new Map(state.pricingPeriods.map(p => [p.id, p.name]));
+  tbody.innerHTML = state.pricing.map(p => `
+    <tr>
+      <td>${p.year}</td>
+      <td>${tierLabel(p.tier)}</td>
+      <td>${typeLabel(p.booking_type)}</td>
+      <td>${p.period_id ? (periodById.get(p.period_id) || '—') : '<em style="color:var(--sand-700)">fissa</em>'}</td>
+      <td style="text-align:right"><strong>${p.price} €</strong></td>
+      <td><span class="status-pill ${p.active ? 'confirmed' : 'cancelled'}">${p.active ? 'Attiva' : 'Off'}</span></td>
+    </tr>
+  `).join('');
+}
+
+// ============================================================
+// MODAL
+// ============================================================
+function openModal(umbrella, existingBooking) {
+  state.selected = { umbrella, existingBooking, isMulti: false };
+  state.selectedExtras = {};
+
+  document.getElementById('mBadge').textContent = umbrella.id;
+  document.getElementById('mTitle').textContent = `Ombrellone ${umbrella.id}`;
+  document.getElementById('mSubtitle').textContent = `Fila ${umbrella.row_label}${umbrella.col_number} · ${tierLabel(umbrella.tier)}`;
+
+  // reset
+  document.getElementById('mDateFrom').value = state.currentDate;
+  document.getElementById('mDateTo').value = state.currentDate;
+  ['mFirstName','mLastName','mPhone','mEmail','mNotes'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('mSunbeds').value = '2';
+  document.getElementById('mAdults').value = '2';
+  document.getElementById('mChildren').value = '0';
+  document.getElementById('mPayment').value = '';
+  document.getElementById('mDeposit').value = '0';
+  document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('.type-btn[data-type="daily"]').classList.add('active');
+
+  renderExtrasList();
+
+  const existingBox = document.getElementById('existingBookingBox');
+  const btnDelete = document.getElementById('btnDelete');
+  const btnSave = document.getElementById('btnSave');
+  const btnWA = document.getElementById('btnWhatsapp');
+  const btnCheckIn = document.getElementById('btnCheckIn');
+
+  if (existingBooking) {
+    existingBox.style.display = 'block';
+    const payStatus = existingBooking.price_paid >= existingBooking.price_total ? 'paid' :
+                      existingBooking.price_paid > 0 ? 'partial' : 'pending';
+    document.getElementById('existingBookingInfo').innerHTML = `
+      <div style="background:var(--sand-50);padding:12px;border-radius:var(--r-sm)">
+        <strong>${existingBooking.customer_name}</strong> ${existingBooking.customer_phone ? '· ' + existingBooking.customer_phone : ''}<br>
+        <small>${typeLabel(existingBooking.booking_type)} · ${formatDate(existingBooking.date_from)} → ${formatDate(existingBooking.date_to)}</small><br>
+        <span class="status-pill ${existingBooking.status}" style="margin-top:6px;display:inline-block">${statusLabel(existingBooking.status)}</span>
+        <span class="pay-pill ${payStatus}" style="margin-top:6px">${payStatus === 'paid' ? 'pagato' : payStatus === 'partial' ? 'parziale ' + existingBooking.price_paid + '/' + existingBooking.price_total + '€' : 'da pagare'}</span>
+        <strong style="float:right">${existingBooking.price_total} €</strong>
+        ${existingBooking.arrived_at ? '<br><small style="color:var(--ok)">● Arrivato ' + formatTime(existingBooking.arrived_at) + '</small>' : ''}
+      </div>
+    `;
+    btnDelete.style.display = 'inline-flex';
+    btnSave.textContent = 'Aggiorna';
+    btnCheckIn.style.display = !existingBooking.arrived_at ? 'inline-flex' : 'none';
+
+    // precompila
+    if (existingBooking.customers) {
+      document.getElementById('mFirstName').value = existingBooking.customers.first_name || '';
+      document.getElementById('mLastName').value = existingBooking.customers.last_name || '';
+      document.getElementById('mPhone').value = existingBooking.customers.phone || '';
+      document.getElementById('mEmail').value = existingBooking.customers.email || '';
+    } else if (existingBooking.customer_name) {
+      const parts = existingBooking.customer_name.split(' ');
+      document.getElementById('mLastName').value = parts[0] || '';
+      document.getElementById('mFirstName').value = parts.slice(1).join(' ') || '';
+      document.getElementById('mPhone').value = existingBooking.customer_phone || '';
+    }
+    document.getElementById('mDateFrom').value = existingBooking.date_from;
+    document.getElementById('mDateTo').value = existingBooking.date_to;
+    document.getElementById('mSunbeds').value = existingBooking.sunbeds ?? 2;
+    document.getElementById('mAdults').value = existingBooking.adults ?? 2;
+    document.getElementById('mChildren').value = existingBooking.children ?? 0;
+    document.getElementById('mNotes').value = existingBooking.notes || '';
+    document.getElementById('mDeposit').value = existingBooking.deposit_amount || 0;
+    const btn = document.querySelector(`.type-btn[data-type="${existingBooking.booking_type}"]`);
+    if (btn) {
+      document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+  } else {
+    existingBox.style.display = 'none';
+    btnDelete.style.display = 'none';
+    btnCheckIn.style.display = 'none';
+    btnSave.textContent = 'Prenota';
+  }
+
+  btnWA.style.display = 'none'; // si mostra dopo save se c'è acconto
+  updatePrice();
+  document.getElementById('bookingModal').classList.add('open');
+}
+
+function openMultiModal(umbrellas) {
+  state.selected = { umbrella: umbrellas[0], existingBooking: null, isMulti: true, umbrellas };
+  state.selectedExtras = {};
+
+  document.getElementById('mBadge').textContent = umbrellas.length;
+  document.getElementById('mTitle').textContent = `${umbrellas.length} ombrelloni`;
+  document.getElementById('mSubtitle').textContent = umbrellas.map(u => `#${u.id}`).join(', ');
+
+  document.getElementById('mDateFrom').value = state.currentDate;
+  document.getElementById('mDateTo').value = state.currentDate;
+  ['mFirstName','mLastName','mPhone','mEmail','mNotes'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('mSunbeds').value = '2';
+  document.getElementById('mAdults').value = '2';
+  document.getElementById('mChildren').value = '0';
+  document.getElementById('mDeposit').value = '0';
+  document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('.type-btn[data-type="daily"]').classList.add('active');
+
+  renderExtrasList();
+
+  document.getElementById('existingBookingBox').style.display = 'none';
+  document.getElementById('btnDelete').style.display = 'none';
+  document.getElementById('btnCheckIn').style.display = 'none';
+  document.getElementById('btnWhatsapp').style.display = 'none';
+  document.getElementById('btnSave').textContent = `Prenota ${umbrellas.length} ombrelloni`;
+
+  updatePrice();
+  document.getElementById('bookingModal').classList.add('open');
+}
+
+function renderExtrasList() {
+  const list = document.getElementById('extrasList');
+  list.innerHTML = state.extras.map(e => `
+    <div class="extra-item" data-id="${e.id}" onclick="toggleExtra(${e.id})">
+      <div class="emoji">${e.icon || '•'}</div>
+      <div class="info">
+        <div class="name">${e.name}</div>
+        <div class="price">${e.price} €</div>
+      </div>
+      <div class="extra-qty">×${state.selectedExtras[e.id] || 0}</div>
+    </div>
+  `).join('');
+}
+
+function toggleExtra(id) {
+  if (state.selectedExtras[id]) {
+    state.selectedExtras[id]++;
+    if (state.selectedExtras[id] > 3) delete state.selectedExtras[id]; // max 3 poi reset
+  } else {
+    state.selectedExtras[id] = 1;
+  }
+  const item = document.querySelector(`.extra-item[data-id="${id}"]`);
+  if (state.selectedExtras[id]) {
+    item.classList.add('active');
+    item.querySelector('.extra-qty').textContent = '×' + state.selectedExtras[id];
+  } else {
+    item.classList.remove('active');
+  }
+  updatePrice();
+}
+
+function closeModal() {
+  document.getElementById('bookingModal').classList.remove('open');
+  state.selected = null;
+  state.selectedExtras = {};
+}
+
+function autoSetDates(type) {
+  const from = document.getElementById('mDateFrom').value || state.currentDate;
+  const toInput = document.getElementById('mDateTo');
+  const d = new Date(from);
+  if (type === 'weekly') d.setDate(d.getDate() + 6);
+  else if (type === 'monthly') d.setDate(d.getDate() + 29);
+  else if (type === 'seasonal') { d.setMonth(8); d.setDate(30); }
+  else d.setTime(new Date(from).getTime());
+  toInput.value = d.toISOString().slice(0,10);
+}
+
+function getSelectedType() {
+  return document.querySelector('.type-btn.active')?.dataset.type || 'daily';
+}
+
+function getPeriodForDate(date) {
+  // Modalità DEMO: usa fallback hardcoded (bassa/media/alta)
+  if (!isConfigured || !state.pricingPeriods?.length) {
+    const m = new Date(date).getMonth() + 1;
+    if (m === 7 || m === 8) return 'high';
+    if (m === 6 || m === 9) return 'mid';
+    return 'low';
+  }
+  // Modalità reale: cerca il periodo che contiene la data
+  const target = date; // YYYY-MM-DD
+  const match = state.pricingPeriods.find(p => p.date_from <= target && p.date_to >= target);
+  return match ? match.id : null;
+}
+
+function computePrice(umbrella, type, from, to, sunbeds) {
+  // Modalità DEMO
+  if (!isConfigured) {
+    const pool = DEMO_PRICING;
+    let price = 0;
+    if (type === 'daily' || type.startsWith('half_day')) {
+      const days = Math.max(1, daysBetween(from, to) + 1);
+      const m = new Date(from).getMonth() + 1;
+      const period = (m === 7 || m === 8) ? 'high' : (m === 6 || m === 9) ? 'mid' : 'low';
+      const match = pool.find(p => p.tier === umbrella.tier && p.booking_type === type && p.period === period);
+      price = (match?.price || 0) * days;
+    } else {
+      const match = pool.find(p => p.tier === umbrella.tier && p.booking_type === type);
+      price = match?.price || 0;
+    }
+    if (sunbeds === 1) price *= 0.88;
+    if (sunbeds === 0) price *= 0.78;
+    return Math.round(price);
+  }
+
+  // Modalità REALE: usa state.pricing (caricato da Supabase) con period_id
+  let price = 0;
+  if (type === 'daily' || type.startsWith('half_day')) {
+    // Gestisce range che attraversa più periodi
+    const startDate = new Date(from);
+    const endDate = new Date(to);
+    let cur = new Date(startDate);
+    while (cur <= endDate) {
+      const dayStr = cur.toISOString().slice(0, 10);
+      const periodId = getPeriodForDate(dayStr);
+      const match = state.pricing.find(p =>
+        p.tier === umbrella.tier &&
+        p.booking_type === type &&
+        p.period_id === periodId
+      );
+      price += match?.price || 0;
+      cur.setDate(cur.getDate() + 1);
+    }
+  } else {
+    // weekly/biweekly/monthly/seasonal → tariffa base con period_id null
+    const match = state.pricing.find(p =>
+      p.tier === umbrella.tier &&
+      p.booking_type === type &&
+      p.period_id === null
+    );
+    price = match?.price || 0;
+  }
+  if (sunbeds === 1) price *= 0.88;
+  if (sunbeds === 0) price *= 0.78;
+  return Math.round(price);
+}
+
+function updatePrice() {
+  if (!state.selected) return;
+  const type = getSelectedType();
+  const from = document.getElementById('mDateFrom').value;
+  const to = document.getElementById('mDateTo').value;
+  const sunbeds = parseInt(document.getElementById('mSunbeds').value, 10);
+
+  let base = 0;
+  if (state.selected.isMulti) {
+    base = state.selected.umbrellas.reduce((s, u) => s + computePrice(u, type, from, to, sunbeds), 0);
+  } else {
+    base = computePrice(state.selected.umbrella, type, from, to, sunbeds);
+  }
+
+  // extras
+  const extrasTotal = Object.entries(state.selectedExtras).reduce((s, [id, qty]) => {
+    const ex = state.extras.find(e => e.id == id);
+    return s + (ex?.price || 0) * qty;
+  }, 0);
+
+  const total = base + extrasTotal;
+
+  document.getElementById('pxBase').textContent = base;
+  document.getElementById('pxExtras').textContent = extrasTotal;
+  document.getElementById('pxTotal').textContent = total;
+
+  state.selected.calculatedBase = base;
+  state.selected.calculatedExtras = extrasTotal;
+  state.selected.calculatedTotal = total;
+}
+
+function setDepositPct(pct) {
+  const total = state.selected?.calculatedTotal || 0;
+  document.getElementById('mDeposit').value = Math.round(total * pct / 100);
+}
+
+// ============================================================
+// SAVE / DELETE / CHECK-IN
+// ============================================================
+async function saveBooking() {
+  const s = state.selected;
+  if (!s) return;
+
+  const firstName = document.getElementById('mFirstName').value.trim();
+  const lastName = document.getElementById('mLastName').value.trim();
+  const phone = document.getElementById('mPhone').value.trim();
+  const email = document.getElementById('mEmail').value.trim();
+  const type = getSelectedType();
+  const dateFrom = document.getElementById('mDateFrom').value;
+  const dateTo = document.getElementById('mDateTo').value;
+  const sunbeds = parseInt(document.getElementById('mSunbeds').value, 10);
+  const adults = parseInt(document.getElementById('mAdults').value, 10);
+  const children = parseInt(document.getElementById('mChildren').value, 10);
+  const payment = document.getElementById('mPayment').value;
+  const notes = document.getElementById('mNotes').value.trim();
+  const deposit = parseFloat(document.getElementById('mDeposit').value) || 0;
+
+  if (!firstName || !lastName) { toast('Inserisci nome e cognome', 'err'); return; }
+  if (!dateFrom || !dateTo) { toast('Inserisci le date', 'err'); return; }
+  if (dateTo < dateFrom) { toast('Data finale antecedente a iniziale', 'err'); return; }
+
+  if (!isConfigured) {
+    toast('Demo mode — configura Supabase per salvare', 'err');
+    return;
+  }
+
+  try {
+    // Upsert cliente
+    let customerId;
+    if (email) {
+      const { data: existing } = await sb.from('customers').select('id').eq('email', email).maybeSingle();
+      if (existing) {
+        customerId = existing.id;
+        await sb.from('customers').update({ first_name:firstName, last_name:lastName, phone }).eq('id', customerId);
+      }
+    }
+    if (!customerId) {
+      const { data, error } = await sb.from('customers').insert({
+        first_name:firstName, last_name:lastName, phone:phone||null, email:email||null
+      }).select('id').single();
+      if (error) throw error;
+      customerId = data.id;
+    }
+
+    const umbrellas = s.isMulti ? s.umbrellas : [s.umbrella];
+    const savedIds = [];
+
+    for (const u of umbrellas) {
+      const basePrice = computePrice(u, type, dateFrom, dateTo, sunbeds);
+      const extrasPrice = s.calculatedExtras || 0;
+      const total = basePrice + extrasPrice;
+      const depositToken = deposit > 0 ? generateToken() : null;
+
+      const payload = {
+        umbrella_id: u.id,
+        customer_id: customerId,
+        booking_type: type,
+        date_from: dateFrom, date_to: dateTo,
+        sunbeds, adults, children,
+        price_base: basePrice,
+        price_extras: extrasPrice,
+        price_total: total,
+        deposit_amount: deposit,
+        deposit_token: depositToken,
+        deposit_expires_at: deposit > 0 ? new Date(Date.now() + 72*3600*1000).toISOString() : null,
+        status: 'confirmed',
+        source: 'staff',
+        notes: notes || null,
+      };
+
+      let bookingId;
+      if (s.existingBooking && !s.isMulti) {
+        const { data, error } = await sb.from('bookings').update(payload).eq('id', s.existingBooking.id).select('id').single();
+        if (error) throw error;
+        bookingId = data.id;
+      } else {
+        const { data, error } = await sb.from('bookings').insert(payload).select('id').single();
+        if (error) throw error;
+        bookingId = data.id;
+      }
+      savedIds.push(bookingId);
+
+      // extras
+      if (Object.keys(state.selectedExtras).length) {
+        await sb.from('booking_extras').delete().eq('booking_id', bookingId);
+        const rows = Object.entries(state.selectedExtras).map(([extraId, qty]) => {
+          const ex = state.extras.find(e => e.id == extraId);
+          return { booking_id: bookingId, extra_id: parseInt(extraId), quantity: qty, unit_price: ex.price };
+        });
+        if (rows.length) await sb.from('booking_extras').insert(rows);
+      }
+
+      // pagamento
+      if (payment) {
+        await sb.from('payments').insert({
+          booking_id: bookingId,
+          amount: total,
+          method: payment,
+          type: 'payment',
+        });
+      }
+    }
+
+    toast(s.isMulti ? `${umbrellas.length} prenotazioni create` : 'Prenotazione salvata', 'ok');
+
+    // Se c'è acconto, mostra WhatsApp
+    if (deposit > 0 && !s.isMulti && phone) {
+      document.getElementById('btnWhatsapp').style.display = 'inline-flex';
+      toast('Clicca WhatsApp per inviare richiesta acconto', 'ok');
+    } else {
+      closeModal();
+    }
+
+    multiClear();
+    loadForDate();
+  } catch (e) {
+    console.error(e);
+    toast(e.message?.includes('overlap') ? 'Date sovrapposte già prenotate' : 'Errore: ' + (e.message || 'sconosciuto'), 'err');
+  }
+}
+
+async function deleteBooking() {
+  if (!state.selected?.existingBooking) return;
+  if (!confirm('Cancellare questa prenotazione?')) return;
+  if (!isConfigured) { toast('Demo mode', 'err'); return; }
+
+  const { error } = await sb.from('bookings')
+    .update({ status:'cancelled' })
+    .eq('id', state.selected.existingBooking.id);
+  if (error) { toast('Errore', 'err'); return; }
+  toast('Prenotazione cancellata', 'ok');
+  closeModal();
+  loadForDate();
+}
+
+async function checkIn() {
+  const b = state.selected?.existingBooking;
+  if (!b) return;
+  if (!isConfigured) {
+    const demo = DEMO_BOOKINGS.find(x => x.id === b.id);
+    if (demo) demo.arrived_at = new Date().toISOString();
+    toast('Check-in registrato (demo)', 'ok');
+    closeModal();
+    loadForDate();
+    return;
+  }
+  const { error } = await sb.from('bookings')
+    .update({ arrived_at: new Date().toISOString(), status: 'checked_in' })
+    .eq('id', b.id);
+  if (error) { toast('Errore check-in', 'err'); return; }
+  toast('✓ Check-in registrato', 'ok');
+  closeModal();
+  loadForDate();
+}
+
+// ============================================================
+// WHATSAPP — richiesta acconto
+// ============================================================
+function sendDepositWA() {
+  const s = state.selected;
+  if (!s) return;
+  const phone = document.getElementById('mPhone').value.replace(/\D/g, '');
+  const deposit = parseFloat(document.getElementById('mDeposit').value) || 0;
+  const dateFrom = document.getElementById('mDateFrom').value;
+  const dateTo = document.getElementById('mDateTo').value;
+  const firstName = document.getElementById('mFirstName').value;
+
+  if (!phone) { toast('Numero telefono mancante', 'err'); return; }
+  if (!deposit) { toast('Imposta importo acconto', 'err'); return; }
+
+  // Link di pagamento: usa il deposit_token della prenotazione appena creata
+  // (in produzione: link a pagina pagamento tua / Stripe Checkout / PayPal)
+  const depositLink = `https://pagamento.marinella.it/acconto/${s.existingBooking?.deposit_token || 'LINK_TOKEN'}`;
+
+  const dateStr = dateFrom === dateTo ? formatDate(dateFrom) : `${formatDate(dateFrom)} - ${formatDate(dateTo)}`;
+  const msg = `Ciao ${firstName}! 🏖️
+Grazie per aver prenotato a *La Marinella*.
+
+📅 ${dateStr}
+⛱️ Ombrellone ${s.umbrella.id} (${s.umbrella.row_label}${s.umbrella.col_number})
+💰 Totale: ${s.calculatedTotal}€
+*Acconto richiesto: ${deposit}€*
+
+Per confermare la prenotazione paga l'acconto qui:
+${depositLink}
+
+Link valido 72 ore. Ci vediamo in spiaggia! 🌊`;
+
+  const waUrl = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+  window.open(waUrl, '_blank');
+  toast('WhatsApp aperto', 'ok');
+}
+
+// ============================================================
+// NAV / VIEW
+// ============================================================
+function switchView(name) {
+  if (name !== 'map' && state.layoutMode) {
+    cancelLayoutChanges(true);
+    toast('Layout annullato: salva prima di cambiare vista', 'err');
+  }
+
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.toggle('active', b.dataset.view === name));
+  document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
+  document.getElementById('view-' + name).classList.remove('hidden');
+
+  const titles = {
+    map:'Mappa spiaggia', planner:'Planner prenotazioni',
+    arrivals:'Arrivi e partenze', heatmap:'Heatmap produttività',
+    bookings:'Prenotazioni', customers:'Clienti', pricing:'Tariffe'
+  };
+  document.getElementById('viewTitle').textContent = titles[name];
+  document.getElementById('datePicker').style.visibility = (name === 'map' || name === 'arrivals') ? 'visible' : 'hidden';
+
+  if (name === 'bookings') loadAllBookings();
+  if (name === 'customers') loadCustomers();
+  if (name === 'pricing') renderPricing();
+  if (name === 'planner') loadPlannerBookings();
+  if (name === 'heatmap') loadHeatmap();
+  if (name === 'arrivals') renderArrivals();
+}
+
+function shiftDate(delta) {
+  const d = new Date(state.currentDate);
+  d.setDate(d.getDate() + delta);
+  state.currentDate = d.toISOString().slice(0,10);
+  document.getElementById('currentDate').value = state.currentDate;
+  loadForDate();
+}
+
+function goToday() {
+  state.currentDate = new Date().toISOString().slice(0,10);
+  document.getElementById('currentDate').value = state.currentDate;
+  loadForDate();
+}
+
+// ============================================================
+// HELPERS
+// ============================================================
+function daysBetween(d1, d2) { return Math.round((new Date(d2) - new Date(d1)) / 86400000); }
+function addDays(d, n) { const x = new Date(d); x.setDate(x.getDate() + n); return x.toISOString().slice(0,10); }
+function clamp(value, min, max) { return Math.max(min, Math.min(max, value)); }
+function roundPct(value) { return Math.round(value * 100) / 100; }
+function formatDate(s) {
+  if (!s) return '—';
+  const d = new Date(s);
+  return d.toLocaleDateString('it-IT', { day:'2-digit', month:'short', year:'2-digit' });
+}
+function formatTime(s) {
+  if (!s) return '—';
+  const d = new Date(s);
+  return d.toLocaleTimeString('it-IT', { hour:'2-digit', minute:'2-digit' });
+}
+function typeLabel(t) {
+  return {
+    'daily':'Giornaliera', 'half_day':'Mezza giornata',
+    'half_day_am':'Mattina', 'half_day_pm':'Pomeriggio',
+    'weekly':'Settimanale', 'monthly':'Mensile', 'seasonal':'Stagionale'
+  }[t] || t;
+}
+function statusLabel(s) {
+  return { 'pending':'In attesa', 'confirmed':'Confermata', 'checked_in':'Presente', 'cancelled':'Cancellata', 'no_show':'No show' }[s] || s;
+}
+function tierLabel(t) {
+  return { 'front':'1ª fila', 'standard':'Centrale', 'back':'Retro' }[t] || t;
+}
+function periodLabel(p) {
+  return { 'low':'Bassa', 'mid':'Media', 'high':'Alta' }[p] || p;
+}
+function generateToken() {
+  return Math.random().toString(36).substring(2) + Date.now().toString(36);
+}
+function toast(msg, variant='') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast show ' + variant;
+  setTimeout(() => el.classList.remove('show'), 2800);
+}
+
+// ============================================================
+// GO
+// ============================================================
+checkAuth();
+</script>
+</body>
+</html>
