@@ -7,7 +7,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -54,12 +54,15 @@ html, body {
   height: 100%;
   background: var(--sand-50);
   color: var(--sand-900);
-  font-family: 'Inter Tight', sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   font-size: 14px;
+  font-feature-settings: 'cv11', 'ss01', 'ss03';
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   overflow: hidden;
 }
-h1, h2, h3, h4 { font-family: 'Fraunces', serif; font-weight: 500; letter-spacing: -0.01em; }
+h1, h2, h3, h4 { font-family: 'Inter', sans-serif; font-weight: 600; letter-spacing: -0.02em; }
+.serif { font-family: 'Instrument Serif', 'Times New Roman', serif; font-weight: 400; letter-spacing: -0.01em; }
 button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
 input, select, textarea {
   font-family: inherit; font-size: 14px;
@@ -76,7 +79,7 @@ input:focus, select:focus, textarea:focus {
   border-color: var(--sea-400);
   box-shadow: 0 0 0 3px rgba(74,142,147,.15);
 }
-label { font-size: 12px; color: var(--sand-700); font-weight: 500; display: block; margin-bottom: 5px; letter-spacing: .02em; }
+label { font-size: 11px; color: var(--sand-700); font-weight: 500; display: block; margin-bottom: 5px; letter-spacing: .02em; text-transform: uppercase; }
 
 /* LAYOUT */
 .app { display: grid; grid-template-columns: 220px 1fr; height: 100vh; }
@@ -100,24 +103,27 @@ label { font-size: 12px; color: var(--sand-700); font-weight: 500; display: bloc
   box-shadow: inset -2px -3px 6px rgba(0,0,0,.15);
   flex-shrink: 0;
 }
-.brand h1 { font-size: 20px; color: white; line-height: 1; }
-.brand span { font-size: 11px; color: var(--sea-200); letter-spacing: .2em; text-transform: uppercase; }
+.brand h1 { font-family: 'Instrument Serif', serif; font-weight: 400; font-size: 26px; color: white; line-height: 1; letter-spacing: -0.01em; }
+.brand span { font-size: 10px; color: var(--sea-200); letter-spacing: .25em; text-transform: uppercase; font-weight: 500; }
 
 .nav-item {
   display: flex; align-items: center; gap: 12px;
-  padding: 11px 12px; border-radius: var(--r-sm);
+  padding: 10px 12px; border-radius: var(--r-sm);
   color: rgba(255,255,255,.7); font-weight: 500; font-size: 14px;
   text-align: left; width: 100%;
+  letter-spacing: -0.005em;
   transition: all .15s;
 }
 .nav-item:hover { background: rgba(255,255,255,.06); color: white; }
-.nav-item.active { background: rgba(255,255,255,.12); color: white; }
+.nav-item.active { background: rgba(255,255,255,.12); color: white; font-weight: 600; }
 .nav-item svg { width: 18px; height: 18px; flex-shrink: 0; }
 
 .sidebar-footer {
   margin-top: auto; padding-top: 14px;
   border-top: 1px solid rgba(255,255,255,.08);
-  font-size: 11px; color: var(--sea-200); letter-spacing: .05em;
+  font-size: 10px; color: rgba(255,255,255,.4);
+  letter-spacing: .08em; text-transform: uppercase; font-weight: 500;
+  line-height: 1.5;
 }
 
 /* MAIN */
@@ -127,7 +133,7 @@ label { font-size: 12px; color: var(--sand-700); font-weight: 500; display: bloc
   padding: 14px 28px;
   display: flex; align-items: center; gap: 20px;
 }
-.topbar h2 { font-size: 22px; margin-right: auto; }
+.topbar h2 { font-size: 20px; margin-right: auto; font-weight: 600; letter-spacing: -0.02em; }
 
 .date-picker {
   display: flex; align-items: center; gap: 8px;
@@ -167,9 +173,24 @@ label { font-size: 12px; color: var(--sand-700); font-weight: 500; display: bloc
 .kpi.k-free::before     { background: var(--ok); }
 .kpi.k-revenue::before  { background: var(--sunshine); }
 .kpi.k-occupancy::before{ background: var(--coral); }
-.kpi-label { font-size: 11px; color: var(--sand-700); text-transform: uppercase; letter-spacing: .1em; font-weight: 600; }
-.kpi-value { font-family: 'Fraunces', serif; font-size: 32px; margin-top: 4px; line-height: 1; font-weight: 500; }
-.kpi-value small { font-family: 'Inter Tight'; font-size: 14px; color: var(--sand-700); margin-left: 4px; font-weight: 500; }
+.kpi-label { font-size: 11px; color: var(--sand-700); text-transform: uppercase; letter-spacing: .08em; font-weight: 600; }
+.kpi-value {
+  font-family: 'Instrument Serif', serif;
+  font-size: 40px;
+  margin-top: 2px;
+  line-height: 1;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  color: var(--sand-900);
+}
+.kpi-value small {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  color: var(--sand-700);
+  margin-left: 4px;
+  font-weight: 500;
+  letter-spacing: 0;
+}
 
 /* BEACH MAP */
 .map-wrap {
@@ -188,7 +209,7 @@ label { font-size: 12px; color: var(--sand-700); font-weight: 500; display: bloc
   margin-bottom: 14px;
   flex-wrap: wrap;
 }
-.map-toolbar h3 { font-size: 18px; margin-right: auto; }
+.map-toolbar h3 { font-size: 16px; margin-right: auto; font-weight: 600; letter-spacing: -0.01em; color: var(--sand-900); }
 .legend { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
 .legend-item {
   display: flex; align-items: center; gap: 6px; font-size: 12px;
@@ -348,19 +369,21 @@ label { font-size: 12px; color: var(--sand-700); font-weight: 500; display: bloc
   justify-content: space-around; padding: 2% 0; z-index: 2;
 }
 .row-labels span {
-  font-family: 'Fraunces', serif; font-size: 15px; font-weight: 700;
+  font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600;
   color: var(--sand-700); background: rgba(255,255,255,.85);
-  width: 28px; height: 28px; border-radius: 50%;
+  width: 26px; height: 26px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
   border: 1px solid rgba(184,151,104,.35);
   backdrop-filter: blur(4px);
+  letter-spacing: 0;
 }
 
 .sea-label {
   position: absolute; top: 3.8%; left: 50%; transform: translateX(-50%);
-  font-family: 'Fraunces', serif; font-style: italic; font-size: 14px;
-  color: rgba(255,255,255,.94); letter-spacing: .35em; z-index: 2;
+  font-family: 'Instrument Serif', serif; font-style: italic; font-size: 16px;
+  color: rgba(255,255,255,.94); letter-spacing: .3em; z-index: 2;
   text-shadow: 0 2px 10px rgba(14,58,64,.35);
+  font-weight: 400;
 }
 
 /* UMBRELLA */
@@ -374,10 +397,20 @@ label { font-size: 12px; color: var(--sand-700); font-weight: 500; display: bloc
 .umbrella:hover { transform: translate(-50%, -50%) scale(1.15); z-index: 10; }
 .umbrella.selected { transform: translate(-50%, -50%) scale(1.2); z-index: 11; }
 .umbrella.selected .u-canopy {
-  box-shadow: 0 0 0 3px white, 0 0 0 5px var(--sea-600), 0 6px 14px rgba(0,0,0,.3);
+  filter: drop-shadow(0 0 0 white) drop-shadow(0 0 3px var(--sea-600)) drop-shadow(0 0 3px var(--sea-600)) drop-shadow(0 6px 10px rgba(0,0,0,.3));
+}
+.umbrella.selected .u-badge {
+  background: var(--sea-600);
+  color: white;
+  border-color: var(--sea-600);
 }
 .umbrella.multi-selected .u-canopy {
-  box-shadow: 0 0 0 3px white, 0 0 0 5px var(--sunshine), 0 6px 14px rgba(0,0,0,.3);
+  filter: drop-shadow(0 0 0 white) drop-shadow(0 0 3px var(--sunshine)) drop-shadow(0 0 3px var(--sunshine)) drop-shadow(0 6px 10px rgba(0,0,0,.3));
+}
+.umbrella.multi-selected .u-badge {
+  background: var(--sunshine);
+  color: var(--sand-900);
+  border-color: var(--sunshine);
 }
 #beachMap.layout-active .umbrella { cursor: grab; }
 #beachMap.layout-active .umbrella:hover { transform: translate(-50%, -50%) scale(1.08); z-index: 14; }
@@ -388,40 +421,59 @@ label { font-size: 12px; color: var(--sand-700); font-weight: 500; display: bloc
   filter: drop-shadow(0 10px 12px rgba(14,58,64,.35));
 }
 
+/* Canopy: contenitore 50x50 che ospita l'SVG dell'ombrellone */
 .u-canopy {
-  width: 40px; height: 40px; border-radius: 50%;
-  box-shadow: 0 6px 10px rgba(0,0,0,.22);
+  width: 54px; height: 54px;
   position: relative;
-  background-image: conic-gradient(
-    from 0deg, rgba(255,255,255,.25) 0deg, transparent 45deg,
-    rgba(255,255,255,.25) 90deg, transparent 135deg,
-    rgba(255,255,255,.25) 180deg, transparent 225deg,
-    rgba(255,255,255,.25) 270deg, transparent 315deg,
-    rgba(255,255,255,.25) 360deg
-  );
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,.2));
+  transition: filter .15s;
 }
-.u-canopy::after {
-  content: ''; position: absolute; top: 50%; left: 50%;
-  width: 6px; height: 6px; background: var(--sand-700);
-  border-radius: 50%; transform: translate(-50%, -50%);
-  box-shadow: 0 0 0 1px rgba(255,255,255,.3);
+.u-canopy svg {
+  width: 100%; height: 100%;
+  display: block;
+  overflow: visible;
 }
-.umbrella[data-status="free"]    .u-canopy { background-color: var(--ok); }
-.umbrella[data-status="booked"]  .u-canopy { background-color: var(--coral); }
-.umbrella[data-status="arrived"] .u-canopy { background-color: var(--sea-600); }
-.umbrella[data-status="off"]     .u-canopy { background-color: var(--sand-300); opacity: .5; }
+/* Colori principali per i 4 spicchi colorati, iniettati via CSS var */
+.umbrella[data-status="free"]    { --u-color: #3A9B7A; --u-color-label: #1E5D4A; }
+.umbrella[data-status="booked"]  { --u-color: #E85A4F; --u-color-label: #A3332A; }
+.umbrella[data-status="arrived"] { --u-color: #1F6268; --u-color-label: #0E3A40; }
+.umbrella[data-status="off"]     { --u-color: #B89768; --u-color-label: #6B5437; opacity: .45; }
 
-.u-number {
-  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-  color: white; font-weight: 800; font-size: 11px;
-  font-family: 'Inter Tight'; z-index: 2;
-  text-shadow: 0 1px 2px rgba(0,0,0,.3);
+/* Spicchi colorati: i path con classe .u-slice-c */
+.u-slice-c { fill: var(--u-color); }
+.u-slice-w { fill: #FFFFFF; }
+.u-rim     { fill: none; stroke: rgba(0,0,0,.18); stroke-width: 0.6; }
+.u-pole    { stroke: #2B2212; stroke-width: 2; stroke-linecap: round; }
+.u-tip-dot { fill: #2B2212; }
+
+/* Badge numero laterale */
+.u-badge {
+  position: absolute;
+  top: 50%; right: -14px;
+  transform: translateY(-50%);
+  min-width: 22px; height: 20px;
+  padding: 0 6px;
+  background: white;
+  border: 1px solid var(--sand-900);
+  border-radius: 11px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Inter', sans-serif;
+  font-size: 11px; font-weight: 700;
+  color: var(--sand-900);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  box-shadow: 0 1px 3px rgba(0,0,0,.15);
+  z-index: 4;
 }
+
+/* Nasconde il vecchio .u-number (non più usato ma per sicurezza) */
+.u-number { display: none; }
 
 .u-arrived-dot {
-  position: absolute; top: -2px; right: -2px;
+  position: absolute; top: -3px; left: -3px;
   width: 12px; height: 12px; border-radius: 50%;
   background: var(--ok); border: 2px solid white; z-index: 3;
+  box-shadow: 0 1px 3px rgba(0,0,0,.2);
 }
 
 .u-tip {
@@ -482,87 +534,121 @@ label { font-size: 12px; color: var(--sand-700); font-weight: 500; display: bloc
   overflow: hidden;
 }
 .planner-header-bar {
-  padding: 16px 20px; border-bottom: 1px solid var(--sand-100);
-  display: flex; align-items: center; gap: 14px;
+  padding: 14px 18px; border-bottom: 1px solid var(--sand-100);
+  display: flex; align-items: center; gap: 10px;
+  background: white;
 }
-.planner-header-bar h3 { font-size: 18px; margin-right: auto; }
 .planner-nav {
   display: flex; background: var(--sand-100);
-  border-radius: var(--r-sm); padding: 2px;
+  border-radius: var(--r-sm); padding: 3px;
+  gap: 1px;
 }
 .planner-nav button {
   padding: 6px 10px; border-radius: 6px; font-size: 12px;
-  font-weight: 600; color: var(--sand-700);
+  font-weight: 500; color: var(--sand-700);
+  transition: all .12s;
 }
-.planner-nav button:hover { background: white; }
+.planner-nav button:hover { background: white; color: var(--sand-900); }
 .planner-zoom {
   display: flex; background: var(--sand-100);
-  border-radius: var(--r-sm); padding: 2px;
+  border-radius: var(--r-sm); padding: 3px;
+  gap: 1px;
 }
 .planner-zoom button {
   padding: 6px 12px; border-radius: 6px; font-size: 12px;
-  font-weight: 600; color: var(--sand-700);
+  font-weight: 500; color: var(--sand-700);
+  transition: all .12s;
 }
-.planner-zoom button.active { background: white; color: var(--sea-800); box-shadow: var(--sh-sm); }
+.planner-zoom button.active { background: white; color: var(--sea-800); font-weight: 600; box-shadow: 0 1px 2px rgba(14,58,64,.08); }
 
 .planner-scroll {
   overflow: auto; max-height: calc(100vh - 260px);
   position: relative;
 }
 .planner-grid {
-  display: grid; grid-template-columns: 80px 1fr;
+  display: grid; grid-template-columns: 92px 1fr;
   min-width: 100%;
 }
 .planner-umbrella-col {
   position: sticky; left: 0; z-index: 5;
-  background: var(--sand-50);
-  border-right: 2px solid var(--sand-200);
+  background: white;
+  border-right: 1px solid var(--sand-200);
 }
 .planner-umbrella-head {
-  height: 48px; padding: 12px;
-  background: var(--sand-100); border-bottom: 1px solid var(--sand-200);
-  font-size: 11px; font-weight: 700; color: var(--sand-700);
-  text-transform: uppercase; letter-spacing: .08em;
+  height: 56px; padding: 12px;
+  background: var(--sand-50); border-bottom: 1px solid var(--sand-200);
+  font-size: 10px; font-weight: 600; color: var(--sand-700);
+  text-transform: uppercase; letter-spacing: .1em;
   position: sticky; top: 0; z-index: 6;
   display: flex; align-items: center;
 }
 .planner-umbrella-cell {
-  height: 36px; padding: 0 12px;
+  height: 34px; padding: 0 12px;
   border-bottom: 1px solid var(--sand-100);
-  display: flex; align-items: center; gap: 6px;
-  font-size: 13px; font-weight: 600;
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; font-weight: 500;
+  color: var(--sand-900);
+}
+.planner-umbrella-cell .umb-id {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.planner-umbrella-cell .umb-pos {
+  color: var(--sand-700);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .04em;
 }
 .planner-umbrella-cell .tier-dot {
-  width: 6px; height: 6px; border-radius: 50%;
+  width: 7px; height: 7px; border-radius: 50%;
+  flex-shrink: 0;
 }
-.tier-dot.front    { background: var(--coral); }
-.tier-dot.standard { background: var(--sand-400); }
-.tier-dot.back     { background: var(--sand-300); }
+.tier-dot.front    { background: #3A9B7A; }
+.tier-dot.standard { background: var(--sunshine); }
+.tier-dot.back     { background: var(--sand-400); }
 
 .planner-days-col { position: relative; }
 .planner-days-head {
-  display: grid; height: 48px;
-  background: var(--sand-100);
+  display: grid; height: 56px;
+  background: var(--sand-50);
   border-bottom: 1px solid var(--sand-200);
   position: sticky; top: 0; z-index: 4;
 }
 .planner-day-head {
   border-right: 1px solid var(--sand-200);
-  padding: 6px 4px; text-align: center;
-  font-size: 11px; color: var(--sand-700); font-weight: 600;
+  padding: 8px 4px; text-align: center;
+  font-size: 10px; color: var(--sand-700); font-weight: 500;
+  text-transform: uppercase; letter-spacing: .08em;
   display: flex; flex-direction: column; justify-content: center;
+  gap: 2px;
 }
-.planner-day-head.weekend { background: var(--sand-200); }
-.planner-day-head.today { background: var(--sea-100); color: var(--sea-800); }
+.planner-day-head .d-month {
+  font-size: 9px;
+  color: var(--sand-400);
+  font-weight: 600;
+  letter-spacing: .1em;
+}
+.planner-day-head.weekend { background: rgba(184,151,104,.12); }
+.planner-day-head.today {
+  background: var(--sea-50);
+  color: var(--sea-800);
+  box-shadow: inset 3px 0 0 var(--sea-600);
+}
 .planner-day-head .d-num {
-  font-family: 'Fraunces', serif; font-size: 16px; font-weight: 600;
-  color: var(--sand-900); line-height: 1;
+  font-family: 'Inter', sans-serif;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--sand-900);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
 }
-.planner-day-head.today .d-num { color: var(--sea-800); }
+.planner-day-head.today .d-num { color: var(--sea-800); font-weight: 700; }
+.planner-day-head.today .d-month { color: var(--sea-600); }
 
 .planner-row {
   display: grid;
-  height: 36px;
+  height: 34px;
   border-bottom: 1px solid var(--sand-100);
   position: relative;
 }
@@ -573,22 +659,26 @@ label { font-size: 12px; color: var(--sand-700); font-weight: 500; display: bloc
   transition: background .1s;
 }
 .planner-cell:hover { background: rgba(74,142,147,.08); }
-.planner-cell.weekend { background: rgba(184,151,104,.04); }
-.planner-cell.today { background: rgba(31,98,104,.06); }
+.planner-cell.weekend { background: rgba(184,151,104,.05); }
+.planner-cell.today {
+  background: rgba(31,98,104,.05);
+  box-shadow: inset 3px 0 0 rgba(31,98,104,.4);
+}
 
 .planner-booking {
   position: absolute;
   top: 4px; bottom: 4px;
-  border-radius: 6px;
+  border-radius: 5px;
   padding: 0 8px;
   display: flex; align-items: center;
-  font-size: 12px; font-weight: 600;
+  font-size: 12px; font-weight: 500;
   color: white;
   cursor: pointer;
   box-shadow: 0 1px 3px rgba(0,0,0,.15);
   transition: all .15s;
   z-index: 2;
   overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+  letter-spacing: -0.005em;
 }
 .planner-booking:hover { transform: translateY(-1px); box-shadow: 0 3px 8px rgba(0,0,0,.2); z-index: 3; }
 .planner-booking.daily     { background: linear-gradient(135deg, var(--coral), var(--coral-dk)); }
@@ -636,9 +726,11 @@ label { font-size: 12px; color: var(--sand-700); font-weight: 500; display: bloc
   background: linear-gradient(135deg, var(--sea-400), var(--sea-600));
   color: white;
   display: flex; align-items: center; justify-content: center;
-  font-family: 'Fraunces', serif; font-size: 20px; font-weight: 600;
+  font-family: 'Inter', sans-serif; font-size: 20px; font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
 }
-.modal-head h3 { font-size: 20px; }
+.modal-head h3 { font-size: 19px; font-weight: 600; letter-spacing: -0.02em; }
 .modal-head p { font-size: 13px; color: var(--sand-700); margin-top: 2px; }
 .modal-close {
   margin-left: auto; width: 32px; height: 32px; border-radius: 8px;
@@ -657,9 +749,9 @@ label { font-size: 12px; color: var(--sand-700); font-weight: 500; display: bloc
 }
 .form-section:last-child { border: none; margin-bottom: 0; padding-bottom: 0; }
 .form-section h4 {
-  font-size: 13px; text-transform: uppercase; letter-spacing: .1em;
+  font-size: 12px; text-transform: uppercase; letter-spacing: .1em;
   color: var(--sea-600); margin-bottom: 12px;
-  font-family: 'Inter Tight'; font-weight: 600;
+  font-family: 'Inter', sans-serif; font-weight: 600;
 }
 
 .type-grid {
@@ -715,8 +807,9 @@ label { font-size: 12px; color: var(--sand-700); font-weight: 500; display: bloc
   font-size: 16px; font-weight: 700;
 }
 .price-row.total .v {
-  font-family: 'Fraunces', serif; font-size: 24px;
-  font-weight: 600; color: var(--sea-800);
+  font-family: 'Instrument Serif', serif; font-size: 28px;
+  font-weight: 400; color: var(--sea-800);
+  letter-spacing: -0.02em;
 }
 
 .deposit-box {
@@ -811,7 +904,7 @@ tr:last-child td { border-bottom: none; }
   padding: 16px 20px; border-bottom: 1px solid var(--sand-100);
   display: flex; justify-content: space-between; align-items: center;
 }
-.arrivals-head h3 { font-size: 16px; }
+.arrivals-head h3 { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
 .arrivals-count {
   background: var(--sand-100); color: var(--sand-700);
   padding: 3px 10px; border-radius: 20px;
@@ -827,8 +920,10 @@ tr:last-child td { border-bottom: none; }
   width: 42px; height: 42px; border-radius: 50%;
   background: linear-gradient(135deg, var(--sea-400), var(--sea-600));
   color: white; display: flex; align-items: center; justify-content: center;
-  font-family: 'Fraunces', serif; font-size: 16px; font-weight: 700;
+  font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 700;
   flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
 }
 .arrival-item.arrived .arrival-umbrella {
   background: linear-gradient(135deg, var(--ok), #2F7E63);
@@ -907,11 +1002,11 @@ tr:last-child td { border-bottom: none; }
   box-shadow: inset -3px -4px 10px rgba(0,0,0,.15), 0 8px 20px rgba(232,90,79,.3);
 }
 .login-brand h1 {
-  font-family: 'Fraunces', serif; font-size: 32px; font-weight: 500;
-  color: var(--sand-900); letter-spacing: -0.02em;
+  font-family: 'Instrument Serif', serif; font-size: 44px; font-weight: 400;
+  color: var(--sand-900); letter-spacing: -0.02em; line-height: 1;
 }
 .login-brand span {
-  font-size: 12px; letter-spacing: .3em; text-transform: uppercase;
+  font-size: 11px; letter-spacing: .3em; text-transform: uppercase;
   color: var(--sand-700); font-weight: 500;
 }
 .login-form { display: flex; flex-direction: column; gap: 14px; }
@@ -1127,7 +1222,6 @@ tr:last-child td { border-bottom: none; }
     <section class="view hidden" id="view-planner">
       <div class="planner-wrap">
         <div class="planner-header-bar">
-          <h3>Planner prenotazioni</h3>
           <div class="planner-nav">
             <button onclick="plannerShift(-7)">‹ Sett.</button>
             <button onclick="plannerShift(-1)">‹</button>
@@ -1135,6 +1229,7 @@ tr:last-child td { border-bottom: none; }
             <button onclick="plannerShift(1)">›</button>
             <button onclick="plannerShift(7)">Sett. ›</button>
           </div>
+          <div style="flex:1"></div>
           <div class="planner-zoom">
             <button data-days="7" onclick="setPlannerDays(7)">7g</button>
             <button class="active" data-days="14" onclick="setPlannerDays(14)">14g</button>
@@ -1788,6 +1883,30 @@ function render() {
   renderArrivals();
 }
 
+// Genera l'SVG dell'ombrellone a 8 spicchi alternati colorati/bianchi
+// Il colore principale è iniettato via CSS var --u-color (dal data-status)
+function umbrellaSVG() {
+  return `
+    <svg viewBox="-30 -30 60 60" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <!-- 8 spicchi alternati colorati (c) / bianchi (w) -->
+      <path class="u-slice-c" d="M 0 0 L 0 -26 A 26 26 0 0 1 18.4 -18.4 Z"/>
+      <path class="u-slice-w" d="M 0 0 L 18.4 -18.4 A 26 26 0 0 1 26 0 Z"/>
+      <path class="u-slice-c" d="M 0 0 L 26 0 A 26 26 0 0 1 18.4 18.4 Z"/>
+      <path class="u-slice-w" d="M 0 0 L 18.4 18.4 A 26 26 0 0 1 0 26 Z"/>
+      <path class="u-slice-c" d="M 0 0 L 0 26 A 26 26 0 0 1 -18.4 18.4 Z"/>
+      <path class="u-slice-w" d="M 0 0 L -18.4 18.4 A 26 26 0 0 1 -26 0 Z"/>
+      <path class="u-slice-c" d="M 0 0 L -26 0 A 26 26 0 0 1 -18.4 -18.4 Z"/>
+      <path class="u-slice-w" d="M 0 0 L -18.4 -18.4 A 26 26 0 0 1 0 -26 Z"/>
+      <!-- contorno sottile -->
+      <circle class="u-rim" cx="0" cy="0" r="26"/>
+      <!-- palo -->
+      <line class="u-pole" x1="0" y1="0" x2="0" y2="18"/>
+      <!-- punta centrale -->
+      <circle class="u-tip-dot" cx="0" cy="0" r="2"/>
+    </svg>
+  `;
+}
+
 function renderMap() {
   const beach = document.getElementById('beachMap');
   beach.classList.toggle('layout-active', state.layoutMode);
@@ -1810,8 +1929,8 @@ function renderMap() {
     if (state.multiSelection.has(u.id)) el.classList.add('multi-selected');
 
     el.innerHTML = `
-      <div class="u-canopy"></div>
-      <div class="u-number">${u.id}</div>
+      <div class="u-canopy">${umbrellaSVG()}</div>
+      <div class="u-badge">${u.id}</div>
       ${booking?.arrived_at && !booking.departed_at ? '<div class="u-arrived-dot"></div>' : ''}
       <div class="u-tip">
         ${u.row_label}${u.col_number} · ${tierLabel(u.tier)}
@@ -2085,11 +2204,13 @@ function renderPlanner(bookings) {
     const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
     const isToday = d.toISOString().slice(0,10) === new Date().toISOString().slice(0,10);
     const cls = (isWeekend ? 'weekend ' : '') + (isToday ? 'today' : '');
+    const monthStr = d.toLocaleDateString('it-IT',{month:'short'}).replace('.','').toUpperCase();
+    const dayName = ['DOM','LUN','MAR','MER','GIO','VEN','SAB'][dayOfWeek];
     daysHeadHtml += `
       <div class="planner-day-head ${cls}" style="width:${dayWidth}px">
-        <div style="font-size:10px">${['dom','lun','mar','mer','gio','ven','sab'][dayOfWeek]}</div>
+        <div class="d-month">${monthStr}</div>
         <div class="d-num">${d.getDate()}</div>
-        <div style="font-size:9px">${d.toLocaleDateString('it-IT',{month:'short'})}</div>
+        <div>${dayName}</div>
       </div>`;
   }
 
@@ -2138,8 +2259,8 @@ function renderPlanner(bookings) {
     umbrellaColHtml += `
       <div class="planner-umbrella-cell">
         <span class="tier-dot ${u.tier}"></span>
-        <span>#${u.id}</span>
-        <small style="color:var(--sand-700);margin-left:auto">${u.row_label}${u.col_number}</small>
+        <span class="umb-id">${u.id}</span>
+        <span class="umb-pos" style="margin-left:auto">${u.row_label}${u.col_number}</span>
       </div>`;
   });
 
@@ -2329,10 +2450,12 @@ function renderHeatmap() {
     el.className = 'umbrella';
     el.style.left = h.x + '%';
     el.style.top = h.y + '%';
+    // Per la heatmap usiamo un data-status custom che injecta il colore revenue
     el.dataset.status = 'free';
+    el.style.setProperty('--u-color', color);
     el.innerHTML = `
-      <div class="u-canopy" style="background-color:${color}"></div>
-      <div class="u-number">${h.umbrella_id}</div>
+      <div class="u-canopy">${umbrellaSVG()}</div>
+      <div class="u-badge">${h.umbrella_id}</div>
       <div class="u-tip">
         #${h.umbrella_id} · ${h.row_label}${h.col_number}<br>
         ${Math.round(h.total_revenue)}€ · ${h.total_bookings} prenot.<br>
