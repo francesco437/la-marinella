@@ -1067,32 +1067,42 @@ tr:last-child td { border-bottom: none; }
   }
 }
 
-/* SDRAIO LIVE — stato occupato/libero */
-.u-sunbeds {
+/* SDRAIO LIVE — ai lati dell'ombrellone, stile approvato */
+.u-sunbed-L {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  left: calc(100% + 18px);
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  z-index: 5;
-}
-.u-sunbed {
-  width: 13px;
-  height: 22px;
+  right: calc(100% + 4px);
+  width: 14px;
+  height: 24px;
   border-radius: 3px;
   background: white;
   border: 1.5px solid rgba(43,34,18,0.5);
   cursor: pointer;
   transition: background .15s, border-color .15s, transform .1s;
   box-shadow: 0 1px 3px rgba(0,0,0,.18);
+  z-index: 5;
 }
-.u-sunbed:hover {
-  transform: scale(1.1);
+.u-sunbed-R {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: calc(100% + 4px);
+  width: 14px;
+  height: 24px;
+  border-radius: 3px;
+  background: white;
+  border: 1.5px solid rgba(43,34,18,0.5);
+  cursor: pointer;
+  transition: background .15s, border-color .15s, transform .1s;
+  box-shadow: 0 1px 3px rgba(0,0,0,.18);
+  z-index: 5;
+}
+.u-sunbed-L:hover, .u-sunbed-R:hover {
+  transform: translateY(-50%) scale(1.15);
   border-color: var(--sea-600);
 }
-.u-sunbed.occupied {
+.u-sunbed-L.occupied, .u-sunbed-R.occupied {
   background: var(--coral);
   border-color: var(--coral-dk);
 }
@@ -2003,21 +2013,15 @@ function renderMap() {
 
     if (state.multiSelection.has(u.id)) el.classList.add('multi-selected');
 
-    // Sdraio con stato live (stile D) — visibili sempre, cliccabili solo se prenotato
+    // Sdraio con stato live (stile D) — ai lati dell'ombrellone
     const sunbedL = booking?.sunbed_L_occupied || false;
     const sunbedR = booking?.sunbed_R_occupied || false;
     const bookingId = booking?.id || '';
+    const tL = booking ? (sunbedL ? 'Sinistra: occupata · click per liberare' : 'Sinistra: libera · click per occupare') : 'Nessuna prenotazione';
+    const tR = booking ? (sunbedR ? 'Destra: occupata · click per liberare' : 'Destra: libera · click per occupare') : 'Nessuna prenotazione';
     const sunbedsHtml = `
-      <div class="u-sunbeds">
-        <div class="u-sunbed ${sunbedL ? 'occupied' : ''}"
-          onclick="toggleSunbed(event, '${bookingId}', 'L')"
-          title="${booking ? (sunbedL ? 'Sdraio sx: occupata — click per liberare' : 'Sdraio sx: libera — click per occupare') : 'Nessuna prenotazione'}">
-        </div>
-        <div class="u-sunbed ${sunbedR ? 'occupied' : ''}"
-          onclick="toggleSunbed(event, '${bookingId}', 'R')"
-          title="${booking ? (sunbedR ? 'Sdraio dx: occupata — click per liberare' : 'Sdraio dx: libera — click per occupare') : 'Nessuna prenotazione'}">
-        </div>
-      </div>`;
+      <div class="u-sunbed-L ${sunbedL ? 'occupied' : ''}" onclick="toggleSunbed(event,'${bookingId}','L')" title="${tL}"></div>
+      <div class="u-sunbed-R ${sunbedR ? 'occupied' : ''}" onclick="toggleSunbed(event,'${bookingId}','R')" title="${tR}"></div>`;
     el.innerHTML = `
       <div class="u-canopy">${umbrellaSVG()}</div>
       <div class="u-badge">${u.id}</div>
