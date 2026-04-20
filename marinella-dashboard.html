@@ -1550,17 +1550,17 @@ tr:last-child td { border-bottom: none; }
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
         <div>
           <h3 style="font-size:16px;font-weight:600">Lettini singoli — Spiaggia libera</h3>
-          <p style="font-size:13px;color:var(--sand-700);margin-top:4px">12 €/giornata · 8 €/mezza giornata</p>
+          <p style="font-size:13px;color:var(--sand-700);margin-top:4px">12 €/giornata · 8 €/mezza giornata (Delibera 173/2025)</p>
         </div>
-        <button class="btn btn-primary" onclick="toast('Prossimamente disponibile','ok')">+ Nuovo lettino</button>
+        <button class="btn btn-primary" onclick="openSunbedModal()">+ Nuovo lettino</button>
       </div>
       <div class="table-wrap">
         <table>
           <thead>
-            <tr><th>Data</th><th>Cliente</th><th>Tipo</th><th>Q.tà</th><th>Stato</th><th style="text-align:right">Totale</th></tr>
+            <tr><th>Data</th><th>Cliente</th><th>Tipo</th><th>Q.tà</th><th>Pag.</th><th>Stato</th><th style="text-align:right">Totale</th><th></th></tr>
           </thead>
           <tbody id="sunbedsTable">
-            <tr><td colspan="6" style="text-align:center;padding:40px;color:var(--sand-700)">Nessuna prenotazione lettini oggi</td></tr>
+            <tr><td colspan="8" class="loading">Caricamento…</td></tr>
           </tbody>
         </table>
       </div>
@@ -1722,6 +1722,99 @@ tr:last-child td { border-bottom: none; }
       </button>
       <button class="btn btn-success" id="btnCheckIn" onclick="checkIn()" style="display:none">✓ Check-in</button>
       <button class="btn btn-primary" id="btnSave" onclick="saveBooking()">Prenota</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL LETTINO SINGOLO -->
+<div class="modal-backdrop" id="sunbedModal">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="badge" style="background:linear-gradient(135deg,var(--sand-400),var(--sand-700))">▭</div>
+      <div>
+        <h3>Lettino singolo</h3>
+        <p>Spiaggia libera — Delibera 173/2025</p>
+      </div>
+      <button class="modal-close" onclick="closeSunbedModal()">×</button>
+    </div>
+    <div class="modal-body">
+
+      <!-- Tipo -->
+      <div class="form-section">
+        <h4>Tipo</h4>
+        <div class="type-grid" id="sunbedTypeGrid">
+          <button class="type-btn active" data-type="daily">Giornata<small>12 €/lettino</small></button>
+          <button class="type-btn" data-type="half_day_am">Mattina<small>8 € · fino 13:00</small></button>
+          <button class="type-btn" data-type="half_day_pm">Pomeriggio<small>8 € · dalle 13:00</small></button>
+        </div>
+      </div>
+
+      <!-- Data -->
+      <div class="form-section">
+        <h4>Data</h4>
+        <div class="form-grid full">
+          <div><label>Data</label><input type="date" id="sbDate"></div>
+        </div>
+      </div>
+
+      <!-- Quantità -->
+      <div class="form-section">
+        <h4>Quantità lettini</h4>
+        <div class="form-grid">
+          <div>
+            <label>Numero lettini</label>
+            <select id="sbQuantity">
+              <option value="1">1 lettino</option>
+              <option value="2">2 lettini</option>
+              <option value="3">3 lettini</option>
+              <option value="4">4 lettini</option>
+              <option value="5">5 lettini</option>
+            </select>
+          </div>
+          <div style="display:flex;align-items:flex-end">
+            <div style="padding:10px 12px;background:rgba(232,90,79,.07);border:1px solid rgba(232,90,79,.2);border-radius:var(--r-sm);display:flex;align-items:center;gap:8px;width:100%">
+              <input type="checkbox" id="sbDisability" style="width:16px;height:16px;cursor:pointer">
+              <label for="sbDisability" style="margin:0;text-transform:none;font-size:12px;font-weight:500;cursor:pointer">Sconto disabili <strong>−30%</strong></label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cliente -->
+      <div class="form-section">
+        <h4>Cliente</h4>
+        <div class="form-grid">
+          <div><label>Nome</label><input type="text" id="sbFirstName" placeholder="Mario"></div>
+          <div><label>Cognome</label><input type="text" id="sbLastName" placeholder="Rossi"></div>
+          <div><label>Telefono</label><input type="tel" id="sbPhone" placeholder="+39 333 1234567"></div>
+          <div><label>Email (opzionale)</label><input type="email" id="sbEmail"></div>
+        </div>
+      </div>
+
+      <!-- Prezzo -->
+      <div class="form-section">
+        <h4>Riepilogo</h4>
+        <div class="price-box">
+          <div class="price-row"><span id="sbPriceLabel">Lettini (1 × 12 €)</span><span><span id="sbBase">12</span> €</span></div>
+          <div class="price-row total"><span>Totale</span><span class="v"><span id="sbTotal">12</span> €</span></div>
+        </div>
+        <div style="margin-top:12px">
+          <label>Pagamento</label>
+          <select id="sbPayment">
+            <option value="">Nessuno / in sospeso</option>
+            <option value="cash">💵 Contanti</option>
+            <option value="card_pos">💳 Carta POS</option>
+          </select>
+        </div>
+        <div style="margin-top:12px">
+          <label>Note</label>
+          <textarea id="sbNotes" rows="2" placeholder="Note…"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeSunbedModal()">Annulla</button>
+      <button class="btn btn-primary" onclick="saveSunbedBooking()">Prenota lettino</button>
     </div>
   </div>
 </div>
@@ -3307,6 +3400,7 @@ function switchView(name) {
   if (name === 'heatmap') loadHeatmap();
   if (name === 'arrivals') renderArrivals();
   if (name === 'cassa') loadCassa();
+  if (name === 'sunbeds') loadSunbeds();
 }
 
 function shiftDate(delta) {
@@ -3439,6 +3533,184 @@ async function toggleSunbed(event, bookingId, side) {
   }
 }
 
+
+
+// ============================================================
+// LETTINI SINGOLI
+// ============================================================
+function openSunbedModal(existing = null) {
+  document.getElementById('sbDate').value = state.currentDate;
+  document.getElementById('sbQuantity').value = '1';
+  document.getElementById('sbDisability').checked = false;
+  document.getElementById('sbFirstName').value = '';
+  document.getElementById('sbLastName').value = '';
+  document.getElementById('sbPhone').value = '';
+  document.getElementById('sbEmail').value = '';
+  document.getElementById('sbPayment').value = '';
+  document.getElementById('sbNotes').value = '';
+  document.querySelectorAll('#sunbedTypeGrid .type-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('#sunbedTypeGrid .type-btn[data-type="daily"]').classList.add('active');
+  updateSunbedPrice();
+  document.getElementById('sunbedModal').classList.add('open');
+}
+
+function closeSunbedModal() {
+  document.getElementById('sunbedModal').classList.remove('open');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('sunbedTypeGrid')?.addEventListener('click', e => {
+    const btn = e.target.closest('.type-btn');
+    if (!btn) return;
+    document.querySelectorAll('#sunbedTypeGrid .type-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    updateSunbedPrice();
+  });
+  document.getElementById('sbQuantity')?.addEventListener('change', updateSunbedPrice);
+  document.getElementById('sbDisability')?.addEventListener('change', updateSunbedPrice);
+});
+
+function updateSunbedPrice() {
+  const type = document.querySelector('#sunbedTypeGrid .type-btn.active')?.dataset.type || 'daily';
+  const qty = parseInt(document.getElementById('sbQuantity')?.value || 1);
+  const disability = document.getElementById('sbDisability')?.checked || false;
+
+  const PRICES = { daily: 12, half_day_am: 8, half_day_pm: 8 };
+  let unitPrice = PRICES[type] || 12;
+  let total = unitPrice * qty;
+  if (disability) total = Math.round(total * 0.70);
+
+  const label = `Lettini (${qty} × ${unitPrice} €${disability ? ' −30%' : ''})`;
+  document.getElementById('sbPriceLabel').textContent = label;
+  document.getElementById('sbBase').textContent = total;
+  document.getElementById('sbTotal').textContent = total;
+}
+
+async function saveSunbedBooking() {
+  const type = document.querySelector('#sunbedTypeGrid .type-btn.active')?.dataset.type || 'daily';
+  const date = document.getElementById('sbDate').value;
+  const qty = parseInt(document.getElementById('sbQuantity').value);
+  const disability = document.getElementById('sbDisability').checked;
+  const firstName = document.getElementById('sbFirstName').value.trim();
+  const lastName = document.getElementById('sbLastName').value.trim();
+  const phone = document.getElementById('sbPhone').value.trim();
+  const email = document.getElementById('sbEmail').value.trim();
+  const payment = document.getElementById('sbPayment').value;
+  const notes = document.getElementById('sbNotes').value.trim();
+
+  if (!firstName || !lastName) { toast('Inserisci nome e cognome', 'err'); return; }
+  if (!date) { toast('Inserisci la data', 'err'); return; }
+
+  const PRICES = { daily: 12, half_day_am: 8, half_day_pm: 8 };
+  const unitPrice = PRICES[type] || 12;
+  let total = unitPrice * qty;
+  if (disability) total = Math.round(total * 0.70);
+
+  if (!isConfigured) { toast('Demo mode', 'err'); return; }
+
+  try {
+    // Upsert cliente
+    let customerId;
+    if (phone) {
+      const { data: ex } = await sb.from('customers').select('id').eq('phone', phone).eq('last_name', lastName).eq('first_name', firstName).maybeSingle();
+      if (ex) customerId = ex.id;
+    }
+    if (!customerId) {
+      const { data, error } = await sb.from('customers').insert({
+        first_name: firstName, last_name: lastName, phone: phone||null, email: email||null
+      }).select('id').single();
+      if (error) throw error;
+      customerId = data.id;
+    }
+
+    // Inserisci prenotazione lettino
+    const { data: sb_data, error } = await sb.from('single_sunbed_bookings').insert({
+      customer_id: customerId,
+      booking_type: type,
+      date_booking: date,
+      quantity: qty,
+      price_unit: unitPrice,
+      price_total: total,
+      disability_discount: disability,
+      status: 'confirmed',
+      payment_status: payment ? 'paid' : 'pending',
+      notes: notes || null,
+    }).select('id').single();
+    if (error) throw error;
+
+    // Pagamento immediato
+    if (payment) {
+      await sb.from('payments').insert({
+        single_sunbed_booking_id: sb_data.id,
+        amount: total,
+        method: payment,
+        type: 'payment',
+      });
+    }
+
+    toast('Lettino prenotato ✓', 'ok');
+    closeSunbedModal();
+    loadSunbeds();
+  } catch (e) {
+    toast('Errore: ' + e.message, 'err');
+  }
+}
+
+async function loadSunbeds() {
+  if (!isConfigured) {
+    document.getElementById('sunbedsTable').innerHTML = '<tr><td colspan="8" style="text-align:center;padding:30px;color:var(--sand-700)">Nessuna prenotazione lettini</td></tr>';
+    return;
+  }
+  const date = state.currentDate;
+  const { data } = await sb
+    .from('single_sunbed_bookings')
+    .select('*, customers(first_name, last_name, phone)')
+    .eq('date_booking', date)
+    .order('created_at', { ascending: false });
+
+  const rows = (data || []);
+  if (!rows.length) {
+    document.getElementById('sunbedsTable').innerHTML = '<tr><td colspan="8" style="text-align:center;padding:30px;color:var(--sand-700)">Nessuna prenotazione lettini oggi</td></tr>';
+    return;
+  }
+
+  document.getElementById('sunbedsTable').innerHTML = rows.map(r => {
+    const name = r.customers ? `${r.customers.last_name} ${r.customers.first_name}` : '—';
+    const payClass = r.payment_status === 'paid' ? 'paid' : 'pending';
+    const payLabel = r.payment_status === 'paid' ? 'Pagato' : 'Da pagare';
+    return `<tr>
+      <td>${formatDate(r.date_booking)}</td>
+      <td><strong>${name}</strong>${r.customers?.phone ? '<br><small>' + r.customers.phone + '</small>' : ''}</td>
+      <td>${typeLabel(r.booking_type)}</td>
+      <td style="text-align:center">${r.quantity}</td>
+      <td><span class="pay-pill ${payClass}">${payLabel}</span></td>
+      <td><span class="status-pill ${r.status}">${statusLabel(r.status)}</span></td>
+      <td style="text-align:right"><strong>${r.price_total.toFixed(2)} €</strong>${r.disability_discount ? '<br><small style="color:var(--coral-dk)">−30%</small>' : ''}</td>
+      <td>
+        ${r.payment_status !== 'paid' ? `
+          <button class="cassa-btn cassa-btn-cash" style="margin-right:4px" onclick="incassaSunbed('${r.id}', 'cash', ${r.price_total})">💵</button>
+          <button class="cassa-btn cassa-btn-card" onclick="incassaSunbed('${r.id}', 'card_pos', ${r.price_total})">💳</button>
+        ` : ''}
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+async function incassaSunbed(id, method, amount) {
+  try {
+    await sb.from('payments').insert({
+      single_sunbed_booking_id: id,
+      amount: parseFloat(amount),
+      method: method,
+      type: 'payment',
+    });
+    await sb.from('single_sunbed_bookings').update({ payment_status: 'paid' }).eq('id', id);
+    toast(`Incassato ${amount} € ✓`, 'ok');
+    loadSunbeds();
+  } catch (e) {
+    toast('Errore: ' + e.message, 'err');
+  }
+}
 
 // ============================================================
 // CASSA
