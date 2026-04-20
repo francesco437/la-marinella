@@ -3539,6 +3539,7 @@ async function toggleSunbed(event, bookingId, side) {
 // LETTINI SINGOLI
 // ============================================================
 function openSunbedModal(existing = null) {
+  initSunbedListeners();
   document.getElementById('sbDate').value = state.currentDate;
   document.getElementById('sbQuantity').value = '1';
   document.getElementById('sbDisability').checked = false;
@@ -3558,17 +3559,21 @@ function closeSunbedModal() {
   document.getElementById('sunbedModal').classList.remove('open');
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('sunbedTypeGrid')?.addEventListener('click', e => {
+// listener bottoni sunbed — inizializzati al primo openSunbedModal
+let sunbedListenersInit = false;
+function initSunbedListeners() {
+  if (sunbedListenersInit) return;
+  sunbedListenersInit = true;
+  document.getElementById('sunbedTypeGrid').addEventListener('click', e => {
     const btn = e.target.closest('.type-btn');
     if (!btn) return;
     document.querySelectorAll('#sunbedTypeGrid .type-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     updateSunbedPrice();
   });
-  document.getElementById('sbQuantity')?.addEventListener('change', updateSunbedPrice);
-  document.getElementById('sbDisability')?.addEventListener('change', updateSunbedPrice);
-});
+  document.getElementById('sbQuantity').addEventListener('change', updateSunbedPrice);
+  document.getElementById('sbDisability').addEventListener('change', updateSunbedPrice);
+}
 
 function updateSunbedPrice() {
   const type = document.querySelector('#sunbedTypeGrid .type-btn.active')?.dataset.type || 'daily';
