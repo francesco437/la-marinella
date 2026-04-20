@@ -2693,6 +2693,7 @@ function openModal(umbrella, existingBooking) {
   document.getElementById('mAdults').value = '2';
   document.getElementById('mChildren').value = '0';
   document.getElementById('mDisabilityDiscount').checked = false;
+  document.getElementById('mDisabilityDiscount').onchange = updatePrice;
   document.getElementById('mPayment').value = '';
   document.getElementById('mDeposit').value = '0';
   document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
@@ -2774,6 +2775,7 @@ function openMultiModal(umbrellas) {
   document.getElementById('mAdults').value = '2';
   document.getElementById('mChildren').value = '0';
   document.getElementById('mDisabilityDiscount').checked = false;
+  document.getElementById('mDisabilityDiscount').onchange = updatePrice;
   document.getElementById('mDeposit').value = '0';
   document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
   document.querySelector('.type-btn[data-type="daily"]').classList.add('active');
