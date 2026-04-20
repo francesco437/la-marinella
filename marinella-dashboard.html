@@ -1504,17 +1504,15 @@ tr:last-child td { border-bottom: none; }
       <!-- Dettagli -->
       <div class="form-section">
         <h4>Dettagli</h4>
-        <div class="form-grid triple">
-          <div>
-            <label>Sdraio</label>
-            <select id="mSunbeds">
-              <option value="2">2 sdraio</option>
-              <option value="1">1 sdraio</option>
-              <option value="0">Nessuna</option>
-            </select>
-          </div>
+        <div class="form-grid">
           <div><label>Adulti</label><input type="number" id="mAdults" min="1" value="2"></div>
           <div><label>Bambini</label><input type="number" id="mChildren" min="0" value="0"></div>
+        </div>
+        <div style="margin-top:12px;padding:10px 12px;background:rgba(232,90,79,.07);border:1px solid rgba(232,90,79,.2);border-radius:var(--r-sm);display:flex;align-items:center;gap:10px">
+          <input type="checkbox" id="mDisabilityDiscount" style="width:18px;height:18px;flex-shrink:0;cursor:pointer">
+          <label for="mDisabilityDiscount" style="margin:0;text-transform:none;font-size:13px;font-weight:500;color:var(--sand-900);cursor:pointer">
+            Sconto disabili <strong>&gt;74% invalidità</strong> — obbligatorio per legge <strong style="color:var(--coral-dk)">−30%</strong>
+          </label>
         </div>
       </div>
 
