@@ -1072,35 +1072,29 @@ tr:last-child td { border-bottom: none; }
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  left: calc(100% + 6px);
+  left: calc(100% + 18px);
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 4px;
   z-index: 5;
 }
 .u-sunbed {
-  width: 12px;
-  height: 20px;
-  border-radius: 2px;
+  width: 13px;
+  height: 22px;
+  border-radius: 3px;
   background: white;
-  border: 1.5px solid var(--sand-900);
+  border: 1.5px solid rgba(43,34,18,0.5);
   cursor: pointer;
-  transition: background .15s, border-color .15s;
-  box-shadow: 0 1px 2px rgba(0,0,0,.15);
+  transition: background .15s, border-color .15s, transform .1s;
+  box-shadow: 0 1px 3px rgba(0,0,0,.18);
 }
 .u-sunbed:hover {
+  transform: scale(1.1);
   border-color: var(--sea-600);
 }
 .u-sunbed.occupied {
   background: var(--coral);
   border-color: var(--coral-dk);
-}
-.u-sunbed.occupied::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
 }
 </style>
 </head>
@@ -2009,14 +2003,21 @@ function renderMap() {
 
     if (state.multiSelection.has(u.id)) el.classList.add('multi-selected');
 
-    // Sdraio con stato live (stile D)
-    const sunbedL = booking?.sunbed_L_occupied;
-    const sunbedR = booking?.sunbed_R_occupied;
-    const sunbedsHtml = booking ? `
+    // Sdraio con stato live (stile D) — visibili sempre, cliccabili solo se prenotato
+    const sunbedL = booking?.sunbed_L_occupied || false;
+    const sunbedR = booking?.sunbed_R_occupied || false;
+    const bookingId = booking?.id || '';
+    const sunbedsHtml = `
       <div class="u-sunbeds">
-        <div class="u-sunbed ${sunbedL ? 'occupied' : ''}" data-booking="${booking?.id}" data-side="L" onclick="toggleSunbed(event, '${booking?.id}', 'L')"></div>
-        <div class="u-sunbed ${sunbedR ? 'occupied' : ''}" data-booking="${booking?.id}" data-side="R" onclick="toggleSunbed(event, '${booking?.id}', 'R')"></div>
-      </div>` : '';
+        <div class="u-sunbed ${sunbedL ? 'occupied' : ''}"
+          onclick="toggleSunbed(event, '${bookingId}', 'L')"
+          title="${booking ? (sunbedL ? 'Sdraio sx: occupata — click per liberare' : 'Sdraio sx: libera — click per occupare') : 'Nessuna prenotazione'}">
+        </div>
+        <div class="u-sunbed ${sunbedR ? 'occupied' : ''}"
+          onclick="toggleSunbed(event, '${bookingId}', 'R')"
+          title="${booking ? (sunbedR ? 'Sdraio dx: occupata — click per liberare' : 'Sdraio dx: libera — click per occupare') : 'Nessuna prenotazione'}">
+        </div>
+      </div>`;
     el.innerHTML = `
       <div class="u-canopy">${umbrellaSVG()}</div>
       <div class="u-badge">${u.id}</div>
@@ -3205,7 +3206,10 @@ function toast(msg, variant='') {
 // ============================================================
 async function toggleSunbed(event, bookingId, side) {
   event.stopPropagation(); // non aprire modal
-  if (!bookingId) return;
+  if (!bookingId) {
+    toast('Nessuna prenotazione attiva su questo ombrellone', 'err');
+    return;
+  }
 
   const booking = state.bookings.find(b => b.id === bookingId);
   if (!booking) return;
