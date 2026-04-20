@@ -436,7 +436,7 @@ label { font-size: 11px; color: var(--sand-700); font-weight: 500; display: bloc
 /* Colori principali per i 4 spicchi colorati, iniettati via CSS var */
 .umbrella[data-status="free"]    { --u-color: #3A9B7A; --u-color-label: #1E5D4A; }
 .umbrella[data-status="booked"]  { --u-color: #E85A4F; --u-color-label: #A3332A; }
-.umbrella[data-status="arrived"] { --u-color: #1F6268; --u-color-label: #0E3A40; }
+.umbrella[data-status="arrived"] { --u-color: #F2C14E; --u-color-label: #8E6A0A; }
 .umbrella[data-status="off"]     { --u-color: #B89768; --u-color-label: #6B5437; opacity: .45; }
 
 /* Spicchi colorati: i path con classe .u-slice-c */
@@ -1067,6 +1067,88 @@ tr:last-child td { border-bottom: none; }
   }
 }
 
+/* CASSA */
+.cassa-grid {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 16px;
+  align-items: start;
+}
+.cassa-panel {
+  background: white;
+  border-radius: var(--r-md);
+  box-shadow: var(--sh-sm);
+  border: 1px solid var(--sand-100);
+  overflow: hidden;
+}
+.cassa-panel-head {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--sand-100);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.cassa-panel-head h3 { font-size: 15px; font-weight: 600; }
+.cassa-item {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--sand-100);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.cassa-item:last-child { border: none; }
+.cassa-umbrella {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--sea-400), var(--sea-600));
+  color: white;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 14px; flex-shrink: 0;
+}
+.cassa-info { flex: 1; min-width: 0; }
+.cassa-name { font-size: 14px; font-weight: 600; color: var(--sand-900); }
+.cassa-meta { font-size: 12px; color: var(--sand-700); margin-top: 2px; }
+.cassa-amount { font-family: 'Instrument Serif', serif; font-size: 20px; color: var(--sand-900); margin-right: 8px; }
+.cassa-actions { display: flex; gap: 6px; flex-shrink: 0; align-items: center; }
+.cassa-btn {
+  padding: 7px 12px; border-radius: var(--r-sm);
+  font-size: 12px; font-weight: 600;
+  transition: all .15s; cursor: pointer; border: none;
+}
+.cassa-btn-cash { background: #E8F5E9; color: #2E7D32; }
+.cassa-btn-cash:hover { background: #2E7D32; color: white; }
+.cassa-btn-card { background: #E3F2FD; color: #1565C0; }
+.cassa-btn-card:hover { background: #1565C0; color: white; }
+.pay-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 4px 10px; border-radius: 20px;
+  font-size: 11px; font-weight: 700;
+}
+.pay-badge.unpaid { background: #FBEDEC; color: var(--coral-dk); }
+.pay-badge.partial { background: #FEF3DC; color: #8E5F13; }
+.pay-badge.paid { background: #E8F5E9; color: #2E7D32; }
+.kpi-cassa {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--sand-100);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.kpi-cassa:last-child { border: none; }
+.kpi-cassa-label { font-size: 13px; color: var(--sand-700); }
+.kpi-cassa-value { font-family: 'Instrument Serif', serif; font-size: 24px; color: var(--sand-900); }
+.btn-chiudi-cassa {
+  width: calc(100% - 40px);
+  margin: 16px 20px;
+  padding: 12px;
+  border-radius: var(--r-sm);
+  background: var(--sea-600);
+  color: white;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  border: none;
+  transition: all .15s;
+}
+.btn-chiudi-cassa:hover { background: var(--sea-800); }
+
 /* SDRAIO LIVE — ai lati dell'ombrellone, stile approvato */
 .u-sunbed-L {
   position: absolute;
@@ -1163,6 +1245,10 @@ tr:last-child td { border-bottom: none; }
     <button class="nav-item" data-view="extras">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
       <span>Extras (pedalò)</span>
+    </button>
+    <button class="nav-item" data-view="cassa">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+      <span>Cassa</span>
     </button>
     <button class="nav-item" data-view="heatmap">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v6M12 17v6M4.22 4.22l4.24 4.24M15.54 15.54l4.24 4.24M1 12h6M17 12h6M4.22 19.78l4.24-4.24M15.54 8.46l4.24-4.24"/></svg>
@@ -1275,8 +1361,8 @@ tr:last-child td { border-bottom: none; }
           </div>
           <div style="flex:1"></div>
           <div class="planner-zoom">
-            <button data-days="7" onclick="setPlannerDays(7)">7g</button>
-            <button class="active" data-days="14" onclick="setPlannerDays(14)">14g</button>
+            <button class="active" data-days="7" onclick="setPlannerDays(7)">7g</button>
+            <button data-days="14" onclick="setPlannerDays(14)">14g</button>
             <button data-days="30" onclick="setPlannerDays(30)">30g</button>
           </div>
         </div>
@@ -1300,6 +1386,68 @@ tr:last-child td { border-bottom: none; }
             <span class="arrivals-count" id="departuresCount">0</span>
           </div>
           <div id="departuresList"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW: CASSA -->
+    <section class="view hidden" id="view-cassa">
+      <div class="cassa-grid">
+        <!-- Colonna sinistra: lista da incassare -->
+        <div>
+          <div class="cassa-panel" style="margin-bottom:16px">
+            <div class="cassa-panel-head">
+              <h3>💰 Da incassare oggi</h3>
+              <span class="arrivals-count" id="cassaUnpaidCount">0</span>
+            </div>
+            <div id="cassaUnpaidList">
+              <div class="loading">Caricamento…</div>
+            </div>
+          </div>
+          <div class="cassa-panel">
+            <div class="cassa-panel-head">
+              <h3>✅ Già pagati oggi</h3>
+              <span class="arrivals-count" id="cassaPaidCount">0</span>
+            </div>
+            <div id="cassaPaidList">
+              <div class="loading">Caricamento…</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Colonna destra: riepilogo + Z-Report -->
+        <div>
+          <div class="cassa-panel" style="margin-bottom:16px">
+            <div class="cassa-panel-head">
+              <h3>📊 Riepilogo giornata</h3>
+            </div>
+            <div class="kpi-cassa">
+              <span class="kpi-cassa-label">💵 Cash</span>
+              <span class="kpi-cassa-value" id="cassaCash">0 €</span>
+            </div>
+            <div class="kpi-cassa">
+              <span class="kpi-cassa-label">💳 Carta</span>
+              <span class="kpi-cassa-value" id="cassaCard">0 €</span>
+            </div>
+            <div class="kpi-cassa" style="border-top:2px solid var(--sand-200);margin-top:4px">
+              <span class="kpi-cassa-label" style="font-weight:600;color:var(--sand-900)">Totale incassato</span>
+              <span class="kpi-cassa-value" style="color:var(--ok)" id="cassaTotale">0 €</span>
+            </div>
+            <div class="kpi-cassa">
+              <span class="kpi-cassa-label" style="color:var(--coral-dk)">Da incassare</span>
+              <span class="kpi-cassa-value" style="color:var(--coral-dk)" id="cassaDaIncassare">0 €</span>
+            </div>
+          </div>
+
+          <div class="cassa-panel">
+            <div class="cassa-panel-head">
+              <h3>🖨️ Chiusura cassa</h3>
+            </div>
+            <div style="padding:16px 20px;font-size:13px;color:var(--sand-700);line-height:1.6">
+              Genera il riepilogo di fine giornata con totali per metodo di pagamento.
+            </div>
+            <button class="btn-chiudi-cassa" onclick="chiudiCassa()">Chiudi cassa e stampa Z-Report</button>
+          </div>
         </div>
       </div>
     </section>
@@ -1567,6 +1715,7 @@ tr:last-child td { border-bottom: none; }
     <div class="modal-foot">
       <button class="btn btn-danger" id="btnDelete" onclick="deleteBooking()" style="display:none">Elimina</button>
       <button class="btn btn-ghost" onclick="closeModal()">Annulla</button>
+      <button class="btn" id="btnToggleService" onclick="toggleUmbrellaService()" style="display:none; background:var(--sand-200); color:var(--sand-700)">⚠ Fuori servizio</button>
       <button class="btn btn-whatsapp" id="btnWhatsapp" onclick="sendDepositWA()" style="display:none">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.2-1.7-.8-2-.9s-.5-.2-.7.2-.8.9-1 1.1-.4.2-.7.1c-.9-.4-1.7-.9-2.4-1.7-.7-.8-1.2-1.6-1.5-2.5-.2-.4 0-.6.2-.8.2-.2.4-.4.5-.6.1-.2.2-.3.3-.5.1-.2 0-.4 0-.6l-.9-2.1c-.2-.5-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.3s1 2.7 1.2 2.9c.1.2 2 3.1 5 4.3.7.3 1.2.5 1.7.6.7.2 1.3.2 1.8.1.6-.1 1.7-.7 2-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.4zM12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.4 1.3 4.9L2 22l5.2-1.4c1.4.8 3 1.2 4.8 1.2 5.5 0 10-4.5 10-10S17.5 2 12 2z"/></svg>
         WhatsApp
@@ -1702,7 +1851,7 @@ const state = {
   layoutMode: false,
   layoutSnapshot: null,  // [{id, x, y}]
   activeDrag: null,      // { umbrellaId, pointerId, el }
-  plannerDays: 14,
+  plannerDays: 7,
   plannerStart: new Date().toISOString().slice(0,10),
 };
 
@@ -2747,6 +2896,19 @@ function openModal(umbrella, existingBooking) {
     btnSave.textContent = 'Prenota';
   }
 
+  // Bottone fuori servizio
+  const btnService = document.getElementById('btnToggleService');
+  btnService.style.display = 'inline-flex';
+  if (umbrella.state === 'out_of_service') {
+    btnService.textContent = '✓ Riattiva ombrellone';
+    btnService.style.background = 'var(--ok)';
+    btnService.style.color = 'white';
+  } else {
+    btnService.textContent = '⚠ Fuori servizio';
+    btnService.style.background = 'var(--sand-200)';
+    btnService.style.color = 'var(--sand-700)';
+  }
+
   btnWA.style.display = 'none'; // si mostra dopo save se c'è acconto
   updatePrice();
   document.getElementById('bookingModal').classList.add('open');
@@ -2777,6 +2939,7 @@ function openMultiModal(umbrellas) {
   document.getElementById('btnDelete').style.display = 'none';
   document.getElementById('btnCheckIn').style.display = 'none';
   document.getElementById('btnWhatsapp').style.display = 'none';
+  document.getElementById('btnToggleService').style.display = 'none';
   document.getElementById('btnSave').textContent = `Prenota ${umbrellas.length} ombrelloni`;
 
   updatePrice();
@@ -2943,15 +3106,23 @@ async function saveBooking() {
       const { data: existing } = await sb.from('customers').select('id').eq('email', email).maybeSingle();
       if (existing) {
         customerId = existing.id;
-        await sb.from('customers').update({ first_name:firstName, last_name:lastName, phone }).eq('id', customerId);
+        await sb.from('customers').update({ first_name:firstName, last_name:lastName, phone:phone||null }).eq('id', customerId);
       }
     }
     if (!customerId) {
-      const { data, error } = await sb.from('customers').insert({
-        first_name:firstName, last_name:lastName, phone:phone||null, email:email||null
-      }).select('id').single();
-      if (error) throw error;
-      customerId = data.id;
+      // Prova prima a trovare cliente per cognome+nome+telefono
+      if (phone) {
+        const { data: existing } = await sb.from('customers')
+          .select('id').eq('phone', phone).eq('last_name', lastName).eq('first_name', firstName).maybeSingle();
+        if (existing) customerId = existing.id;
+      }
+      if (!customerId) {
+        const { data, error } = await sb.from('customers').insert({
+          first_name:firstName, last_name:lastName, phone:phone||null, email:email||null
+        }).select('id').single();
+        if (error) throw error;
+        customerId = data.id;
+      }
     }
 
     const umbrellas = s.isMulti ? s.umbrellas : [s.umbrella];
@@ -3124,6 +3295,7 @@ function switchView(name) {
     pricing:'Tariffe (Delibera 173/2025)',
     sunbeds:'Lettini singoli — Spiaggia libera',
     extras:'Extras — Pedalò',
+    cassa:'Cassa',
   };
   document.getElementById('viewTitle').textContent = titles[name];
   document.getElementById('datePicker').style.visibility = (name === 'map' || name === 'arrivals') ? 'visible' : 'hidden';
@@ -3134,6 +3306,7 @@ function switchView(name) {
   if (name === 'planner') loadPlannerBookings();
   if (name === 'heatmap') loadHeatmap();
   if (name === 'arrivals') renderArrivals();
+  if (name === 'cassa') loadCassa();
 }
 
 function shiftDate(delta) {
@@ -3195,6 +3368,37 @@ function toast(msg, variant='') {
 
 
 // ============================================================
+// FUORI SERVIZIO — toggle stato ombrellone
+// ============================================================
+async function toggleUmbrellaService() {
+  const s = state.selected;
+  if (!s) return;
+  const umbrella = s.umbrella;
+  const newState = umbrella.state === 'out_of_service' ? 'active' : 'out_of_service';
+  const label = newState === 'out_of_service' ? 'fuori servizio' : 'riattivato';
+
+  if (!isConfigured) {
+    umbrella.state = newState;
+    umbrella.active = newState === 'active';
+    toast(`Ombrellone ${umbrella.id} ${label} (demo)`, 'ok');
+    closeModal();
+    loadForDate();
+    return;
+  }
+
+  try {
+    const { error } = await sb.from('umbrellas').update({ state: newState }).eq('id', umbrella.id);
+    if (error) throw error;
+    toast(`Ombrellone ${umbrella.id} ${label}`, 'ok');
+    closeModal();
+    await loadUmbrellas();
+    render();
+  } catch (e) {
+    toast('Errore: ' + e.message, 'err');
+  }
+}
+
+// ============================================================
 // SDRAIO LIVE — toggle occupato/libero
 // ============================================================
 async function toggleSunbed(event, bookingId, side) {
@@ -3233,6 +3437,165 @@ async function toggleSunbed(event, bookingId, side) {
     renderMap();
     toast('Errore aggiornamento sdraio', 'err');
   }
+}
+
+
+// ============================================================
+// CASSA
+// ============================================================
+async function loadCassa() {
+  const date = state.currentDate;
+
+  let bookings = [];
+  if (!isConfigured) {
+    bookings = state.bookings.map(b => ({
+      ...b,
+      payment_method: b.price_paid >= b.price_total ? 'cash' : null,
+    }));
+  } else {
+    const { data } = await sb
+      .from('bookings')
+      .select('*, customers(first_name, last_name, phone)')
+      .lte('date_from', date)
+      .gte('date_to', date)
+      .in('status', ['confirmed','checked_in','completed']);
+    bookings = (data || []).map(b => ({
+      ...b,
+      customer_name: b.customers ? `${b.customers.last_name} ${b.customers.first_name}` : '—',
+      customer_phone: b.customers?.phone,
+    }));
+  }
+
+  // Carica pagamenti di oggi
+  let payments = [];
+  if (isConfigured) {
+    const { data } = await sb
+      .from('payments')
+      .select('*')
+      .gte('paid_at', date + 'T00:00:00')
+      .lte('paid_at', date + 'T23:59:59');
+    payments = data || [];
+  }
+
+  // Calcola totali per metodo
+  let cashTotal = 0, cardTotal = 0;
+  payments.forEach(p => {
+    const amt = p.type === 'refund' ? -p.amount : p.amount;
+    if (p.method === 'cash') cashTotal += amt;
+    else if (p.method === 'card_pos') cardTotal += amt;
+  });
+
+  // Dividi prenotazioni in pagate e da pagare
+  const unpaid = bookings.filter(b => b.payment_status !== 'paid');
+  const paid   = bookings.filter(b => b.payment_status === 'paid');
+  const daIncassare = unpaid.reduce((s, b) => s + (b.price_total - b.price_paid), 0);
+
+  // Aggiorna contatori
+  document.getElementById('cassaUnpaidCount').textContent = unpaid.length;
+  document.getElementById('cassaPaidCount').textContent = paid.length;
+  document.getElementById('cassaCash').textContent = cashTotal.toFixed(2) + ' €';
+  document.getElementById('cassaCard').textContent = cardTotal.toFixed(2) + ' €';
+  document.getElementById('cassaTotale').textContent = (cashTotal + cardTotal).toFixed(2) + ' €';
+  document.getElementById('cassaDaIncassare').textContent = daIncassare.toFixed(2) + ' €';
+
+  // Render lista da pagare
+  const unpaidList = document.getElementById('cassaUnpaidList');
+  if (!unpaid.length) {
+    unpaidList.innerHTML = '<div style="padding:24px;text-align:center;color:var(--sand-700);font-size:13px">✅ Tutti hanno pagato!</div>';
+  } else {
+    unpaidList.innerHTML = unpaid.map(b => {
+      const resto = (b.price_total - b.price_paid).toFixed(2);
+      const badgeClass = b.payment_status === 'partial' ? 'partial' : 'unpaid';
+      const badgeLabel = b.payment_status === 'partial' ? `Acconto · resta ${resto} €` : `Da pagare ${resto} €`;
+      return `
+        <div class="cassa-item">
+          <div class="cassa-umbrella">${b.umbrella_id}</div>
+          <div class="cassa-info">
+            <div class="cassa-name">${b.customer_name}</div>
+            <div class="cassa-meta">${typeLabel(b.booking_type)} · ${formatDate(b.date_from)}${b.date_from !== b.date_to ? ' → ' + formatDate(b.date_to) : ''}</div>
+          </div>
+          <div class="cassa-amount">${resto} €</div>
+          <div class="cassa-actions">
+            <span class="pay-badge ${badgeClass}">${badgeClass === 'partial' ? '½' : '€'}</span>
+            <button class="cassa-btn cassa-btn-cash" onclick="incassa('${b.id}', 'cash', ${resto})">💵 Cash</button>
+            <button class="cassa-btn cassa-btn-card" onclick="incassa('${b.id}', 'card_pos', ${resto})">💳 Carta</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // Render lista pagati
+  const paidList = document.getElementById('cassaPaidList');
+  if (!paid.length) {
+    paidList.innerHTML = '<div style="padding:24px;text-align:center;color:var(--sand-700);font-size:13px">Nessuna prenotazione pagata oggi</div>';
+  } else {
+    paidList.innerHTML = paid.map(b => `
+      <div class="cassa-item">
+        <div class="cassa-umbrella" style="background:linear-gradient(135deg,var(--ok),#2F7E63)">${b.umbrella_id}</div>
+        <div class="cassa-info">
+          <div class="cassa-name">${b.customer_name}</div>
+          <div class="cassa-meta">${typeLabel(b.booking_type)}</div>
+        </div>
+        <div class="cassa-amount">${b.price_total.toFixed(2)} €</div>
+        <span class="pay-badge paid">✓ Pagato</span>
+      </div>
+    `).join('');
+  }
+}
+
+async function incassa(bookingId, method, amount) {
+  if (!isConfigured) {
+    toast('Demo mode — configura Supabase per salvare', 'err');
+    return;
+  }
+  try {
+    // Inserisci pagamento
+    const { error: payErr } = await sb.from('payments').insert({
+      booking_id: bookingId,
+      amount: parseFloat(amount),
+      method: method,
+      type: 'payment',
+    });
+    if (payErr) throw payErr;
+    toast(`Incassato ${amount} € (${method === 'cash' ? 'contanti' : 'carta'})`, 'ok');
+    loadCassa();
+  } catch (e) {
+    toast('Errore: ' + e.message, 'err');
+  }
+}
+
+function chiudiCassa() {
+  const date = state.currentDate;
+  const cash = document.getElementById('cassaCash').textContent;
+  const card = document.getElementById('cassaCard').textContent;
+  const totale = document.getElementById('cassaTotale').textContent;
+  const daIncassare = document.getElementById('cassaDaIncassare').textContent;
+  const unpaid = document.getElementById('cassaUnpaidCount').textContent;
+
+  const report = `
+    <html><head><title>Z-Report ${date}</title>
+    <style>
+      body { font-family: 'Courier New', monospace; max-width: 400px; margin: 40px auto; padding: 20px; }
+      h1 { font-size: 18px; text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px; }
+      .row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px dashed #ccc; }
+      .total { font-weight: bold; font-size: 16px; border-top: 2px solid #000; margin-top: 10px; padding-top: 10px; }
+      .footer { text-align: center; margin-top: 20px; font-size: 11px; color: #666; }
+    </style></head>
+    <body>
+      <h1>LA MARINELLA<br>Z-Report ${date}</h1>
+      <div class="row"><span>💵 Contanti</span><span>${cash}</span></div>
+      <div class="row"><span>💳 Carta POS</span><span>${card}</span></div>
+      <div class="row total"><span>TOTALE INCASSATO</span><span>${totale}</span></div>
+      <div class="row" style="color:red"><span>Da incassare (${unpaid} prenotazioni)</span><span>${daIncassare}</span></div>
+      <div class="footer">Stampato il ${new Date().toLocaleString('it-IT')}<br>La Marinella — Albisola Superiore</div>
+    </body></html>
+  `;
+
+  const win = window.open('', '_blank');
+  win.document.write(report);
+  win.document.close();
+  win.print();
 }
 
 // ============================================================
