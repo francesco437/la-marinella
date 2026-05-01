@@ -60,7 +60,7 @@ html, body {
   font-feature-settings: 'cv11', 'ss01';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow: hidden;
+  overflow: hidden; /* overridden on mobile below */
 }
 h1, h2, h3, h4 { font-family: var(--ui-font); font-weight: 700; letter-spacing: -0.045em; }
 .serif { font-family: var(--ui-font); font-weight: 700; letter-spacing: -0.05em; }
@@ -1434,6 +1434,8 @@ tr:last-child td { border-bottom: none; }
   html, body {
     overflow-x: hidden;
     overflow-y: auto;
+    height: auto;
+    min-height: 100dvh;
   }
   .app {
     display: block;
@@ -1442,6 +1444,7 @@ tr:last-child td { border-bottom: none; }
     width: 100%;
     max-width: 100%;
     overflow-x: hidden;
+    overflow: visible;
   }
   .sidebar {
     position: fixed;
@@ -1482,8 +1485,10 @@ tr:last-child td { border-bottom: none; }
   }
   .main {
     display: block;
+    height: auto;
     min-height: 100dvh;
-    padding-bottom: 88px;
+    overflow: visible;
+    padding-bottom: calc(80px + env(safe-area-inset-bottom));
     width: 100%;
     max-width: 100%;
     overflow-x: hidden;
@@ -1497,6 +1502,7 @@ tr:last-child td { border-bottom: none; }
     align-items: flex-start;
     width: 100%;
     max-width: 100%;
+    -webkit-overflow-scrolling: touch;
   }
   .topbar h2 {
     font-size: 20px;
@@ -1518,6 +1524,7 @@ tr:last-child td { border-bottom: none; }
     width: 100%;
     max-width: 100%;
     overflow-x: hidden;
+    overflow-y: visible;
   }
   .multi-bar,
   .toast {
