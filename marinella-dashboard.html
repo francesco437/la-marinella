@@ -2217,7 +2217,8 @@ const DEMO_HEATMAP = DEMO_UMBRELLAS.map(u => ({
 // ============================================================
 // INIT
 // ============================================================
-document.getElementById('currentDate').value = state.currentDate;
+const currentDateInput = document.getElementById('currentDate');
+if (currentDateInput) currentDateInput.value = state.currentDate;
 const sunbedsDateInput = document.getElementById('sunbedsDate');
 if (sunbedsDateInput) sunbedsDateInput.value = state.sunbedsDate;
 
@@ -2225,27 +2226,36 @@ document.querySelectorAll('.nav-item').forEach(btn => {
   btn.addEventListener('click', () => switchView(btn.dataset.view));
 });
 
-document.getElementById('currentDate').addEventListener('change', e => {
-  state.currentDate = e.target.value;
-  loadForDate();
+if (currentDateInput) {
+  currentDateInput.addEventListener('change', e => {
+    state.currentDate = e.target.value;
+    loadForDate();
+  });
+}
+
+const bookingTypeGrid = document.getElementById('typeGrid');
+if (bookingTypeGrid) {
+  bookingTypeGrid.addEventListener('click', e => {
+    const btn = e.target.closest('.type-btn');
+    if (!btn) return;
+    document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    autoSetDates(btn.dataset.type);
+    updatePrice();
+  });
+}
+
+['mSunbeds','mDateFrom','mDateTo'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('change', updatePrice);
 });
 
-document.getElementById('typeGrid').addEventListener('click', e => {
-  const btn = e.target.closest('.type-btn');
-  if (!btn) return;
-  document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  autoSetDates(btn.dataset.type);
-  updatePrice();
-});
-
-['mSunbeds','mDateFrom','mDateTo'].forEach(id =>
-  document.getElementById(id).addEventListener('change', updatePrice)
-);
-
-document.getElementById('bookingModal').addEventListener('click', e => {
-  if (e.target.id === 'bookingModal') closeModal();
-});
+const bookingModalEl = document.getElementById('bookingModal');
+if (bookingModalEl) {
+  bookingModalEl.addEventListener('click', e => {
+    if (e.target.id === 'bookingModal') closeModal();
+  });
+}
 
 // ============================================================
 // LOAD
@@ -3871,16 +3881,20 @@ function closeSunbedModal() {
 var sunbedListenersInit = false;
 function initSunbedListeners() {
   if (sunbedListenersInit) return;
+  const typeGrid = document.getElementById('sunbedTypeGrid');
+  const qtyInput = document.getElementById('sbQuantity');
+  const disabilityInput = document.getElementById('sbDisability');
+  if (!typeGrid || !qtyInput || !disabilityInput) return;
   sunbedListenersInit = true;
-  document.getElementById('sunbedTypeGrid').addEventListener('click', e => {
+  typeGrid.addEventListener('click', e => {
     const btn = e.target.closest('.type-btn');
     if (!btn) return;
     document.querySelectorAll('#sunbedTypeGrid .type-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     updateSunbedPrice();
   });
-  document.getElementById('sbQuantity').addEventListener('change', updateSunbedPrice);
-  document.getElementById('sbDisability').addEventListener('change', updateSunbedPrice);
+  qtyInput.addEventListener('change', updateSunbedPrice);
+  disabilityInput.addEventListener('change', updateSunbedPrice);
 }
 
 function updateSunbedPrice() {
