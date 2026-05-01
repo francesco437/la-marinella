@@ -51,11 +51,7 @@
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
-/* Prevent any element from causing horizontal overflow on mobile */
-@media (max-width: 760px) {
-  * { max-width: 100%; }
-  img, svg { max-width: 100%; }
-}
+img, svg { max-width: 100%; }
 html, body {
   height: 100%;
   background: #FBFBF8;
@@ -66,6 +62,10 @@ html, body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow: hidden; /* overridden on mobile below */
+}
+body {
+  container-type: inline-size;
+  container-name: viewport-shell;
 }
 h1, h2, h3, h4 { font-family: var(--ui-font); font-weight: 700; letter-spacing: -0.045em; }
 .serif { font-family: var(--ui-font); font-weight: 700; letter-spacing: -0.05em; }
@@ -89,6 +89,7 @@ label { font-size: 11px; color: #7D8A81; font-weight: 600; display: block; margi
 
 /* LAYOUT */
 .app { display: grid; grid-template-columns: 200px 1fr; height: 100vh; }
+.app.app-hidden { display: none !important; }
 
 /* SIDEBAR */
 .sidebar {
@@ -169,7 +170,10 @@ label { font-size: 11px; color: #7D8A81; font-weight: 600; display: block; margi
 
 /* KPI */
 .kpi-row {
-  display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; margin-bottom: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
 }
 /* Prevents grid children from overflowing their column */
 .kpi-row > * { min-width: 0; }
@@ -230,7 +234,7 @@ label { font-size: 11px; color: #7D8A81; font-weight: 600; display: block; margi
 }
 .kpi-value {
   font-family: var(--ui-font);
-  font-size: 52px;
+  font-size: clamp(32px, 4.2vw, 52px);
   margin-top: 14px;
   line-height: .9;
   font-weight: 700;
@@ -243,7 +247,7 @@ label { font-size: 11px; color: #7D8A81; font-weight: 600; display: block; margi
 }
 .kpi-value small {
   font-family: var(--ui-font);
-  font-size: 18px;
+  font-size: clamp(14px, 1.5vw, 18px);
   color: #6C7A72;
   margin-left: 3px;
   font-weight: 700;
@@ -1161,6 +1165,7 @@ label { font-size: 11px; color: #7D8A81; font-weight: 600; display: block; margi
   overflow: auto;
 }
 table { width: 100%; border-collapse: collapse; }
+table.mobile-cards { table-layout: fixed; }
 thead { background: var(--sand-50); }
 th {
   text-align: left; padding: 12px 16px;
@@ -1388,7 +1393,7 @@ tr:last-child td { border-bottom: none; }
     margin-left: auto;
   }
   .kpi-row {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
   }
   .map-toolbar h3,
   .legend,
@@ -1546,7 +1551,7 @@ tr:last-child td { border-bottom: none; }
     transform: translateY(0);
   }
   .kpi-row {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
     gap: 10px;
   }
   .kpi {
@@ -1565,11 +1570,24 @@ tr:last-child td { border-bottom: none; }
     padding: 14px;
     width: 100%;
     max-width: 100%;
+    overflow: visible;
   }
   .map-toolbar,
   .map-actions,
   .legend {
     width: 100%;
+  }
+  .map-toolbar h3 {
+    width: 100%;
+    margin-right: 0;
+  }
+  .map-scroll {
+    overflow-x: auto;
+    overflow-y: hidden;
+    margin-left: -2px;
+    margin-right: -2px;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
   }
   .map-mode-toggle,
   .layout-toggle,
@@ -1586,25 +1604,25 @@ tr:last-child td { border-bottom: none; }
     width: 100%;
     min-width: 0;
     max-width: 100%;
-    aspect-ratio: 16 / 10;
+    aspect-ratio: 16 / 10.5;
   }
   .umbrella {
-    transform: translate(-50%, -50%) scale(.76);
+    transform: translate(-50%, -50%) scale(.72);
   }
   .umbrella:hover,
   .umbrella.selected,
   #beachMap.layout-active .umbrella:hover,
   #beachMap.layout-active .umbrella.dragging {
-    transform: translate(-50%, -50%) scale(.84);
+    transform: translate(-50%, -50%) scale(.8);
   }
   .sea-label {
     font-size: 12px;
-    letter-spacing: .22em;
+    letter-spacing: .18em;
   }
   .row-labels span {
-    width: 22px;
-    height: 22px;
-    font-size: 11px;
+    width: 20px;
+    height: 20px;
+    font-size: 10px;
   }
   #plannerDateInput,
   #bookingsDate,
@@ -1745,7 +1763,79 @@ tr:last-child td { border-bottom: none; }
     -webkit-overflow-scrolling: touch;
   }
   .table-wrap table {
-    min-width: 720px;
+    min-width: 760px;
+  }
+  .table-wrap table.mobile-cards {
+    min-width: 0;
+  }
+  .table-wrap table.mobile-cards thead {
+    display: none;
+  }
+  .table-wrap table.mobile-cards tbody,
+  .table-wrap table.mobile-cards tr,
+  .table-wrap table.mobile-cards td {
+    display: block;
+    width: 100%;
+  }
+  .table-wrap table.mobile-cards tbody {
+    padding: 10px;
+  }
+  .table-wrap table.mobile-cards tr {
+    background: linear-gradient(180deg, #FFFFFF 0%, #FCFDFB 100%);
+    border: 1px solid #E4EAE4;
+    border-radius: 18px;
+    box-shadow: 0 8px 18px rgba(43,58,49,.05);
+    padding: 12px 14px;
+  }
+  .table-wrap table.mobile-cards tr + tr {
+    margin-top: 10px;
+  }
+  .table-wrap table.mobile-cards tr:hover {
+    background: linear-gradient(180deg, #FFFFFF 0%, #FCFDFB 100%);
+  }
+  .table-wrap table.mobile-cards td {
+    border-bottom: 1px solid #EEF2ED;
+    padding: 9px 0;
+    text-align: left !important;
+  }
+  .table-wrap table.mobile-cards td:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+  .table-wrap table.mobile-cards td::before {
+    content: attr(data-label);
+    display: block;
+    margin-bottom: 4px;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: #7B8A82;
+  }
+  .table-wrap table.mobile-cards td.mobile-no-label::before {
+    display: none;
+  }
+  .table-wrap table.mobile-cards td.mobile-title {
+    padding-top: 0;
+  }
+  .table-wrap table.mobile-cards td.mobile-title::before {
+    display: none;
+  }
+  .table-wrap table.mobile-cards td.mobile-title strong {
+    font-size: 17px;
+    color: #2F3E37;
+  }
+  .table-wrap table.mobile-cards td.mobile-amount strong {
+    font-size: 18px;
+    color: #56786B;
+  }
+  .table-wrap table.mobile-cards tr.empty-row {
+    padding: 18px 16px;
+  }
+  .table-wrap table.mobile-cards tr.empty-row td {
+    padding: 0;
+    border: none;
+    text-align: center !important;
   }
   .form-grid,
   .form-grid.triple,
@@ -1775,6 +1865,262 @@ tr:last-child td { border-bottom: none; }
   }
   .kpi-value {
     font-size: 36px;
+  }
+}
+
+@media (max-width: 420px) {
+  .topbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .topbar h2 {
+    margin-right: 0;
+  }
+  .date-picker {
+    width: 100%;
+  }
+  .date-picker button {
+    width: 28px;
+    height: 28px;
+    flex: 0 0 28px;
+  }
+  .date-picker input[type="date"] {
+    min-width: 0;
+    width: 100%;
+    font-size: 12px;
+  }
+  .view {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+  .kpi-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 14px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 4px;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+  }
+  .kpi-row > * {
+    min-width: 132px;
+    flex: 0 0 132px;
+    scroll-snap-align: start;
+  }
+  .kpi {
+    min-height: 96px;
+    padding: 12px 14px 14px;
+    border-radius: 18px;
+  }
+  .kpi-label {
+    margin-top: 6px;
+    font-size: 9px;
+    letter-spacing: .1em;
+  }
+  .kpi-value {
+    margin-top: 10px;
+    font-size: 30px;
+  }
+  .kpi-value small {
+    font-size: 14px;
+  }
+  .map-wrap {
+    padding: 12px;
+  }
+  .map-toolbar {
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .map-toolbar h3 {
+    font-size: 14px;
+  }
+  .legend {
+    gap: 6px;
+  }
+  .legend-item {
+    font-size: 11px;
+    padding: 5px 8px;
+  }
+}
+
+@container viewport-shell (max-width: 900px) {
+  html, body {
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: auto;
+    min-height: 100dvh;
+  }
+  .app {
+    display: block;
+    height: auto;
+    min-height: 100dvh;
+    width: 100%;
+    max-width: 100%;
+    overflow: visible;
+  }
+  .sidebar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: auto;
+    z-index: 60;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+    border-right: none;
+    border-top: 1px solid #E8ECE6;
+    background: rgba(252, 252, 249, .94);
+    backdrop-filter: blur(18px);
+    overflow-x: auto;
+    overflow-y: hidden;
+    box-shadow: 0 -12px 32px rgba(43, 58, 49, .08);
+  }
+  .brand,
+  .sidebar-footer {
+    display: none;
+  }
+  .nav-item,
+  .nav-logout {
+    min-width: 86px;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border-radius: 16px;
+    flex-shrink: 0;
+  }
+  .nav-item span,
+  .nav-logout span {
+    display: none;
+  }
+  .main {
+    display: block;
+    min-height: 100dvh;
+    overflow: visible;
+    width: 100%;
+    max-width: 100%;
+    padding-bottom: calc(80px + env(safe-area-inset-bottom));
+  }
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px;
+  }
+  .topbar h2 {
+    width: 100%;
+    margin-right: 0;
+    font-size: 20px;
+    line-height: 1.1;
+  }
+  .date-picker {
+    width: 100%;
+    min-width: 0;
+    margin-left: 0;
+    border-radius: 18px;
+    justify-content: space-between;
+    padding: 4px;
+  }
+  .date-picker input[type="date"] {
+    min-width: 0;
+    flex: 1;
+  }
+  .view {
+    width: 100%;
+    max-width: 100%;
+    padding: 14px 14px 22px;
+    overflow-x: hidden;
+    overflow-y: visible;
+  }
+  .kpi-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 14px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 4px;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+  }
+  .kpi-row > * {
+    min-width: 148px;
+    flex: 0 0 148px;
+    scroll-snap-align: start;
+  }
+  .kpi {
+    min-height: 104px;
+    padding: 13px 15px 15px;
+    border-radius: 18px;
+  }
+  .kpi-label {
+    margin-top: 8px;
+    font-size: 10px;
+    letter-spacing: .1em;
+  }
+  .kpi-value {
+    margin-top: 10px;
+    font-size: 34px;
+  }
+  .kpi-value small {
+    font-size: 14px;
+  }
+  .map-wrap {
+    padding: 12px;
+    width: 100%;
+    max-width: 100%;
+  }
+  .map-toolbar,
+  .legend,
+  .map-actions,
+  .map-mode-toggle,
+  .layout-toggle,
+  .layout-commit-actions {
+    width: 100%;
+  }
+  .map-toolbar {
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .map-toolbar h3 {
+    width: 100%;
+    margin-right: 0;
+    font-size: 14px;
+  }
+  .map-mode-toggle button,
+  .layout-toggle button,
+  .layout-commit-actions button {
+    flex: 1;
+    justify-content: center;
+  }
+  .beach {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    aspect-ratio: 16 / 10.5;
+  }
+  .umbrella {
+    transform: translate(-50%, -50%) scale(.72);
+  }
+  .umbrella:hover,
+  .umbrella.selected,
+  #beachMap.layout-active .umbrella:hover,
+  #beachMap.layout-active .umbrella.dragging {
+    transform: translate(-50%, -50%) scale(.8);
+  }
+  .sea-label {
+    font-size: 12px;
+    letter-spacing: .18em;
+  }
+  .row-labels span {
+    width: 20px;
+    height: 20px;
+    font-size: 10px;
   }
 }
 
@@ -2180,7 +2526,7 @@ tr:last-child td { border-bottom: none; }
   </div>
 </div>
 
-<div class="app" id="appContainer" style="display:none">
+<div class="app app-hidden" id="appContainer">
 
   <!-- SIDEBAR -->
   <aside class="sidebar">
@@ -2478,7 +2824,7 @@ tr:last-child td { border-bottom: none; }
         </div>
       </div>
       <div class="table-wrap">
-        <table>
+        <table class="mobile-cards">
           <thead>
             <tr>
               <th>Ombr.</th><th>Cliente</th><th>Tipo</th>
@@ -2487,7 +2833,7 @@ tr:last-child td { border-bottom: none; }
             </tr>
           </thead>
           <tbody id="bookingsTable">
-            <tr><td colspan="8" class="loading">Caricamento…</td></tr>
+            <tr class="empty-row"><td colspan="8" class="loading mobile-no-label">Caricamento…</td></tr>
           </tbody>
         </table>
       </div>
@@ -2509,12 +2855,12 @@ tr:last-child td { border-bottom: none; }
         </div>
       </div>
       <div class="table-wrap">
-        <table>
+        <table class="mobile-cards">
           <thead>
             <tr><th>Nome</th><th>Telefono</th><th>Email</th><th>Registrato</th></tr>
           </thead>
           <tbody id="customersTable">
-            <tr><td colspan="4" class="loading">Caricamento…</td></tr>
+            <tr class="empty-row"><td colspan="4" class="loading mobile-no-label">Caricamento…</td></tr>
           </tbody>
         </table>
       </div>
@@ -2561,12 +2907,12 @@ tr:last-child td { border-bottom: none; }
         <input type="date" id="sunbedsDate" onchange="setSunbedsDate(this.value)" style="width:auto;min-width:170px" />
       </div>
       <div class="table-wrap">
-        <table>
+        <table class="mobile-cards">
           <thead>
             <tr><th>Data</th><th>Cliente</th><th>Tipo</th><th>Q.tà</th><th>Pag.</th><th>Stato</th><th style="text-align:right">Totale</th><th></th></tr>
           </thead>
           <tbody id="sunbedsTable">
-            <tr><td colspan="8" class="loading">Caricamento…</td></tr>
+            <tr class="empty-row"><td colspan="8" class="loading mobile-no-label">Caricamento…</td></tr>
           </tbody>
         </table>
       </div>
@@ -2854,12 +3200,12 @@ async function checkAuth() {
 
 function showLogin() {
   document.getElementById('loginScreen').style.display = 'flex';
-  document.getElementById('appContainer').style.display = 'none';
+  document.getElementById('appContainer').classList.add('app-hidden');
 }
 
 function showApp() {
   document.getElementById('loginScreen').style.display = 'none';
-  document.getElementById('appContainer').style.display = 'grid';
+  document.getElementById('appContainer').classList.remove('app-hidden');
   document.getElementById('btnLogout').style.display = 'flex';
 
   if (isConfigured) {
@@ -3851,21 +4197,21 @@ async function quickDepart(bookingId) {
 function renderBookings() {
   const tbody = document.getElementById('bookingsTable');
   if (!state.allBookings.length) {
-    tbody.innerHTML = '<tr><td colspan="8" class="loading">Nessuna prenotazione</td></tr>';
+    tbody.innerHTML = '<tr class="empty-row"><td colspan="8" class="loading mobile-no-label">Nessuna prenotazione</td></tr>';
     return;
   }
   tbody.innerHTML = state.allBookings.map(b => {
     const payStatus = b.price_paid >= b.price_total ? 'paid' : b.price_paid > 0 ? 'partial' : 'pending';
     return `
     <tr onclick="openBookingFromPlanner('${b.id}', ${b.umbrella_id})">
-      <td><strong>#${b.umbrella_id}</strong></td>
-      <td>${b.customer_name}<br><small style="color:var(--sand-700)">${b.customer_phone || ''}</small></td>
-      <td>${typeLabel(b.booking_type)}</td>
-      <td>${formatDate(b.date_from)}</td>
-      <td>${formatDate(b.date_to)}</td>
-      <td><span class="status-pill ${b.status}">${statusLabel(b.status)}</span></td>
-      <td><span class="pay-pill ${payStatus}">${payStatus === 'paid' ? 'pagato' : payStatus === 'partial' ? 'parziale' : 'da pagare'}</span></td>
-      <td style="text-align:right"><strong>${b.price_total} €</strong></td>
+      <td data-label="Ombrellone" class="mobile-title"><strong>#${b.umbrella_id}</strong></td>
+      <td data-label="Cliente">${b.customer_name}<br><small style="color:var(--sand-700)">${b.customer_phone || ''}</small></td>
+      <td data-label="Tipo">${typeLabel(b.booking_type)}</td>
+      <td data-label="Dal">${formatDate(b.date_from)}</td>
+      <td data-label="Al">${formatDate(b.date_to)}</td>
+      <td data-label="Stato"><span class="status-pill ${b.status}">${statusLabel(b.status)}</span></td>
+      <td data-label="Pagamento"><span class="pay-pill ${payStatus}">${payStatus === 'paid' ? 'pagato' : payStatus === 'partial' ? 'parziale' : 'da pagare'}</span></td>
+      <td data-label="Totale" class="mobile-amount" style="text-align:right"><strong>${b.price_total} €</strong></td>
     </tr>`;
   }).join('');
 }
@@ -3966,15 +4312,15 @@ function exportBookingsCsv() {
 function renderCustomers() {
   const tbody = document.getElementById('customersTable');
   if (!state.customers.length) {
-    tbody.innerHTML = '<tr><td colspan="4" class="loading">Nessun cliente</td></tr>';
+    tbody.innerHTML = '<tr class="empty-row"><td colspan="4" class="loading mobile-no-label">Nessun cliente</td></tr>';
     return;
   }
   tbody.innerHTML = state.customers.map(c => `
     <tr>
-      <td><strong>${c.last_name} ${c.first_name}</strong></td>
-      <td>${c.phone || '—'}</td>
-      <td>${c.email || '—'}</td>
-      <td>${formatDate(c.created_at)}</td>
+      <td data-label="Nome" class="mobile-title"><strong>${c.last_name} ${c.first_name}</strong></td>
+      <td data-label="Telefono">${c.phone || '—'}</td>
+      <td data-label="Email">${c.email || '—'}</td>
+      <td data-label="Registrato">${formatDate(c.created_at)}</td>
     </tr>
   `).join('');
 }
@@ -4942,7 +5288,7 @@ async function loadSunbeds() {
   if (!isConfigured) {
     const rows = DEMO_SUNBED_BOOKINGS.filter(r => r.date_booking === state.sunbedsDate);
     if (!rows.length) {
-      document.getElementById('sunbedsTable').innerHTML = '<tr><td colspan="8" style="text-align:center;padding:30px;color:var(--sand-700)">Nessuna prenotazione lettini oggi</td></tr>';
+      document.getElementById('sunbedsTable').innerHTML = '<tr class="empty-row"><td colspan="8" class="mobile-no-label" style="text-align:center;padding:30px;color:var(--sand-700)">Nessuna prenotazione lettini oggi</td></tr>';
       return;
     }
     document.getElementById('sunbedsTable').innerHTML = rows.map(r => {
@@ -4950,14 +5296,14 @@ async function loadSunbeds() {
       const payClass = r.payment_status === 'paid' ? 'paid' : 'pending';
       const payLabel = r.payment_status === 'paid' ? 'Pagato' : 'Da pagare';
       return `<tr>
-        <td>${formatDate(r.date_booking)}</td>
-        <td><strong>${name}</strong>${r.customers?.phone ? '<br><small>' + r.customers.phone + '</small>' : ''}</td>
-        <td>${typeLabel(r.booking_type)}</td>
-        <td style="text-align:center">${r.quantity}</td>
-        <td><span class="pay-pill ${payClass}">${payLabel}</span></td>
-        <td><span class="status-pill ${r.status}">${statusLabel(r.status)}</span></td>
-        <td style="text-align:right"><strong>${r.price_total.toFixed(2)} €</strong>${r.disability_discount ? '<br><small style="color:var(--coral-dk)">−30%</small>' : ''}</td>
-        <td>
+        <td data-label="Data">${formatDate(r.date_booking)}</td>
+        <td data-label="Cliente" class="mobile-title"><strong>${name}</strong>${r.customers?.phone ? '<br><small>' + r.customers.phone + '</small>' : ''}</td>
+        <td data-label="Tipo">${typeLabel(r.booking_type)}</td>
+        <td data-label="Qtà" style="text-align:center">${r.quantity}</td>
+        <td data-label="Pagamento"><span class="pay-pill ${payClass}">${payLabel}</span></td>
+        <td data-label="Stato"><span class="status-pill ${r.status}">${statusLabel(r.status)}</span></td>
+        <td data-label="Totale" class="mobile-amount" style="text-align:right"><strong>${r.price_total.toFixed(2)} €</strong>${r.disability_discount ? '<br><small style="color:var(--coral-dk)">−30%</small>' : ''}</td>
+        <td data-label="Azioni">
           ${r.payment_status !== 'paid' ? `
             <button class="cassa-btn cassa-btn-cash" style="margin-right:4px" onclick="incassaSunbed('${r.id}', 'cash', ${r.price_total})">Contanti</button>
             <button class="cassa-btn cassa-btn-card" onclick="incassaSunbed('${r.id}', 'card_pos', ${r.price_total})">Carta</button>
@@ -4976,7 +5322,7 @@ async function loadSunbeds() {
 
   const rows = (data || []);
   if (!rows.length) {
-    document.getElementById('sunbedsTable').innerHTML = '<tr><td colspan="8" style="text-align:center;padding:30px;color:var(--sand-700)">Nessuna prenotazione lettini oggi</td></tr>';
+    document.getElementById('sunbedsTable').innerHTML = '<tr class="empty-row"><td colspan="8" class="mobile-no-label" style="text-align:center;padding:30px;color:var(--sand-700)">Nessuna prenotazione lettini oggi</td></tr>';
     return;
   }
 
@@ -4985,14 +5331,14 @@ async function loadSunbeds() {
     const payClass = r.payment_status === 'paid' ? 'paid' : 'pending';
     const payLabel = r.payment_status === 'paid' ? 'Pagato' : 'Da pagare';
     return `<tr>
-      <td>${formatDate(r.date_booking)}</td>
-      <td><strong>${name}</strong>${r.customers?.phone ? '<br><small>' + r.customers.phone + '</small>' : ''}</td>
-      <td>${typeLabel(r.booking_type)}</td>
-      <td style="text-align:center">${r.quantity}</td>
-      <td><span class="pay-pill ${payClass}">${payLabel}</span></td>
-      <td><span class="status-pill ${r.status}">${statusLabel(r.status)}</span></td>
-      <td style="text-align:right"><strong>${r.price_total.toFixed(2)} €</strong>${r.disability_discount ? '<br><small style="color:var(--coral-dk)">−30%</small>' : ''}</td>
-      <td>
+      <td data-label="Data">${formatDate(r.date_booking)}</td>
+      <td data-label="Cliente" class="mobile-title"><strong>${name}</strong>${r.customers?.phone ? '<br><small>' + r.customers.phone + '</small>' : ''}</td>
+      <td data-label="Tipo">${typeLabel(r.booking_type)}</td>
+      <td data-label="Qtà" style="text-align:center">${r.quantity}</td>
+      <td data-label="Pagamento"><span class="pay-pill ${payClass}">${payLabel}</span></td>
+      <td data-label="Stato"><span class="status-pill ${r.status}">${statusLabel(r.status)}</span></td>
+      <td data-label="Totale" class="mobile-amount" style="text-align:right"><strong>${r.price_total.toFixed(2)} €</strong>${r.disability_discount ? '<br><small style="color:var(--coral-dk)">−30%</small>' : ''}</td>
+      <td data-label="Azioni">
         ${r.payment_status !== 'paid' ? `
           <button class="cassa-btn cassa-btn-cash" style="margin-right:4px" onclick="incassaSunbed('${r.id}', 'cash', ${r.price_total})">Contanti</button>
           <button class="cassa-btn cassa-btn-card" onclick="incassaSunbed('${r.id}', 'card_pos', ${r.price_total})">Carta</button>
