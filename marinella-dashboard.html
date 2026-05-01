@@ -51,6 +51,11 @@
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
+/* Prevent any element from causing horizontal overflow on mobile */
+@media (max-width: 760px) {
+  * { max-width: 100%; }
+  img, svg { max-width: 100%; }
+}
 html, body {
   height: 100%;
   background: #FBFBF8;
@@ -166,6 +171,8 @@ label { font-size: 11px; color: #7D8A81; font-weight: 600; display: block; margi
 .kpi-row {
   display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; margin-bottom: 20px;
 }
+/* Prevents grid children from overflowing their column */
+.kpi-row > * { min-width: 0; }
 .kpi {
   background: linear-gradient(180deg, #FFFFFF 0%, #FCFDFB 100%);
   border-radius: 22px;
