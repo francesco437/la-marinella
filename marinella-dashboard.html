@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Dolphin's Beach Bar — Dashboard</title>
+<title>Dolphin's Beach Bar — Gestionale</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1727,6 +1727,13 @@ tr:last-child td { border-bottom: none; }
   .arrivals-grid {
     grid-template-columns: 1fr;
   }
+  .cassa-summary-grid,
+  .cassa-grid {
+    grid-template-columns: 1fr;
+  }
+  .cassa-grid > div {
+    min-width: 0;
+  }
   .cassa-topbar,
   .cassa-topbar-left {
     width: 100%;
@@ -1754,6 +1761,21 @@ tr:last-child td { border-bottom: none; }
   .cassa-hero-mark {
     font-size: 72px;
     right: 18px;
+  }
+  .cassa-summary-card {
+    padding: 18px;
+  }
+  .cassa-summary-value {
+    font-size: 36px;
+  }
+  .cassa-close-summary {
+    grid-template-columns: 1fr;
+  }
+  .cassa-close-cell:nth-child(odd) {
+    border-right: none;
+  }
+  .cassa-panel {
+    overflow: hidden;
   }
   .cassa-panel-head,
   .cassa-item,
@@ -2179,6 +2201,88 @@ tr:last-child td { border-bottom: none; }
     height: 20px;
     font-size: 10px;
   }
+  .cassa-summary-grid,
+  .cassa-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .cassa-grid > div {
+    min-width: 0;
+  }
+  .cassa-topbar,
+  .cassa-topbar-left {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .cassa-date-controls,
+  .cassa-date-picker {
+    width: 100%;
+    min-width: 0;
+  }
+  .cassa-date-label {
+    flex: 1;
+    text-align: center;
+  }
+  .cassa-hero {
+    padding: 20px 18px;
+    min-height: 120px;
+  }
+  .cassa-hero-total {
+    font-size: 44px;
+  }
+  .cassa-hero-mark {
+    right: 18px;
+    font-size: 72px;
+  }
+  .cassa-summary-card {
+    padding: 18px;
+  }
+  .cassa-summary-value {
+    font-size: 36px;
+  }
+  .cassa-close-summary {
+    grid-template-columns: 1fr;
+  }
+  .cassa-close-cell:nth-child(odd) {
+    border-right: none;
+  }
+  .cassa-panel {
+    overflow: hidden;
+  }
+  .cassa-panel-head,
+  .cassa-item,
+  .cassa-movement-item,
+  .kpi-cassa {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .cassa-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .cassa-item-main,
+  .cassa-actions-stack,
+  .cassa-action-row {
+    width: 100%;
+  }
+  .cassa-actions-stack {
+    align-items: flex-start;
+  }
+  .cassa-action-row,
+  .cassa-movement-badges {
+    justify-content: flex-start;
+  }
+  .cassa-movement-item {
+    grid-template-columns: 1fr;
+  }
+  .cassa-movement-amount {
+    text-align: left;
+  }
+  .btn-chiudi-cassa {
+    width: calc(100% - 32px);
+    margin: 14px 16px;
+  }
 }
 
 /* CASSA */
@@ -2279,8 +2383,8 @@ tr:last-child td { border-bottom: none; }
 }
 .cassa-summary-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
 }
 .cassa-summary-card {
   background: white;
@@ -2314,11 +2418,45 @@ tr:last-child td { border-bottom: none; }
   font-size: 12px;
   color: #819088;
 }
+.cassa-close-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: 1px solid #E7ECE8;
+}
+.cassa-close-cell {
+  padding: 16px 20px;
+  border-bottom: 1px solid #EEF2EF;
+}
+.cassa-close-cell:nth-child(odd) {
+  border-right: 1px solid #EEF2EF;
+}
+.cassa-close-key {
+  font-size: 12px;
+  color: #7B8A82;
+  font-weight: 700;
+}
+.cassa-close-val {
+  margin-top: 8px;
+  font-size: 30px;
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  color: #304038;
+}
+.cassa-close-val.alert {
+  color: #C45B55;
+}
 .cassa-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 340px;
+  grid-template-columns: 1fr;
   gap: 16px;
   align-items: start;
+}
+.cassa-col {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
 }
 .cassa-panel {
   background: white;
@@ -2705,10 +2843,10 @@ tr:last-child td { border-bottom: none; }
           <div class="map-actions">
             <div class="map-mode-toggle">
               <button class="active" data-mode="single" onclick="setMapMode('single')">Singolo</button>
-              <button data-mode="multi" onclick="setMapMode('multi')">Multi-select</button>
+              <button data-mode="multi" onclick="setMapMode('multi')">Multi-selezione</button>
             </div>
             <div class="layout-toggle">
-              <button id="btnLayoutToggle" onclick="toggleLayoutMode()">Layout DnD</button>
+              <button id="btnLayoutToggle" onclick="toggleLayoutMode()">Riordina layout</button>
             </div>
             <div class="layout-commit-actions" id="layoutCommitActions">
               <button class="primary" id="btnLayoutSave" onclick="saveLayoutChanges()">Salva layout</button>
@@ -2782,30 +2920,22 @@ tr:last-child td { border-bottom: none; }
           </div>
         </div>
 
-        <div class="cassa-hero">
-          <div class="cassa-hero-meta" id="cassaHeroDate">Total sales</div>
-          <div class="cassa-hero-total" id="cassaHeroTotal">0 €</div>
-          <div class="cassa-hero-sub" id="cassaHeroSub">0 movimenti registrati · 0 posizioni aperte</div>
-          <div class="cassa-hero-mark">€</div>
-        </div>
-
         <div class="cassa-summary-grid">
           <div class="cassa-summary-card">
-            <div class="cassa-summary-label">Collected</div>
+            <div class="cassa-summary-label">Incassato</div>
             <div class="cassa-summary-value" id="cassaCollectedHero">0<small> €</small></div>
             <div class="cassa-summary-note" id="cassaCollectedNote">Nessun pagamento registrato</div>
           </div>
           <div class="cassa-summary-card">
-            <div class="cassa-summary-label">Outstanding</div>
+            <div class="cassa-summary-label">Da incassare</div>
             <div class="cassa-summary-value" id="cassaOutstandingHero">0<small> €</small></div>
             <div class="cassa-summary-note" id="cassaOutstandingNote">Nessuna posizione aperta</div>
           </div>
         </div>
 
         <div class="cassa-grid">
-          <!-- Colonna sinistra: lista da incassare -->
-          <div>
-            <div class="cassa-panel" style="margin-bottom:16px">
+          <div class="cassa-col">
+            <div class="cassa-panel">
               <div class="cassa-panel-head">
                 <h3>Da incassare</h3>
                 <span class="arrivals-count" id="cassaUnpaidCount">0</span>
@@ -2823,33 +2953,8 @@ tr:last-child td { border-bottom: none; }
                 <div class="loading">Caricamento…</div>
               </div>
             </div>
-          </div>
 
-          <!-- Colonna destra: riepilogo + Z-Report -->
-          <div>
-            <div class="cassa-panel" style="margin-bottom:16px">
-              <div class="cassa-panel-head">
-                <h3>Riepilogo cassa</h3>
-              </div>
-              <div class="kpi-cassa">
-                <span class="kpi-cassa-label">Contanti</span>
-                <span class="kpi-cassa-value" id="cassaCash">0 €</span>
-              </div>
-              <div class="kpi-cassa">
-                <span class="kpi-cassa-label">Carta</span>
-                <span class="kpi-cassa-value" id="cassaCard">0 €</span>
-              </div>
-              <div class="kpi-cassa" style="border-top:2px solid #E7ECE8;margin-top:4px">
-                <span class="kpi-cassa-label" style="font-weight:700;color:#33433B">Totale incassato</span>
-                <span class="kpi-cassa-value" style="color:#5A7B67" id="cassaTotale">0 €</span>
-              </div>
-              <div class="kpi-cassa">
-                <span class="kpi-cassa-label" style="color:#C45B55">Da incassare</span>
-                <span class="kpi-cassa-value" style="color:#C45B55" id="cassaDaIncassare">0 €</span>
-              </div>
-            </div>
-
-            <div class="cassa-panel" style="margin-bottom:16px">
+            <div class="cassa-panel">
               <div class="cassa-panel-head">
                 <h3>Movimenti del giorno</h3>
                 <span class="arrivals-count" id="cassaMovementsCount">0</span>
@@ -2862,9 +2967,28 @@ tr:last-child td { border-bottom: none; }
             <div class="cassa-panel">
               <div class="cassa-panel-head">
                 <h3>Chiusura cassa</h3>
+                <span class="arrivals-count" id="cassaHeroSub">0 movimenti · 0 aperte</span>
               </div>
-              <div style="padding:16px 20px;font-size:13px;color:#7B8A82;line-height:1.6">
+              <div style="padding:16px 20px;font-size:13px;color:#7B8A82;line-height:1.6" id="cassaHeroDate">
                 Genera il riepilogo del giorno selezionato con totali per metodo di pagamento e residuo ancora aperto.
+              </div>
+              <div class="cassa-close-summary">
+                <div class="cassa-close-cell">
+                  <div class="cassa-close-key">Contanti</div>
+                  <div class="cassa-close-val" id="cassaCash">0 €</div>
+                </div>
+                <div class="cassa-close-cell">
+                  <div class="cassa-close-key">Carta</div>
+                  <div class="cassa-close-val" id="cassaCard">0 €</div>
+                </div>
+                <div class="cassa-close-cell">
+                  <div class="cassa-close-key">Totale incassato</div>
+                  <div class="cassa-close-val" id="cassaTotale">0 €</div>
+                </div>
+                <div class="cassa-close-cell">
+                  <div class="cassa-close-key">Da incassare</div>
+                  <div class="cassa-close-val alert" id="cassaDaIncassare">0 €</div>
+                </div>
               </div>
               <button class="btn-chiudi-cassa" onclick="chiudiCassa()">Chiudi cassa e stampa Z-Report</button>
             </div>
@@ -3251,6 +3375,7 @@ const LOCAL_AUTH_USERS = {
 };
 const LOCAL_AUTH_PASSWORD = '0000';
 const LOCAL_AUTH_STORAGE_KEY = 'marinella-local-user';
+const OPERATING_TIME_ZONE = 'Europe/Rome';
 
 async function checkAuth() {
   const storedUser = window.localStorage.getItem(LOCAL_AUTH_STORAGE_KEY);
@@ -3330,8 +3455,8 @@ async function handleLogout() {
 // STATE
 // ============================================================
 const state = {
-  currentDate: new Date().toISOString().slice(0,10),
-  sunbedsDate: new Date().toISOString().slice(0,10),
+  currentDate: getTodayInItaly(),
+  sunbedsDate: getTodayInItaly(),
   umbrellas: [],
   bookings: [],          // prenotazioni che toccano currentDate
   allBookings: [],
@@ -3347,7 +3472,7 @@ const state = {
   layoutSnapshot: null,  // [{id, x, y}]
   activeDrag: null,      // { umbrellaId, pointerId, el }
   plannerDays: 7,
-  plannerStart: new Date().toISOString().slice(0,10),
+  plannerStart: getTodayInItaly(),
 };
 
 // ============================================================
@@ -3369,7 +3494,7 @@ const DEMO_UMBRELLAS = [];
   }
 })();
 
-const today = new Date().toISOString().slice(0,10);
+const today = getTodayInItaly();
 const DEMO_BOOKINGS = [
   { id:'d1', umbrella_id:1,  customer_name:'Rossi Mario',    customer_phone:'+39 333 1234567', date_from:today, date_to:today, booking_type:'daily',           status:'confirmed',  price_total:25, price_paid:0,  deposit_amount:0,  arrived_at:null, departed_at:null, sunbed_L_occupied:false, sunbed_R_occupied:false, disability_discount:false },
   { id:'d2', umbrella_id:5,  customer_name:'Verdi Paolo',    customer_phone:'+39 340 9988776', date_from:today, date_to:today, booking_type:'daily',           status:'checked_in', price_total:25, price_paid:25, deposit_amount:0,  arrived_at: new Date().toISOString(), departed_at:null, sunbed_L_occupied:true, sunbed_R_occupied:false, disability_discount:false },
@@ -3416,6 +3541,40 @@ if (currentDateInput) {
   });
 }
 
+let lastKnownItalyToday = getTodayInItaly();
+
+function syncItalyDayChange() {
+  const nextItalyToday = getTodayInItaly();
+  if (nextItalyToday === lastKnownItalyToday) return;
+
+  const previousItalyToday = lastKnownItalyToday;
+  lastKnownItalyToday = nextItalyToday;
+
+  if (state.currentDate === previousItalyToday) state.currentDate = nextItalyToday;
+  if (state.sunbedsDate === previousItalyToday) state.sunbedsDate = nextItalyToday;
+  if (state.plannerStart === previousItalyToday) state.plannerStart = nextItalyToday;
+
+  const currentDateInputEl = document.getElementById('currentDate');
+  if (currentDateInputEl && currentDateInputEl.value === previousItalyToday) currentDateInputEl.value = nextItalyToday;
+  const bookingsDateInputEl = document.getElementById('bookingsDate');
+  if (bookingsDateInputEl && bookingsDateInputEl.value === previousItalyToday) bookingsDateInputEl.value = nextItalyToday;
+  const customersDateInputEl = document.getElementById('customersDate');
+  if (customersDateInputEl && customersDateInputEl.value === previousItalyToday) customersDateInputEl.value = nextItalyToday;
+  const sunbedsDateInputEl = document.getElementById('sunbedsDate');
+  if (sunbedsDateInputEl && sunbedsDateInputEl.value === previousItalyToday) sunbedsDateInputEl.value = nextItalyToday;
+  const plannerDateInputEl = document.getElementById('plannerDateInput');
+  if (plannerDateInputEl && plannerDateInputEl.value === previousItalyToday) plannerDateInputEl.value = nextItalyToday;
+  const cassaDateInputEl = document.getElementById('cassaDateInput');
+  if (cassaDateInputEl && cassaDateInputEl.value === previousItalyToday) cassaDateInputEl.value = nextItalyToday;
+
+  const visibleView = document.querySelector('.view:not(.hidden)')?.id;
+  if (visibleView === 'view-bookings') return loadAllBookings();
+  if (visibleView === 'view-customers') return loadCustomers();
+  if (visibleView === 'view-sunbeds') return loadSunbeds();
+  if (visibleView === 'view-planner') return loadPlannerBookings();
+  loadForDate();
+}
+
 function isCompactNavMode() {
   return window.innerWidth <= 900;
 }
@@ -3437,6 +3596,11 @@ function toggleMobileNav() {
 window.addEventListener('resize', () => {
   if (!isCompactNavMode()) closeMobileNav();
 });
+window.addEventListener('focus', syncItalyDayChange);
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden) syncItalyDayChange();
+});
+window.setInterval(syncItalyDayChange, 60000);
 
 const bookingTypeGrid = document.getElementById('typeGrid');
 if (bookingTypeGrid) {
@@ -3507,7 +3671,7 @@ async function loadPricing() {
     state.pricing = DEMO_PRICING;
     return;
   }
-  const year = new Date().getFullYear();
+  const year = Number(getItalyDateParts(new Date()).year);
   const { data } = await sb.from('pricing').select('*').eq('year', year).eq('active', true);
   state.pricing = data || [];
 }
@@ -3781,7 +3945,7 @@ function renderKPIs() {
 // ============================================================
 function setMapMode(mode) {
   if (state.layoutMode) {
-    toast('Esci da Layout DnD prima di cambiare modalità', 'err');
+    toast('Esci dal riordino layout prima di cambiare modalità', 'err');
     return;
   }
   state.mapMode = mode;
@@ -3797,7 +3961,7 @@ function updateLayoutUI() {
   if (!toggle || !hint || !actions) return;
 
   toggle.classList.toggle('layout-active', state.layoutMode);
-  toggle.textContent = state.layoutMode ? 'Layout attivo' : 'Layout DnD';
+  toggle.textContent = state.layoutMode ? 'Layout attivo' : 'Riordina layout';
   actions.classList.toggle('show', state.layoutMode);
   hint.classList.toggle('show', state.layoutMode);
   document.querySelectorAll('.map-mode-toggle button').forEach(b => {
@@ -3816,7 +3980,7 @@ function toggleLayoutMode() {
   state.layoutMode = true;
   updateMultiBar();
   renderMap();
-  toast('Layout DnD attivo: trascina gli ombrelloni', 'ok');
+  toast('Riordino layout attivo: trascina gli ombrelloni', 'ok');
 }
 
 function restoreLayoutSnapshot() {
@@ -4011,9 +4175,9 @@ function multiBook() {
 // RENDER: PLANNER (GANTT)
 // ============================================================
 function getPlannerRangeLabel() {
-  const day = new Date(state.plannerStart);
-  const dayName = day.toLocaleDateString('it-IT', { weekday: 'long' });
-  const dateLabel = day.toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' });
+  const day = parseDateOnly(state.plannerStart);
+  const dayName = day.toLocaleDateString('it-IT', { weekday: 'long', timeZone: OPERATING_TIME_ZONE });
+  const dateLabel = day.toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric', timeZone: OPERATING_TIME_ZONE });
   return `${dayName} ${dateLabel}`;
 }
 
@@ -4117,12 +4281,8 @@ function renderPlanner(bookings) {
       </div>
       <div class="planner-board-head">
         <div class="planner-row-label">
-          <div class="planner-row-letter">${new Date(day).toLocaleDateString('it-IT', { day: '2-digit' })}</div>
-          <div class="planner-row-count">${new Date(day).toLocaleDateString('it-IT', { month: 'short' }).replace('.', '').toUpperCase()}</div>
-        </div>
-        <div class="planner-board-note">
-          <strong>Mockup stampa giornaliera</strong>
-          Layout più compatto pensato per reception e stampa: nome cliente, stato e importo sono le priorità; le note compaiono solo quando esistono davvero.
+          <div class="planner-row-letter">${parseDateOnly(day).toLocaleDateString('it-IT', { day: '2-digit', timeZone: OPERATING_TIME_ZONE })}</div>
+          <div class="planner-row-count">${parseDateOnly(day).toLocaleDateString('it-IT', { month: 'short', timeZone: OPERATING_TIME_ZONE }).replace('.', '').toUpperCase()}</div>
         </div>
       </div>
       ${boardSections}
@@ -4130,14 +4290,12 @@ function renderPlanner(bookings) {
 }
 
 function plannerShift(delta) {
-  const d = new Date(state.plannerStart);
-  d.setDate(d.getDate() + delta);
-  state.plannerStart = d.toISOString().slice(0,10);
+  state.plannerStart = addDays(state.plannerStart, delta);
   loadPlannerBookings();
 }
 
 function plannerToday() {
-  state.plannerStart = new Date().toISOString().slice(0,10);
+  state.plannerStart = getTodayInItaly();
   loadPlannerBookings();
 }
 
@@ -4711,9 +4869,9 @@ function getSelectedType() {
 function getPeriodForDate(date) {
   // Modalità DEMO: usa fallback hardcoded (bassa/media/alta)
   if (!isConfigured || !state.pricingPeriods?.length) {
-    const m = new Date(date).getMonth() + 1;
-    if (m === 7 || m === 8) return 'high';
-    if (m === 6 || m === 9) return 'mid';
+    const m = parseDateOnly(date).toLocaleDateString('en-GB', { month: 'numeric', timeZone: OPERATING_TIME_ZONE });
+    if (Number(m) === 7 || Number(m) === 8) return 'high';
+    if (Number(m) === 6 || Number(m) === 9) return 'mid';
     return 'low';
   }
   // Modalità reale: cerca il periodo che contiene la data
@@ -5029,15 +5187,13 @@ function switchView(name) {
 }
 
 function shiftDate(delta) {
-  const d = new Date(state.currentDate);
-  d.setDate(d.getDate() + delta);
-  state.currentDate = d.toISOString().slice(0,10);
+  state.currentDate = addDays(state.currentDate, delta);
   document.getElementById('currentDate').value = state.currentDate;
   loadForDate();
 }
 
 function goToday() {
-  state.currentDate = new Date().toISOString().slice(0,10);
+  state.currentDate = getTodayInItaly();
   document.getElementById('currentDate').value = state.currentDate;
   loadForDate();
 }
@@ -5053,13 +5209,11 @@ function setBookingsDate(value) {
 }
 
 function shiftBookingsDate(delta) {
-  const d = new Date(state.currentDate);
-  d.setDate(d.getDate() + delta);
-  setBookingsDate(d.toISOString().slice(0,10));
+  setBookingsDate(addDays(state.currentDate, delta));
 }
 
 function goTodayBookings() {
-  setBookingsDate(new Date().toISOString().slice(0,10));
+  setBookingsDate(getTodayInItaly());
 }
 
 function setCustomersDate(value) {
@@ -5073,13 +5227,11 @@ function setCustomersDate(value) {
 }
 
 function shiftCustomersDate(delta) {
-  const d = new Date(state.currentDate);
-  d.setDate(d.getDate() + delta);
-  setCustomersDate(d.toISOString().slice(0,10));
+  setCustomersDate(addDays(state.currentDate, delta));
 }
 
 function goTodayCustomers() {
-  setCustomersDate(new Date().toISOString().slice(0,10));
+  setCustomersDate(getTodayInItaly());
 }
 
 function setSunbedsDate(value) {
@@ -5091,31 +5243,67 @@ function setSunbedsDate(value) {
 }
 
 function shiftSunbedsDate(delta) {
-  const d = new Date(state.sunbedsDate);
-  d.setDate(d.getDate() + delta);
-  setSunbedsDate(d.toISOString().slice(0,10));
+  setSunbedsDate(addDays(state.sunbedsDate, delta));
 }
 
 function goTodaySunbeds() {
-  setSunbedsDate(new Date().toISOString().slice(0,10));
+  setSunbedsDate(getTodayInItaly());
 }
 
 // ============================================================
 // HELPERS
 // ============================================================
-function daysBetween(d1, d2) { return Math.round((new Date(d2) - new Date(d1)) / 86400000); }
-function addDays(d, n) { const x = new Date(d); x.setDate(x.getDate() + n); return x.toISOString().slice(0,10); }
+function getItalyDateParts(date = new Date()) {
+  const parts = new Intl.DateTimeFormat('en-GB', {
+    timeZone: OPERATING_TIME_ZONE,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).formatToParts(date);
+  return {
+    year: parts.find(p => p.type === 'year')?.value,
+    month: parts.find(p => p.type === 'month')?.value,
+    day: parts.find(p => p.type === 'day')?.value,
+  };
+}
+function getTodayInItaly() {
+  const { year, month, day } = getItalyDateParts(new Date());
+  return `${year}-${month}-${day}`;
+}
+function isDateOnlyString(value) {
+  return /^\d{4}-\d{2}-\d{2}$/.test(String(value || ''));
+}
+function parseDateOnly(value) {
+  if (!isDateOnlyString(value)) return new Date(value);
+  const [year, month, day] = value.split('-').map(Number);
+  return new Date(Date.UTC(year, month - 1, day, 12, 0, 0));
+}
+function formatDateOnly(date) {
+  const { year, month, day } = getItalyDateParts(date);
+  return `${year}-${month}-${day}`;
+}
+function daysBetween(d1, d2) {
+  return Math.round((parseDateOnly(d2) - parseDateOnly(d1)) / 86400000);
+}
+function addDays(d, n) {
+  const x = parseDateOnly(d);
+  x.setUTCDate(x.getUTCDate() + n);
+  return formatDateOnly(x);
+}
 function clamp(value, min, max) { return Math.max(min, Math.min(max, value)); }
 function roundPct(value) { return Math.round(value * 100) / 100; }
 function formatDate(s) {
   if (!s) return '—';
-  const d = new Date(s);
-  return d.toLocaleDateString('it-IT', { day:'2-digit', month:'short', year:'2-digit' });
+  const d = parseDateOnly(s);
+  return d.toLocaleDateString('it-IT', { day:'2-digit', month:'short', year:'2-digit', timeZone: OPERATING_TIME_ZONE });
 }
 function formatTime(s) {
   if (!s) return '—';
   const d = new Date(s);
-  return d.toLocaleTimeString('it-IT', { hour:'2-digit', minute:'2-digit' });
+  return d.toLocaleTimeString('it-IT', { hour:'2-digit', minute:'2-digit', timeZone: OPERATING_TIME_ZONE });
+}
+function formatDateTimeNowItaly() {
+  return new Date().toLocaleString('it-IT', { timeZone: OPERATING_TIME_ZONE });
 }
 function typeLabel(t) {
   return {
@@ -5466,7 +5654,7 @@ async function incassaSunbed(id, method, amount) {
 // CASSA
 // ============================================================
 function cassaToday() {
-  state.currentDate = new Date().toISOString().slice(0,10);
+  state.currentDate = getTodayInItaly();
   const currentDateInput = document.getElementById('currentDate');
   if (currentDateInput) currentDateInput.value = state.currentDate;
   const cassaDateInput = document.getElementById('cassaDateInput');
@@ -5493,11 +5681,12 @@ function cassaPickDate(value) {
 
 function formatCassaDateLabel(date) {
   try {
-    return new Date(date + 'T12:00:00').toLocaleDateString('it-IT', {
+    return parseDateOnly(date).toLocaleDateString('it-IT', {
       weekday: 'long',
       day: 'numeric',
       month: 'long',
-      year: 'numeric'
+      year: 'numeric',
+      timeZone: OPERATING_TIME_ZONE,
     });
   } catch {
     return date;
@@ -5691,7 +5880,7 @@ async function loadCassa() {
   const cassaOutstandingHero = document.getElementById('cassaOutstandingHero');
   const cassaCollectedNote = document.getElementById('cassaCollectedNote');
   const cassaOutstandingNote = document.getElementById('cassaOutstandingNote');
-  if (cassaHeroDate) cassaHeroDate.textContent = `Total sales · ${formatCassaDateLabel(date)}`;
+  if (cassaHeroDate) cassaHeroDate.textContent = `Incasso giornaliero · ${formatCassaDateLabel(date)}`;
   if (cassaHeroTotal) cassaHeroTotal.textContent = (cashTotal + cardTotal).toFixed(2) + ' €';
   if (cassaHeroSub) cassaHeroSub.textContent = `${payments.length} movimenti registrati · ${unpaid.length} posizioni aperte`;
   if (cassaCollectedHero) cassaCollectedHero.innerHTML = `${(cashTotal + cardTotal).toFixed(2)}<small> €</small>`;
@@ -5778,7 +5967,7 @@ async function loadCassa() {
         <div class="cassa-movement-item">
           <div>
             <div class="cassa-movement-title">${title}</div>
-            <div class="cassa-movement-meta">${meta} · ${new Date(p.created_at).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })}</div>
+            <div class="cassa-movement-meta">${meta} · ${new Date(p.created_at).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit', timeZone: OPERATING_TIME_ZONE })}</div>
           </div>
           <div class="cassa-movement-amount">${amount} €</div>
           <div></div>
@@ -5845,7 +6034,7 @@ function chiudiCassa() {
       <div class="row"><span>Carta POS</span><span>${card}</span></div>
       <div class="row total"><span>TOTALE INCASSATO</span><span>${totale}</span></div>
       <div class="row" style="color:red"><span>Da incassare (${unpaid} prenotazioni)</span><span>${daIncassare}</span></div>
-      <div class="footer">Stampato il ${new Date().toLocaleString('it-IT')}<br>La Marinella — Albisola Superiore</div>
+      <div class="footer">Stampato il ${formatDateTimeNowItaly()}<br>La Marinella — Albisola Superiore</div>
     </body></html>
   `;
 
