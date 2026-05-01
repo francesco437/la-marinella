@@ -1425,12 +1425,16 @@ tr:last-child td { border-bottom: none; }
 
 @media (max-width: 760px) {
   html, body {
-    overflow: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
   }
   .app {
     display: block;
     height: auto;
     min-height: 100dvh;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
   }
   .sidebar {
     position: fixed;
@@ -1472,6 +1476,9 @@ tr:last-child td { border-bottom: none; }
     display: block;
     min-height: 100dvh;
     padding-bottom: 88px;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
   }
   .topbar {
     position: sticky;
@@ -1480,6 +1487,8 @@ tr:last-child td { border-bottom: none; }
     padding: 14px 16px;
     gap: 12px;
     align-items: flex-start;
+    width: 100%;
+    max-width: 100%;
   }
   .topbar h2 {
     font-size: 20px;
@@ -1490,6 +1499,7 @@ tr:last-child td { border-bottom: none; }
     border-radius: 18px;
     justify-content: space-between;
     padding: 4px;
+    min-width: 0;
   }
   .date-picker input[type="date"] {
     min-width: 0;
@@ -1497,6 +1507,9 @@ tr:last-child td { border-bottom: none; }
   }
   .view {
     padding: 14px 14px 22px;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
   }
   .kpi-row {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1516,7 +1529,11 @@ tr:last-child td { border-bottom: none; }
   }
   .map-wrap {
     padding: 14px;
-    overflow: hidden;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
   }
   .map-toolbar,
   .map-actions,
@@ -1535,7 +1552,9 @@ tr:last-child td { border-bottom: none; }
     justify-content: center;
   }
   .beach {
+    width: 760px;
     min-width: 760px;
+    max-width: none;
     aspect-ratio: 16 / 10;
   }
   .planner-wrap,
