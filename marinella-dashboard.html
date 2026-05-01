@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>La Marinella — Dashboard</title>
+<title>Dolphin's Beach Bar — Dashboard</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -54,15 +54,15 @@ html, body {
   height: 100%;
   background: var(--sand-50);
   color: var(--sand-900);
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   font-size: 14px;
-  font-feature-settings: 'cv11', 'ss01', 'ss03';
+  font-feature-settings: 'cv11', 'ss01';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow: hidden;
 }
-h1, h2, h3, h4 { font-family: 'Inter', sans-serif; font-weight: 600; letter-spacing: -0.02em; }
-.serif { font-family: 'Instrument Serif', 'Times New Roman', serif; font-weight: 400; letter-spacing: -0.01em; }
+h1, h2, h3, h4 { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; letter-spacing: -0.04em; }
+.serif { font-family: 'DM Serif Display', 'Times New Roman', serif; font-weight: 400; letter-spacing: -0.02em; }
 button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
 input, select, textarea {
   font-family: inherit; font-size: 14px;
@@ -97,25 +97,25 @@ label { font-size: 11px; color: var(--sand-700); font-weight: 500; display: bloc
   border-bottom: 1px solid rgba(255,255,255,.08);
   margin-bottom: 16px;
 }
-.brand .logo {
-  width: 38px; height: 38px; border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, var(--sunshine) 0%, var(--coral) 55%, var(--coral-dk) 100%);
-  box-shadow: inset -2px -3px 6px rgba(0,0,0,.15);
+.brand-mark {
+  width: 52px;
+  height: 52px;
   flex-shrink: 0;
 }
-.brand h1 { font-family: 'Instrument Serif', serif; font-weight: 400; font-size: 26px; color: white; line-height: 1; letter-spacing: -0.01em; }
+.brand-mark img { width: 100%; height: 100%; display: block; }
+.brand h1 { font-family: 'DM Serif Display', serif; font-weight: 400; font-size: 27px; color: white; line-height: 1; letter-spacing: -0.02em; }
 .brand span { font-size: 10px; color: var(--sea-200); letter-spacing: .25em; text-transform: uppercase; font-weight: 500; }
 
 .nav-item {
   display: flex; align-items: center; gap: 12px;
   padding: 10px 12px; border-radius: var(--r-sm);
-  color: rgba(255,255,255,.7); font-weight: 500; font-size: 14px;
+  color: rgba(255,255,255,.74); font-weight: 500; font-size: 13.5px;
   text-align: left; width: 100%;
   letter-spacing: -0.005em;
   transition: all .15s;
 }
 .nav-item:hover { background: rgba(255,255,255,.06); color: white; }
-.nav-item.active { background: rgba(255,255,255,.12); color: white; font-weight: 600; }
+.nav-item.active { background: rgba(255,255,255,.14); color: white; font-weight: 700; }
 .nav-item svg { width: 18px; height: 18px; flex-shrink: 0; }
 
 .sidebar-footer {
@@ -133,7 +133,7 @@ label { font-size: 11px; color: var(--sand-700); font-weight: 500; display: bloc
   padding: 14px 28px;
   display: flex; align-items: center; gap: 20px;
 }
-.topbar h2 { font-size: 20px; margin-right: auto; font-weight: 600; letter-spacing: -0.02em; }
+.topbar h2 { font-size: 21px; margin-right: auto; font-weight: 700; letter-spacing: -0.04em; }
 
 .date-picker {
   display: flex; align-items: center; gap: 8px;
@@ -156,7 +156,7 @@ label { font-size: 11px; color: var(--sand-700); font-weight: 500; display: bloc
 
 /* KPI */
 .kpi-row {
-  display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px;
+  display: grid; grid-template-columns: repeat(6, 1fr); gap: 14px; margin-bottom: 20px;
 }
 .kpi {
   background: white; border-radius: var(--r-md);
@@ -175,7 +175,7 @@ label { font-size: 11px; color: var(--sand-700); font-weight: 500; display: bloc
 .kpi.k-occupancy::before{ background: var(--coral); }
 .kpi-label { font-size: 11px; color: var(--sand-700); text-transform: uppercase; letter-spacing: .08em; font-weight: 600; }
 .kpi-value {
-  font-family: 'Instrument Serif', serif;
+  font-family: 'DM Serif Display', serif;
   font-size: 40px;
   margin-top: 2px;
   line-height: 1;
@@ -184,7 +184,7 @@ label { font-size: 11px; color: var(--sand-700); font-weight: 500; display: bloc
   color: var(--sand-900);
 }
 .kpi-value small {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 14px;
   color: var(--sand-700);
   margin-left: 4px;
@@ -364,12 +364,19 @@ label { font-size: 11px; color: var(--sand-700); font-weight: 500; display: bloc
 }
 
 .row-labels {
-  position: absolute; left: 10px; top: 18%; bottom: 0;
-  display: flex; flex-direction: column;
-  justify-content: space-around; padding: 2% 0; z-index: 2;
+  position: absolute;
+  left: 10px;
+  top: 0;
+  bottom: 0;
+  width: 26px;
+  z-index: 2;
+  pointer-events: none;
 }
 .row-labels span {
-  font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600;
+  position: absolute;
+  left: 0;
+  transform: translateY(-50%);
+  font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; font-weight: 700;
   color: var(--sand-700); background: rgba(255,255,255,.85);
   width: 26px; height: 26px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
@@ -380,7 +387,7 @@ label { font-size: 11px; color: var(--sand-700); font-weight: 500; display: bloc
 
 .sea-label {
   position: absolute; top: 3.8%; left: 50%; transform: translateX(-50%);
-  font-family: 'Instrument Serif', serif; font-style: italic; font-size: 16px;
+  font-family: 'DM Serif Display', serif; font-style: italic; font-size: 16px;
   color: rgba(255,255,255,.94); letter-spacing: .3em; z-index: 2;
   text-shadow: 0 2px 10px rgba(14,58,64,.35);
   font-weight: 400;
@@ -457,7 +464,7 @@ label { font-size: 11px; color: var(--sand-700); font-weight: 500; display: bloc
   border: 1px solid var(--sand-900);
   border-radius: 11px;
   display: flex; align-items: center; justify-content: center;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 11px; font-weight: 700;
   color: var(--sand-900);
   font-variant-numeric: tabular-nums;
@@ -537,7 +544,18 @@ label { font-size: 11px; color: var(--sand-700); font-weight: 500; display: bloc
   padding: 14px 18px; border-bottom: 1px solid var(--sand-100);
   display: flex; align-items: center; gap: 10px;
   background: white;
+  flex-wrap: wrap;
 }
+.planner-range {
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(31,98,104,.08);
+  color: var(--sea-800);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .01em;
+}
+.planner-header-spacer { flex: 1; }
 .planner-nav {
   display: flex; background: var(--sand-100);
   border-radius: var(--r-sm); padding: 3px;
@@ -560,134 +578,307 @@ label { font-size: 11px; color: var(--sand-700); font-weight: 500; display: bloc
   transition: all .12s;
 }
 .planner-zoom button.active { background: white; color: var(--sea-800); font-weight: 600; box-shadow: 0 1px 2px rgba(14,58,64,.08); }
+.planner-print-btn {
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--sea-600), var(--sea-400));
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .01em;
+  box-shadow: 0 6px 16px rgba(31,98,104,.18);
+}
 
 .planner-scroll {
   overflow: auto; max-height: calc(100vh - 260px);
   position: relative;
+  padding: 14px 16px 18px;
+  background: linear-gradient(180deg, rgba(251,247,240,.55), rgba(255,255,255,.9));
 }
-.planner-grid {
-  display: grid; grid-template-columns: 92px 1fr;
-  min-width: 100%;
+.planner-board {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
-.planner-umbrella-col {
-  position: sticky; left: 0; z-index: 5;
-  background: white;
-  border-right: 1px solid var(--sand-200);
+.planner-board-head {
+  display: grid;
+  grid-template-columns: 88px 1fr;
+  gap: 14px;
+  align-items: start;
 }
-.planner-umbrella-head {
-  height: 56px; padding: 12px;
-  background: var(--sand-50); border-bottom: 1px solid var(--sand-200);
-  font-size: 10px; font-weight: 600; color: var(--sand-700);
-  text-transform: uppercase; letter-spacing: .1em;
-  position: sticky; top: 0; z-index: 6;
-  display: flex; align-items: center;
-}
-.planner-umbrella-cell {
-  height: 34px; padding: 0 12px;
-  border-bottom: 1px solid var(--sand-100);
-  display: flex; align-items: center; gap: 8px;
-  font-size: 13px; font-weight: 500;
-  color: var(--sand-900);
-}
-.planner-umbrella-cell .umb-id {
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-}
-.planner-umbrella-cell .umb-pos {
+.planner-board-note {
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #fffdf8 0%, #f7efe1 100%);
+  border: 1px solid rgba(232,217,190,.9);
+  box-shadow: 0 10px 24px rgba(43,34,18,.05);
+  font-size: 12px;
   color: var(--sand-700);
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: .04em;
+  line-height: 1.55;
 }
-.planner-umbrella-cell .tier-dot {
+.planner-board-note strong {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--sand-900);
+  font-size: 13px;
+}
+.planner-row-section {
+  display: grid;
+  grid-template-columns: 88px 1fr;
+  gap: 14px;
+  align-items: start;
+}
+.planner-row-label {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  min-height: 92px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(31,98,104,.12), rgba(31,98,104,.04));
+  border: 1px solid rgba(31,98,104,.12);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.planner-row-letter {
+  font-family: 'DM Serif Display', serif;
+  font-size: 34px;
+  line-height: 1;
+  color: var(--sea-800);
+}
+.planner-row-count {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .1em;
+  color: var(--sand-700);
+  text-transform: uppercase;
+}
+.planner-row-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(220px, 1fr));
+  gap: 14px;
+}
+.planner-card {
+  min-height: 140px;
+  background: white;
+  border: 1px solid rgba(232,217,190,.9);
+  border-radius: 18px;
+  box-shadow: 0 10px 24px rgba(43,34,18,.06);
+  padding: 14px;
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  gap: 10px;
+  cursor: pointer;
+  transition: transform .15s, box-shadow .15s, border-color .15s;
+}
+.planner-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 28px rgba(43,34,18,.1);
+}
+.planner-card.free { border-left: 4px solid var(--ok); }
+.planner-card.booked { border-left: 4px solid var(--warn); }
+.planner-card.arrived { border-left: 4px solid var(--sea-600); }
+.planner-card.off { border-left: 4px solid var(--sand-400); opacity: .8; }
+.planner-card-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.planner-card-id {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(31,98,104,.08);
+  color: var(--sea-800);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+.planner-card-arrived .planner-card-id {
+  background: rgba(31,98,104,.15);
+}
+.planner-card-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.planner-card-pos {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .1em;
+  color: var(--sand-700);
+  text-transform: uppercase;
+}
+.planner-card-type {
+  font-size: 11px;
+  color: var(--sand-700);
+}
+.planner-umb-cell .tier-dot,
+.planner-card-tier {
   width: 7px; height: 7px; border-radius: 50%;
   flex-shrink: 0;
 }
 .tier-dot.front    { background: #3A9B7A; }
 .tier-dot.standard { background: var(--sunshine); }
 .tier-dot.back     { background: var(--sand-400); }
-
-.planner-days-col { position: relative; }
-.planner-days-head {
-  display: grid; height: 56px;
-  background: var(--sand-50);
-  border-bottom: 1px solid var(--sand-200);
-  position: sticky; top: 0; z-index: 4;
+.planner-state-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  white-space: nowrap;
 }
-.planner-day-head {
-  border-right: 1px solid var(--sand-200);
-  padding: 8px 4px; text-align: center;
-  font-size: 10px; color: var(--sand-700); font-weight: 500;
-  text-transform: uppercase; letter-spacing: .08em;
-  display: flex; flex-direction: column; justify-content: center;
-  gap: 2px;
+.planner-state-badge.free { background: rgba(58,155,122,.12); color: #1E6E4F; }
+.planner-state-badge.booked { background: rgba(232,155,60,.14); color: #9A671E; }
+.planner-state-badge.arrived { background: rgba(31,98,104,.13); color: var(--sea-800); }
+.planner-state-badge.off { background: rgba(184,151,104,.15); color: var(--sand-700); }
+.planner-card-customer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 4px;
 }
-.planner-day-head .d-month {
-  font-size: 9px;
+.planner-customer-name {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+.planner-customer-meta {
+  font-size: 11px;
+  color: var(--sand-700);
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+.planner-empty {
   color: var(--sand-400);
+  font-size: 13px;
   font-weight: 600;
-  letter-spacing: .1em;
 }
-.planner-day-head.weekend { background: rgba(184,151,104,.12); }
-.planner-day-head.today {
-  background: var(--sea-50);
-  color: var(--sea-800);
-  box-shadow: inset 3px 0 0 var(--sea-600);
+.planner-note-text {
+  font-size: 12px;
+  color: var(--sand-700);
+  line-height: 1.45;
 }
-.planner-day-head .d-num {
-  font-family: 'Inter', sans-serif;
-  font-size: 17px;
-  font-weight: 600;
-  color: var(--sand-900);
+.planner-card-foot {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+}
+.planner-payment-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 88px;
+  padding: 8px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.planner-payment-pill.paid {
+  color: #1E6E4F;
+  background: rgba(58,155,122,.14);
+}
+.planner-payment-pill.partial {
+  color: #9A671E;
+  background: rgba(232,155,60,.18);
+}
+.planner-payment-pill.pending {
+  color: #B23E36;
+  background: rgba(232,90,79,.14);
+}
+.planner-payment-pill.free {
+  color: var(--sand-700);
+  background: rgba(184,151,104,.14);
+}
+.planner-amount-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 5px;
+}
+.planner-amount-main {
+  font-family: 'DM Serif Display', serif;
+  font-size: 24px;
   line-height: 1;
-  letter-spacing: -0.02em;
-  font-variant-numeric: tabular-nums;
 }
-.planner-day-head.today .d-num { color: var(--sea-800); font-weight: 700; }
-.planner-day-head.today .d-month { color: var(--sea-600); }
-
-.planner-row {
-  display: grid;
-  height: 34px;
-  border-bottom: 1px solid var(--sand-100);
-  position: relative;
-}
-.planner-row:hover { background: var(--sand-50); }
-.planner-cell {
-  border-right: 1px solid var(--sand-100);
-  cursor: pointer;
-  transition: background .1s;
-}
-.planner-cell:hover { background: rgba(74,142,147,.08); }
-.planner-cell.weekend { background: rgba(184,151,104,.05); }
-.planner-cell.today {
-  background: rgba(31,98,104,.05);
-  box-shadow: inset 3px 0 0 rgba(31,98,104,.4);
+.planner-amount-main.paid { color: #1E6E4F; }
+.planner-amount-main.partial { color: #9A671E; }
+.planner-amount-main.pending { color: #B23E36; }
+.planner-amount-sub {
+  font-size: 11px;
+  color: var(--sand-700);
+  letter-spacing: .03em;
 }
 
-.planner-booking {
-  position: absolute;
-  top: 4px; bottom: 4px;
-  border-radius: 5px;
-  padding: 0 8px;
-  display: flex; align-items: center;
-  font-size: 12px; font-weight: 500;
-  color: white;
-  cursor: pointer;
-  box-shadow: 0 1px 3px rgba(0,0,0,.15);
-  transition: all .15s;
-  z-index: 2;
-  overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
-  letter-spacing: -0.005em;
-}
-.planner-booking:hover { transform: translateY(-1px); box-shadow: 0 3px 8px rgba(0,0,0,.2); z-index: 3; }
-.planner-booking.daily     { background: linear-gradient(135deg, var(--coral), var(--coral-dk)); }
-.planner-booking.half_day_am, .planner-booking.half_day_pm { background: linear-gradient(135deg, var(--warn), #C77C2E); }
-.planner-booking.weekly    { background: linear-gradient(135deg, var(--sea-400), var(--sea-600)); }
-.planner-booking.monthly   { background: linear-gradient(135deg, #6B4C87, #553869); }
-.planner-booking.seasonal  { background: linear-gradient(135deg, #2B6E53, #1E5039); }
-.planner-booking.checked_in::before {
-  content: '●'; margin-right: 5px; color: white;
+@media print {
+  body {
+    background: white !important;
+    overflow: visible !important;
+  }
+  .sidebar, .topbar, .multi-bar, .modal-backdrop, .login-screen, #setupBanner {
+    display: none !important;
+  }
+  .app, .main, .view, .planner-wrap, .planner-scroll {
+    display: block !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  .view.hidden { display: none !important; }
+  #view-planner { display: block !important; }
+  .planner-header-bar {
+    padding: 0 0 12px !important;
+    border: none !important;
+  }
+  .planner-nav, .planner-print-btn, #plannerDateInput {
+    display: none !important;
+  }
+  .planner-range {
+    background: none !important;
+    padding: 0 !important;
+    color: #000 !important;
+    font-size: 14px !important;
+  }
+  .planner-scroll {
+    padding: 0 !important;
+    background: white !important;
+  }
+  .planner-board {
+    gap: 12px !important;
+  }
+  .planner-row-section {
+    grid-template-columns: 64px 1fr !important;
+    gap: 10px !important;
+    break-inside: avoid;
+  }
+  .planner-row-grid {
+    grid-template-columns: repeat(3, minmax(160px, 1fr)) !important;
+    gap: 10px !important;
+  }
+  .planner-card, .planner-row-label, .planner-board-note {
+    box-shadow: none !important;
+  }
 }
 
 /* HEATMAP LEGEND */
@@ -726,7 +917,7 @@ label { font-size: 11px; color: var(--sand-700); font-weight: 500; display: bloc
   background: linear-gradient(135deg, var(--sea-400), var(--sea-600));
   color: white;
   display: flex; align-items: center; justify-content: center;
-  font-family: 'Inter', sans-serif; font-size: 20px; font-weight: 700;
+  font-family: 'Plus Jakarta Sans', sans-serif; font-size: 20px; font-weight: 700;
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.02em;
 }
@@ -751,7 +942,7 @@ label { font-size: 11px; color: var(--sand-700); font-weight: 500; display: bloc
 .form-section h4 {
   font-size: 12px; text-transform: uppercase; letter-spacing: .1em;
   color: var(--sea-600); margin-bottom: 12px;
-  font-family: 'Inter', sans-serif; font-weight: 600;
+  font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700;
 }
 
 .type-grid {
@@ -807,7 +998,7 @@ label { font-size: 11px; color: var(--sand-700); font-weight: 500; display: bloc
   font-size: 16px; font-weight: 700;
 }
 .price-row.total .v {
-  font-family: 'Instrument Serif', serif; font-size: 28px;
+  font-family: 'DM Serif Display', serif; font-size: 28px;
   font-weight: 400; color: var(--sea-800);
   letter-spacing: -0.02em;
 }
@@ -920,7 +1111,7 @@ tr:last-child td { border-bottom: none; }
   width: 42px; height: 42px; border-radius: 50%;
   background: linear-gradient(135deg, var(--sea-400), var(--sea-600));
   color: white; display: flex; align-items: center; justify-content: center;
-  font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 700;
+  font-family: 'Plus Jakarta Sans', sans-serif; font-size: 15px; font-weight: 700;
   flex-shrink: 0;
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.02em;
@@ -996,13 +1187,13 @@ tr:last-child td { border-bottom: none; }
   display: flex; flex-direction: column; align-items: center;
   gap: 12px; margin-bottom: 28px;
 }
-.login-brand .logo {
-  width: 64px; height: 64px; border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, var(--sunshine) 0%, var(--coral) 55%, var(--coral-dk) 100%);
-  box-shadow: inset -3px -4px 10px rgba(0,0,0,.15), 0 8px 20px rgba(232,90,79,.3);
+.login-brand .brand-mark {
+  width: 112px;
+  height: 112px;
+  filter: drop-shadow(0 16px 28px rgba(31,98,104,.14));
 }
 .login-brand h1 {
-  font-family: 'Instrument Serif', serif; font-size: 44px; font-weight: 400;
+  font-family: 'DM Serif Display', serif; font-size: 46px; font-weight: 400;
   color: var(--sand-900); letter-spacing: -0.02em; line-height: 1;
 }
 .login-brand span {
@@ -1107,7 +1298,7 @@ tr:last-child td { border-bottom: none; }
 .cassa-info { flex: 1; min-width: 0; }
 .cassa-name { font-size: 14px; font-weight: 600; color: var(--sand-900); }
 .cassa-meta { font-size: 12px; color: var(--sand-700); margin-top: 2px; }
-.cassa-amount { font-family: 'Instrument Serif', serif; font-size: 20px; color: var(--sand-900); margin-right: 8px; }
+.cassa-amount { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--sand-900); margin-right: 8px; }
 .cassa-actions { display: flex; gap: 6px; flex-shrink: 0; align-items: center; }
 .cassa-btn {
   padding: 7px 12px; border-radius: var(--r-sm);
@@ -1133,7 +1324,7 @@ tr:last-child td { border-bottom: none; }
 }
 .kpi-cassa:last-child { border: none; }
 .kpi-cassa-label { font-size: 13px; color: var(--sand-700); }
-.kpi-cassa-value { font-family: 'Instrument Serif', serif; font-size: 24px; color: var(--sand-900); }
+.kpi-cassa-value { font-family: 'DM Serif Display', serif; font-size: 24px; color: var(--sand-900); }
 .btn-chiudi-cassa {
   width: calc(100% - 40px);
   margin: 16px 20px;
@@ -1192,9 +1383,11 @@ tr:last-child td { border-bottom: none; }
 <div class="login-screen" id="loginScreen">
   <div class="login-card">
     <div class="login-brand">
-      <div class="logo"></div>
-      <h1>Marinella</h1>
-      <span>Albisola Superiore</span>
+      <div class="brand-mark" aria-hidden="true">
+        <img src="download.png" alt="" />
+      </div>
+      <h1>Dolphin's</h1>
+      <span>Beach Bar</span>
     </div>
     <form class="login-form" id="loginForm" onsubmit="handleLogin(event)">
       <div>
@@ -1219,10 +1412,12 @@ tr:last-child td { border-bottom: none; }
   <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="brand">
-      <div class="logo"></div>
+      <div class="brand-mark" aria-hidden="true">
+        <img src="download.png" alt="" />
+      </div>
       <div>
-        <h1>Marinella</h1>
-        <span>Albisola</span>
+        <h1>Dolphin's</h1>
+        <span>Beach Bar</span>
       </div>
     </div>
 
@@ -1312,6 +1507,14 @@ tr:last-child td { border-bottom: none; }
           <div class="kpi-label">Incasso giorno</div>
           <div class="kpi-value" id="kpiRevenue">–<small>€</small></div>
         </div>
+        <div class="kpi k-free">
+          <div class="kpi-label">Incassato</div>
+          <div class="kpi-value" id="kpiPaid">–<small>€</small></div>
+        </div>
+        <div class="kpi k-occupancy">
+          <div class="kpi-label">Da incassare</div>
+          <div class="kpi-value" id="kpiUnpaid">–<small>€</small></div>
+        </div>
       </div>
 
       <div class="map-wrap">
@@ -1342,7 +1545,7 @@ tr:last-child td { border-bottom: none; }
         <div class="beach" id="beachMap">
           <div class="sea-label">M A R E</div>
           <div class="row-labels">
-            <span>A</span><span>B</span><span>C</span><span>D</span><span>E</span>
+            <span data-row="A">A</span><span data-row="B">B</span><span data-row="C">C</span><span data-row="D">D</span><span data-row="E">E</span>
           </div>
         </div>
       </div>
@@ -1353,18 +1556,14 @@ tr:last-child td { border-bottom: none; }
       <div class="planner-wrap">
         <div class="planner-header-bar">
           <div class="planner-nav">
-            <button onclick="plannerShift(-7)">‹ Sett.</button>
-            <button onclick="plannerShift(-1)">‹</button>
+            <button onclick="plannerShift(-1)">‹ Giorno</button>
             <button onclick="plannerToday()">Oggi</button>
-            <button onclick="plannerShift(1)">›</button>
-            <button onclick="plannerShift(7)">Sett. ›</button>
+            <button onclick="plannerShift(1)">Giorno ›</button>
           </div>
-          <div style="flex:1"></div>
-          <div class="planner-zoom">
-            <button class="active" data-days="7" onclick="setPlannerDays(7)">7g</button>
-            <button data-days="14" onclick="setPlannerDays(14)">14g</button>
-            <button data-days="30" onclick="setPlannerDays(30)">30g</button>
-          </div>
+          <div class="planner-range" id="plannerRangeLabel">Giornata corrente</div>
+          <input type="date" id="plannerDateInput" onchange="plannerPickDate(this.value)" style="width:auto;min-width:170px" />
+          <div class="planner-header-spacer"></div>
+          <button class="planner-print-btn" onclick="printPlanner()">Stampa</button>
         </div>
         <div class="planner-scroll" id="plannerScroll"></div>
       </div>
@@ -1375,14 +1574,14 @@ tr:last-child td { border-bottom: none; }
       <div class="arrivals-grid">
         <div class="arrivals-panel">
           <div class="arrivals-head">
-            <h3>📥 Arrivi di oggi</h3>
+            <h3>Arrivi di oggi</h3>
             <span class="arrivals-count" id="arrivalsCount">0</span>
           </div>
           <div id="arrivalsList"></div>
         </div>
         <div class="arrivals-panel">
           <div class="arrivals-head">
-            <h3>📤 In partenza oggi</h3>
+            <h3>In partenza oggi</h3>
             <span class="arrivals-count" id="departuresCount">0</span>
           </div>
           <div id="departuresList"></div>
@@ -1397,7 +1596,7 @@ tr:last-child td { border-bottom: none; }
         <div>
           <div class="cassa-panel" style="margin-bottom:16px">
             <div class="cassa-panel-head">
-              <h3>💰 Da incassare oggi</h3>
+              <h3>Da incassare oggi</h3>
               <span class="arrivals-count" id="cassaUnpaidCount">0</span>
             </div>
             <div id="cassaUnpaidList">
@@ -1406,7 +1605,7 @@ tr:last-child td { border-bottom: none; }
           </div>
           <div class="cassa-panel">
             <div class="cassa-panel-head">
-              <h3>✅ Già pagati oggi</h3>
+              <h3>Già pagati oggi</h3>
               <span class="arrivals-count" id="cassaPaidCount">0</span>
             </div>
             <div id="cassaPaidList">
@@ -1419,14 +1618,14 @@ tr:last-child td { border-bottom: none; }
         <div>
           <div class="cassa-panel" style="margin-bottom:16px">
             <div class="cassa-panel-head">
-              <h3>📊 Riepilogo giornata</h3>
+              <h3>Riepilogo giornata</h3>
             </div>
             <div class="kpi-cassa">
-              <span class="kpi-cassa-label">💵 Cash</span>
+              <span class="kpi-cassa-label">Contanti</span>
               <span class="kpi-cassa-value" id="cassaCash">0 €</span>
             </div>
             <div class="kpi-cassa">
-              <span class="kpi-cassa-label">💳 Carta</span>
+              <span class="kpi-cassa-label">Carta</span>
               <span class="kpi-cassa-value" id="cassaCard">0 €</span>
             </div>
             <div class="kpi-cassa" style="border-top:2px solid var(--sand-200);margin-top:4px">
@@ -1441,7 +1640,7 @@ tr:last-child td { border-bottom: none; }
 
           <div class="cassa-panel">
             <div class="cassa-panel-head">
-              <h3>🖨️ Chiusura cassa</h3>
+              <h3>Chiusura cassa</h3>
             </div>
             <div style="padding:16px 20px;font-size:13px;color:var(--sand-700);line-height:1.6">
               Genera il riepilogo di fine giornata con totali per metodo di pagamento.
@@ -1485,7 +1684,7 @@ tr:last-child td { border-bottom: none; }
         <div class="beach" id="heatmapBeach">
           <div class="sea-label">M A R E</div>
           <div class="row-labels">
-            <span>A</span><span>B</span><span>C</span><span>D</span><span>E</span>
+            <span data-row="A">A</span><span data-row="B">B</span><span data-row="C">C</span><span data-row="D">D</span><span data-row="E">E</span>
           </div>
         </div>
       </div>
@@ -1553,6 +1752,15 @@ tr:last-child td { border-bottom: none; }
           <p style="font-size:13px;color:var(--sand-700);margin-top:4px">12 €/giornata · 8 €/mezza giornata (Delibera 173/2025)</p>
         </div>
         <button class="btn btn-primary" onclick="openSunbedModal()">+ Nuovo lettino</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px;padding:12px 14px;background:white;border:1px solid var(--sand-100);border-radius:var(--r-md);box-shadow:var(--sh-sm)">
+        <div style="font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sand-700)">Planner lettini</div>
+        <div class="planner-nav">
+          <button onclick="shiftSunbedsDate(-1)">‹ Giorno</button>
+          <button onclick="goTodaySunbeds()">Oggi</button>
+          <button onclick="shiftSunbedsDate(1)">Giorno ›</button>
+        </div>
+        <input type="date" id="sunbedsDate" onchange="setSunbedsDate(this.value)" style="width:auto;min-width:170px" />
       </div>
       <div class="table-wrap">
         <table>
@@ -1715,12 +1923,12 @@ tr:last-child td { border-bottom: none; }
     <div class="modal-foot">
       <button class="btn btn-danger" id="btnDelete" onclick="deleteBooking()" style="display:none">Elimina</button>
       <button class="btn btn-ghost" onclick="closeModal()">Annulla</button>
-      <button class="btn" id="btnToggleService" onclick="toggleUmbrellaService()" style="display:none; background:var(--sand-200); color:var(--sand-700)">⚠ Fuori servizio</button>
+      <button class="btn" id="btnToggleService" onclick="toggleUmbrellaService()" style="display:none; background:var(--sand-200); color:var(--sand-700)">Fuori servizio</button>
       <button class="btn btn-whatsapp" id="btnWhatsapp" onclick="sendDepositWA()" style="display:none">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.2-1.7-.8-2-.9s-.5-.2-.7.2-.8.9-1 1.1-.4.2-.7.1c-.9-.4-1.7-.9-2.4-1.7-.7-.8-1.2-1.6-1.5-2.5-.2-.4 0-.6.2-.8.2-.2.4-.4.5-.6.1-.2.2-.3.3-.5.1-.2 0-.4 0-.6l-.9-2.1c-.2-.5-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.3s1 2.7 1.2 2.9c.1.2 2 3.1 5 4.3.7.3 1.2.5 1.7.6.7.2 1.3.2 1.8.1.6-.1 1.7-.7 2-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.4zM12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.4 1.3 4.9L2 22l5.2-1.4c1.4.8 3 1.2 4.8 1.2 5.5 0 10-4.5 10-10S17.5 2 12 2z"/></svg>
         WhatsApp
       </button>
-      <button class="btn btn-success" id="btnCheckIn" onclick="checkIn()" style="display:none">✓ Check-in</button>
+      <button class="btn btn-success" id="btnCheckIn" onclick="checkIn()" style="display:none">Check-in</button>
       <button class="btn btn-primary" id="btnSave" onclick="saveBooking()">Prenota</button>
     </div>
   </div>
@@ -1802,8 +2010,8 @@ tr:last-child td { border-bottom: none; }
           <label>Pagamento</label>
           <select id="sbPayment">
             <option value="">Nessuno / in sospeso</option>
-            <option value="cash">💵 Contanti</option>
-            <option value="card_pos">💳 Carta POS</option>
+            <option value="cash">Contanti</option>
+            <option value="card_pos">Carta POS</option>
           </select>
         </div>
         <div style="margin-top:12px">
@@ -1929,6 +2137,7 @@ async function handleLogout() {
 // ============================================================
 const state = {
   currentDate: new Date().toISOString().slice(0,10),
+  sunbedsDate: new Date().toISOString().slice(0,10),
   umbrellas: [],
   bookings: [],          // prenotazioni che toccano currentDate
   allBookings: [],
@@ -1960,7 +2169,7 @@ const DEMO_UMBRELLAS = [];
       DEMO_UMBRELLAS.push({
         id: id++, row_label: rows[r], col_number: c,
         x: 10 + (c - 1) * 10,
-        y: 20 + r * 15,
+        y: 28 + r * 14,
         active: true
       });
     }
@@ -1975,6 +2184,11 @@ const DEMO_BOOKINGS = [
   { id:'d4', umbrella_id:23, customer_name:'Neri Giulia',    customer_phone:'+39 333 7777777', date_from:today, date_to:today, booking_type:'half_day_am',     status:'checked_in', price_total:15, price_paid:15, deposit_amount:0,  arrived_at: new Date().toISOString(), departed_at:null, sunbed_L_occupied:true, sunbed_R_occupied:true, disability_discount:false },
   { id:'d5', umbrella_id:10, customer_name:'Ferrari Luca',   customer_phone:'+39 347 5551234', date_from:today, date_to:today, booking_type:'reduced_nursery', status:'confirmed',  price_total:5,  price_paid:5,  deposit_amount:0,  arrived_at:null, departed_at:null, sunbed_L_occupied:false, sunbed_R_occupied:false, disability_discount:false },
   { id:'d6', umbrella_id:7,  customer_name:'Galli Anna',     customer_phone:'+39 348 2223344', date_from:today, date_to:today, booking_type:'daily',           status:'checked_in', price_total:17, price_paid:17, deposit_amount:0,  arrived_at: new Date().toISOString(), departed_at:null, sunbed_L_occupied:true, sunbed_R_occupied:true, disability_discount:true },
+];
+
+const DEMO_SUNBED_BOOKINGS = [
+  { id:'sb1', date_booking: today, booking_type:'daily', quantity:2, payment_status:'pending', status:'confirmed', price_total:24, disability_discount:false, notes:'Vicino alla passerella', customers:{ first_name:'Luca', last_name:'Marini', phone:'+39 333 1122334' } },
+  { id:'sb2', date_booking: today, booking_type:'half_day_am', quantity:1, payment_status:'paid', status:'confirmed', price_total:8, disability_discount:false, notes:'', customers:{ first_name:'Elena', last_name:'Riva', phone:'+39 340 9988771' } },
 ];
 
 // Tariffe obbligatorie Delibera 173/2025 — Comune di Albisola Superiore
@@ -2004,6 +2218,8 @@ const DEMO_HEATMAP = DEMO_UMBRELLAS.map(u => ({
 // INIT
 // ============================================================
 document.getElementById('currentDate').value = state.currentDate;
+const sunbedsDateInput = document.getElementById('sunbedsDate');
+if (sunbedsDateInput) sunbedsDateInput.value = state.sunbedsDate;
 
 document.querySelectorAll('.nav-item').forEach(btn => {
   btn.addEventListener('click', () => switchView(btn.dataset.view));
@@ -2143,11 +2359,13 @@ async function loadCustomers() {
 }
 
 async function loadPlannerBookings() {
-  const endDate = addDays(state.plannerStart, state.plannerDays - 1);
+  const day = state.plannerStart;
+  const dateInput = document.getElementById('plannerDateInput');
+  if (dateInput) dateInput.value = day;
 
   if (!isConfigured) {
     const inRange = DEMO_BOOKINGS.filter(b =>
-      b.date_to >= state.plannerStart && b.date_from <= endDate
+      b.date_to >= day && b.date_from <= day
     );
     renderPlanner(inRange);
     return;
@@ -2155,8 +2373,8 @@ async function loadPlannerBookings() {
   const { data } = await sb
     .from('bookings')
     .select(`*, customers(first_name, last_name)`)
-    .lte('date_from', endDate)
-    .gte('date_to', state.plannerStart)
+    .lte('date_from', day)
+    .gte('date_to', day)
     .in('status', ['pending','confirmed','checked_in']);
   const bookings = (data || []).map(b => ({
     ...b,
@@ -2221,6 +2439,41 @@ function umbrellaSVG() {
   `;
 }
 
+function canSelectUmbrellaForMulti(u, booking) {
+  return u.active && !booking;
+}
+
+function getLayoutCollision(umbrellaId, x, y) {
+  const MIN_DX = 6.5;
+  const MIN_DY = 10;
+  return state.umbrellas.find(other => {
+    if (other.id === umbrellaId || !other.active) return false;
+    return Math.abs(other.x - x) < MIN_DX && Math.abs(other.y - y) < MIN_DY;
+  }) || null;
+}
+
+function syncRowLabels(beachId, items) {
+  const beach = document.getElementById(beachId);
+  if (!beach) return;
+  const labels = beach.querySelectorAll('.row-labels span[data-row]');
+  if (!labels.length) return;
+
+  const rows = {};
+  items.forEach(item => {
+    const row = item.row_label;
+    if (!row || typeof item.y !== 'number') return;
+    (rows[row] ||= []).push(item.y);
+  });
+
+  labels.forEach(label => {
+    const row = label.dataset.row;
+    const values = rows[row];
+    if (!values || !values.length) return;
+    const avgY = values.reduce((sum, value) => sum + value, 0) / values.length;
+    label.style.top = avgY + '%';
+  });
+}
+
 function renderMap() {
   const beach = document.getElementById('beachMap');
   beach.classList.toggle('layout-active', state.layoutMode);
@@ -2270,6 +2523,7 @@ function renderMap() {
     beach.appendChild(el);
   });
 
+  syncRowLabels('beachMap', state.umbrellas);
   updateLayoutUI();
 }
 
@@ -2285,11 +2539,15 @@ function renderKPIs() {
     const days = daysBetween(b.date_from, b.date_to) + 1;
     return s + ((b.price_total || 0) / days);
   }, 0);
+  const paid = state.bookings.reduce((s, b) => s + (b.price_paid || 0), 0);
+  const unpaid = state.bookings.reduce((s, b) => s + Math.max(0, (b.price_total || 0) - (b.price_paid || 0)), 0);
 
   document.getElementById('kpiBooked').innerHTML = `${booked}<small>/${total}</small>`;
   document.getElementById('kpiFree').textContent = free;
   document.getElementById('kpiOccupancy').innerHTML = `${occ}<small>%</small>`;
   document.getElementById('kpiRevenue').innerHTML = `${Math.round(revenue)}<small>€</small>`;
+  document.getElementById('kpiPaid').innerHTML = `${Math.round(paid)}<small>€</small>`;
+  document.getElementById('kpiUnpaid').innerHTML = `${Math.round(unpaid)}<small>€</small>`;
 }
 
 // ============================================================
@@ -2465,6 +2723,8 @@ function moveUmbrellaToPointer(umbrellaId, clientX, clientY) {
   const umbrella = state.umbrellas.find(u => u.id === umbrellaId);
   if (!umbrella) return;
 
+  if (getLayoutCollision(umbrellaId, x, y)) return;
+
   umbrella.x = roundPct(x);
   umbrella.y = roundPct(y);
 
@@ -2476,8 +2736,16 @@ function moveUmbrellaToPointer(umbrellaId, clientX, clientY) {
 
 function handleUmbrellaClick(u, booking, e) {
   if (state.layoutMode) return;
-  if (state.mapMode === 'multi' && !booking) {
-    // Toggle selection
+  if (state.mapMode === 'multi') {
+    if (!canSelectUmbrellaForMulti(u, booking)) {
+      if (!u.active) {
+        toast('Gli ombrelloni fuori servizio non sono selezionabili', 'err');
+      } else {
+        toast('In multi-select puoi scegliere solo ombrelloni liberi', 'err');
+      }
+      return;
+    }
+
     if (state.multiSelection.has(u.id)) {
       state.multiSelection.delete(u.id);
     } else {
@@ -2516,88 +2784,109 @@ function multiBook() {
 // ============================================================
 // RENDER: PLANNER (GANTT)
 // ============================================================
+function getPlannerRangeLabel() {
+  const day = new Date(state.plannerStart);
+  const dayName = day.toLocaleDateString('it-IT', { weekday: 'long' });
+  const dateLabel = day.toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' });
+  return `${dayName} ${dateLabel}`;
+}
+
+function getPlannerPaymentState(booking) {
+  if (booking.payment_status === 'paid' || (booking.price_paid || 0) >= (booking.price_total || 0)) return 'paid';
+  if (booking.payment_status === 'partial' || (booking.price_paid || 0) > 0) return 'partial';
+  return 'pending';
+}
+
+function getPlannerRowState(umbrella, booking) {
+  if (!umbrella.active) return 'off';
+  if (!booking) return 'free';
+  if (booking.arrived_at && !booking.departed_at) return 'arrived';
+  return 'booked';
+}
+
+function printPlanner() {
+  window.print();
+}
+
 function renderPlanner(bookings) {
   const scroll = document.getElementById('plannerScroll');
-  const days = state.plannerDays;
-  const dayWidth = Math.max(60, Math.min(120, Math.floor((scroll.clientWidth - 80) / days)));
+  const rangeLabel = document.getElementById('plannerRangeLabel');
+  if (rangeLabel) rangeLabel.textContent = getPlannerRangeLabel();
+  const day = state.plannerStart;
+  const sortedUmbrellas = [...state.umbrellas].sort((a, b) => {
+    if (a.row_label !== b.row_label) return a.row_label.localeCompare(b.row_label);
+    return a.col_number - b.col_number;
+  });
+  const rowGroups = sortedUmbrellas.reduce((acc, u) => {
+    (acc[u.row_label] ||= []).push(u);
+    return acc;
+  }, {});
 
-  let daysHeadHtml = '';
-  for (let i = 0; i < days; i++) {
-    const d = new Date(state.plannerStart);
-    d.setDate(d.getDate() + i);
-    const dayOfWeek = d.getDay();
-    const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
-    const isToday = d.toISOString().slice(0,10) === new Date().toISOString().slice(0,10);
-    const cls = (isWeekend ? 'weekend ' : '') + (isToday ? 'today' : '');
-    const monthStr = d.toLocaleDateString('it-IT',{month:'short'}).replace('.','').toUpperCase();
-    const dayName = ['DOM','LUN','MAR','MER','GIO','VEN','SAB'][dayOfWeek];
-    daysHeadHtml += `
-      <div class="planner-day-head ${cls}" style="width:${dayWidth}px">
-        <div class="d-month">${monthStr}</div>
-        <div class="d-num">${d.getDate()}</div>
-        <div>${dayName}</div>
-      </div>`;
-  }
+  const boardSections = Object.entries(rowGroups).map(([rowLabel, umbrellas]) => {
+    const cards = umbrellas.map(u => {
+      const booking = bookings.find(b => b.umbrella_id === u.id);
+      const rowState = getPlannerRowState(u, booking);
+      const paymentState = booking ? getPlannerPaymentState(booking) : 'free';
+      const amount = booking ? `${(booking.price_total || 0).toFixed(0)} €` : '—';
+      const amountSub = booking
+        ? paymentState === 'paid'
+          ? 'pagato'
+          : paymentState === 'partial'
+            ? `acconto ${(booking.price_paid || 0).toFixed(0)} €`
+            : 'da pagare'
+        : 'nessuna prenotazione';
+      const customerBlock = booking
+        ? `<div class="planner-customer-name">${booking.customer_name || '—'}</div>
+           <div class="planner-customer-meta">${typeLabel(booking.booking_type)} · ${formatDate(booking.date_from)}${booking.date_from !== booking.date_to ? ' → ' + formatDate(booking.date_to) : ''}</div>
+           <div class="planner-note-text">${booking.notes ? booking.notes : 'Nessuna nota'}</div>`
+        : `<div class="planner-note-text">Nessuna nota</div>`;
+      const clickAction = booking ? `openBookingFromPlanner('${booking.id}', ${u.id})` : `plannerCellClick(${u.id}, '${day}')`;
 
-  let rowsHtml = '';
-  state.umbrellas.forEach(u => {
-    let cellsHtml = '';
-    for (let i = 0; i < days; i++) {
-      const d = new Date(state.plannerStart);
-      d.setDate(d.getDate() + i);
-      const dayOfWeek = d.getDay();
-      const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
-      const isToday = d.toISOString().slice(0,10) === new Date().toISOString().slice(0,10);
-      const cls = (isWeekend ? 'weekend ' : '') + (isToday ? 'today' : '');
-      cellsHtml += `<div class="planner-cell ${cls}" style="width:${dayWidth}px" data-umbrella="${u.id}" data-date="${d.toISOString().slice(0,10)}" onclick="plannerCellClick(${u.id}, '${d.toISOString().slice(0,10)}')"></div>`;
-    }
-
-    // bookings su questa riga
-    let bookingsHtml = '';
-    const uBookings = bookings.filter(b => b.umbrella_id === u.id);
-    uBookings.forEach(b => {
-      const startDay = Math.max(0, daysBetween(state.plannerStart, b.date_from));
-      const endDay = Math.min(days - 1, daysBetween(state.plannerStart, b.date_to));
-      if (endDay < 0 || startDay >= days) return;
-      const left = startDay * dayWidth + 2;
-      const width = (endDay - startDay + 1) * dayWidth - 4;
-      const cls = b.booking_type + (b.status === 'checked_in' ? ' checked_in' : '');
-      const label = (b.customer_name || '—').split(' ')[0] + ' · ' + (b.price_total || 0) + '€';
-      bookingsHtml += `
-        <div class="planner-booking ${cls}"
-             style="left:${left}px;width:${width}px"
-             onclick="event.stopPropagation(); openBookingFromPlanner('${b.id}', ${u.id})"
-             title="${b.customer_name} · ${typeLabel(b.booking_type)} · ${formatDate(b.date_from)} → ${formatDate(b.date_to)}">
-          ${label}
+      return `
+        <div class="planner-card ${rowState}${rowState === 'arrived' ? ' planner-card-arrived' : ''}" onclick="${clickAction}">
+          <div class="planner-card-head">
+            <span class="planner-card-tier tier-dot ${u.tier}"></span>
+            <div class="planner-card-id">${u.id}</div>
+            <div class="planner-card-meta">
+              <div class="planner-card-pos">Fila ${u.row_label}${u.col_number}</div>
+              <div class="planner-card-type">${booking ? typeLabel(booking.booking_type) : 'Postazione libera'}</div>
+            </div>
+          </div>
+          <div><span class="planner-state-badge ${rowState}">${rowState === 'free' ? 'Libero' : rowState === 'booked' ? 'Prenotato' : rowState === 'arrived' ? 'Presente' : 'Fuori servizio'}</span></div>
+          <div class="planner-card-customer">${customerBlock}</div>
+          <div class="planner-card-foot">
+            <span class="planner-payment-pill ${paymentState}">${paymentState === 'paid' ? 'Pagato' : paymentState === 'partial' ? 'Parziale' : paymentState === 'pending' ? 'Da pagare' : 'Libero'}</span>
+            <div class="planner-amount-cell">
+              <div class="planner-amount-main ${booking ? paymentState : ''}">${amount}</div>
+              <div class="planner-amount-sub">${amountSub}</div>
+            </div>
+          </div>
         </div>`;
-    });
+    }).join('');
 
-    rowsHtml += `
-      <div class="planner-row" style="grid-template-columns: repeat(${days}, ${dayWidth}px)">
-        ${cellsHtml}
-        ${bookingsHtml}
-      </div>`;
-  });
-
-  let umbrellaColHtml = '<div class="planner-umbrella-head">Ombrellone</div>';
-  state.umbrellas.forEach(u => {
-    umbrellaColHtml += `
-      <div class="planner-umbrella-cell">
-        <span class="tier-dot ${u.tier}"></span>
-        <span class="umb-id">${u.id}</span>
-        <span class="umb-pos" style="margin-left:auto">${u.row_label}${u.col_number}</span>
-      </div>`;
-  });
+    return `
+      <section class="planner-row-section">
+        <div class="planner-row-label">
+          <div class="planner-row-letter">${rowLabel}</div>
+          <div class="planner-row-count">${umbrellas.length} posti</div>
+        </div>
+        <div class="planner-row-grid">${cards}</div>
+      </section>`;
+  }).join('');
 
   scroll.innerHTML = `
-    <div class="planner-grid">
-      <div class="planner-umbrella-col">${umbrellaColHtml}</div>
-      <div class="planner-days-col">
-        <div class="planner-days-head" style="grid-template-columns: repeat(${days}, ${dayWidth}px)">
-          ${daysHeadHtml}
+    <div class="planner-board">
+      <div class="planner-board-head">
+        <div class="planner-row-label">
+          <div class="planner-row-letter">${new Date(day).toLocaleDateString('it-IT', { day: '2-digit' })}</div>
+          <div class="planner-row-count">${new Date(day).toLocaleDateString('it-IT', { month: 'short' }).replace('.', '').toUpperCase()}</div>
         </div>
-        ${rowsHtml}
+        <div class="planner-board-note">
+          <strong>Planner operativo del giorno</strong>
+          Tocca una card per aprire la prenotazione o creare una nuova assegnazione. Il colore del badge pagamento mostra subito se l'importo e pagato, parziale o ancora da incassare.
+        </div>
       </div>
+      ${boardSections}
     </div>`;
 }
 
@@ -2613,10 +2902,9 @@ function plannerToday() {
   loadPlannerBookings();
 }
 
-function setPlannerDays(n) {
-  state.plannerDays = n;
-  document.querySelectorAll('.planner-zoom button').forEach(b =>
-    b.classList.toggle('active', parseInt(b.dataset.days) === n));
+function plannerPickDate(value) {
+  if (!value) return;
+  state.plannerStart = value;
   loadPlannerBookings();
 }
 
@@ -2676,7 +2964,7 @@ function renderArrivals() {
             <div class="arrival-meta">${typeLabel(b.booking_type)} · ${b.price_total}€ · ${b.customer_phone || '—'}</div>
           </div>
           <div class="arrival-actions">
-            <button class="arrival-btn success" onclick="quickCheckIn('${b.id}')">✓ Check-in</button>
+            <button class="arrival-btn success" onclick="quickCheckIn('${b.id}')">Check-in</button>
           </div>
         </div>`;
     });
@@ -2789,6 +3077,8 @@ function renderHeatmap() {
     `;
     beach.appendChild(el);
   });
+
+  syncRowLabels('heatmapBeach', state.heatmapData);
 
   // KPI heatmap
   const totalBookings = state.heatmapData.reduce((s,h) => s + (h.total_bookings || 0), 0);
@@ -2993,11 +3283,11 @@ function openModal(umbrella, existingBooking) {
   const btnService = document.getElementById('btnToggleService');
   btnService.style.display = 'inline-flex';
   if (umbrella.state === 'out_of_service') {
-    btnService.textContent = '✓ Riattiva ombrellone';
+    btnService.textContent = 'Riattiva ombrellone';
     btnService.style.background = 'var(--ok)';
     btnService.style.color = 'white';
   } else {
-    btnService.textContent = '⚠ Fuori servizio';
+    btnService.textContent = 'Fuori servizio';
     btnService.style.background = 'var(--sand-200)';
     btnService.style.color = 'var(--sand-700)';
   }
@@ -3325,7 +3615,7 @@ async function checkIn() {
     .update({ arrived_at: new Date().toISOString(), status: 'checked_in' })
     .eq('id', b.id);
   if (error) { toast('Errore check-in', 'err'); return; }
-  toast('✓ Check-in registrato', 'ok');
+  toast('Check-in registrato', 'ok');
   closeModal();
   loadForDate();
 }
@@ -3415,6 +3705,24 @@ function goToday() {
   state.currentDate = new Date().toISOString().slice(0,10);
   document.getElementById('currentDate').value = state.currentDate;
   loadForDate();
+}
+
+function setSunbedsDate(value) {
+  if (!value) return;
+  state.sunbedsDate = value;
+  const input = document.getElementById('sunbedsDate');
+  if (input) input.value = value;
+  loadSunbeds();
+}
+
+function shiftSunbedsDate(delta) {
+  const d = new Date(state.sunbedsDate);
+  d.setDate(d.getDate() + delta);
+  setSunbedsDate(d.toISOString().slice(0,10));
+}
+
+function goTodaySunbeds() {
+  setSunbedsDate(new Date().toISOString().slice(0,10));
 }
 
 // ============================================================
@@ -3524,7 +3832,7 @@ async function toggleSunbed(event, bookingId, side) {
       .update({ [field]: newValue })
       .eq('id', bookingId);
     if (error) throw error;
-    toast(`Sdraio ${side === 'L' ? 'sinistra' : 'destra'} ${newValue ? '🔴 occupata' : '⚪ libera'}`, 'ok');
+    toast(`Sdraio ${side === 'L' ? 'sinistra' : 'destra'} ${newValue ? 'occupata' : 'libera'}`, 'ok');
   } catch (e) {
     // Rollback
     booking[field] = !newValue;
@@ -3540,7 +3848,7 @@ async function toggleSunbed(event, bookingId, side) {
 // ============================================================
 function openSunbedModal(existing = null) {
   initSunbedListeners();
-  document.getElementById('sbDate').value = state.currentDate;
+  document.getElementById('sbDate').value = state.sunbedsDate;
   document.getElementById('sbQuantity').value = '1';
   document.getElementById('sbDisability').checked = false;
   document.getElementById('sbFirstName').value = '';
@@ -3611,7 +3919,29 @@ async function saveSunbedBooking() {
   let total = unitPrice * qty;
   if (disability) total = Math.round(total * 0.70);
 
-  if (!isConfigured) { toast('Demo mode', 'err'); return; }
+  if (!isConfigured) {
+    DEMO_SUNBED_BOOKINGS.unshift({
+      id: 'sb' + Date.now(),
+      date_booking: date,
+      booking_type: type,
+      quantity: qty,
+      price_unit: unitPrice,
+      price_total: total,
+      disability_discount: disability,
+      status: 'confirmed',
+      payment_status: payment ? 'paid' : 'pending',
+      notes: notes || '',
+      customers: {
+        first_name: firstName,
+        last_name: lastName,
+        phone: phone || '',
+      },
+    });
+    toast('Lettino prenotato (demo)', 'ok');
+    closeSunbedModal();
+    loadSunbeds();
+    return;
+  }
 
   try {
     // Upsert cliente
@@ -3653,7 +3983,7 @@ async function saveSunbedBooking() {
       });
     }
 
-    toast('Lettino prenotato ✓', 'ok');
+    toast('Lettino prenotato', 'ok');
     closeSunbedModal();
     loadSunbeds();
   } catch (e) {
@@ -3662,11 +3992,37 @@ async function saveSunbedBooking() {
 }
 
 async function loadSunbeds() {
+  const input = document.getElementById('sunbedsDate');
+  if (input) input.value = state.sunbedsDate;
   if (!isConfigured) {
-    document.getElementById('sunbedsTable').innerHTML = '<tr><td colspan="8" style="text-align:center;padding:30px;color:var(--sand-700)">Nessuna prenotazione lettini</td></tr>';
+    const rows = DEMO_SUNBED_BOOKINGS.filter(r => r.date_booking === state.sunbedsDate);
+    if (!rows.length) {
+      document.getElementById('sunbedsTable').innerHTML = '<tr><td colspan="8" style="text-align:center;padding:30px;color:var(--sand-700)">Nessuna prenotazione lettini oggi</td></tr>';
+      return;
+    }
+    document.getElementById('sunbedsTable').innerHTML = rows.map(r => {
+      const name = r.customers ? `${r.customers.last_name} ${r.customers.first_name}` : '—';
+      const payClass = r.payment_status === 'paid' ? 'paid' : 'pending';
+      const payLabel = r.payment_status === 'paid' ? 'Pagato' : 'Da pagare';
+      return `<tr>
+        <td>${formatDate(r.date_booking)}</td>
+        <td><strong>${name}</strong>${r.customers?.phone ? '<br><small>' + r.customers.phone + '</small>' : ''}</td>
+        <td>${typeLabel(r.booking_type)}</td>
+        <td style="text-align:center">${r.quantity}</td>
+        <td><span class="pay-pill ${payClass}">${payLabel}</span></td>
+        <td><span class="status-pill ${r.status}">${statusLabel(r.status)}</span></td>
+        <td style="text-align:right"><strong>${r.price_total.toFixed(2)} €</strong>${r.disability_discount ? '<br><small style="color:var(--coral-dk)">−30%</small>' : ''}</td>
+        <td>
+          ${r.payment_status !== 'paid' ? `
+            <button class="cassa-btn cassa-btn-cash" style="margin-right:4px" onclick="incassaSunbed('${r.id}', 'cash', ${r.price_total})">Contanti</button>
+            <button class="cassa-btn cassa-btn-card" onclick="incassaSunbed('${r.id}', 'card_pos', ${r.price_total})">Carta</button>
+          ` : ''}
+        </td>
+      </tr>`;
+    }).join('');
     return;
   }
-  const date = state.currentDate;
+  const date = state.sunbedsDate;
   const { data } = await sb
     .from('single_sunbed_bookings')
     .select('*, customers(first_name, last_name, phone)')
@@ -3693,8 +4049,8 @@ async function loadSunbeds() {
       <td style="text-align:right"><strong>${r.price_total.toFixed(2)} €</strong>${r.disability_discount ? '<br><small style="color:var(--coral-dk)">−30%</small>' : ''}</td>
       <td>
         ${r.payment_status !== 'paid' ? `
-          <button class="cassa-btn cassa-btn-cash" style="margin-right:4px" onclick="incassaSunbed('${r.id}', 'cash', ${r.price_total})">💵</button>
-          <button class="cassa-btn cassa-btn-card" onclick="incassaSunbed('${r.id}', 'card_pos', ${r.price_total})">💳</button>
+          <button class="cassa-btn cassa-btn-cash" style="margin-right:4px" onclick="incassaSunbed('${r.id}', 'cash', ${r.price_total})">Contanti</button>
+          <button class="cassa-btn cassa-btn-card" onclick="incassaSunbed('${r.id}', 'card_pos', ${r.price_total})">Carta</button>
         ` : ''}
       </td>
     </tr>`;
@@ -3702,6 +4058,14 @@ async function loadSunbeds() {
 }
 
 async function incassaSunbed(id, method, amount) {
+  if (!isConfigured) {
+    const booking = DEMO_SUNBED_BOOKINGS.find(r => r.id === id);
+    if (!booking) return;
+    booking.payment_status = 'paid';
+    toast(`Incassato ${amount} € (demo)`, 'ok');
+    loadSunbeds();
+    return;
+  }
   try {
     await sb.from('payments').insert({
       single_sunbed_booking_id: id,
@@ -3710,7 +4074,7 @@ async function incassaSunbed(id, method, amount) {
       type: 'payment',
     });
     await sb.from('single_sunbed_bookings').update({ payment_status: 'paid' }).eq('id', id);
-    toast(`Incassato ${amount} € ✓`, 'ok');
+    toast(`Incassato ${amount} €`, 'ok');
     loadSunbeds();
   } catch (e) {
     toast('Errore: ' + e.message, 'err');
@@ -3778,7 +4142,7 @@ async function loadCassa() {
   // Render lista da pagare
   const unpaidList = document.getElementById('cassaUnpaidList');
   if (!unpaid.length) {
-    unpaidList.innerHTML = '<div style="padding:24px;text-align:center;color:var(--sand-700);font-size:13px">✅ Tutti hanno pagato!</div>';
+    unpaidList.innerHTML = '<div style="padding:24px;text-align:center;color:var(--sand-700);font-size:13px">Tutti hanno pagato</div>';
   } else {
     unpaidList.innerHTML = unpaid.map(b => {
       const resto = (b.price_total - b.price_paid).toFixed(2);
@@ -3794,8 +4158,8 @@ async function loadCassa() {
           <div class="cassa-amount">${resto} €</div>
           <div class="cassa-actions">
             <span class="pay-badge ${badgeClass}">${badgeClass === 'partial' ? '½' : '€'}</span>
-            <button class="cassa-btn cassa-btn-cash" onclick="incassa('${b.id}', 'cash', ${resto})">💵 Cash</button>
-            <button class="cassa-btn cassa-btn-card" onclick="incassa('${b.id}', 'card_pos', ${resto})">💳 Carta</button>
+            <button class="cassa-btn cassa-btn-cash" onclick="incassa('${b.id}', 'cash', ${resto})">Contanti</button>
+            <button class="cassa-btn cassa-btn-card" onclick="incassa('${b.id}', 'card_pos', ${resto})">Carta</button>
           </div>
         </div>
       `;
@@ -3815,7 +4179,7 @@ async function loadCassa() {
           <div class="cassa-meta">${typeLabel(b.booking_type)}</div>
         </div>
         <div class="cassa-amount">${b.price_total.toFixed(2)} €</div>
-        <span class="pay-badge paid">✓ Pagato</span>
+        <span class="pay-badge paid">Pagato</span>
       </div>
     `).join('');
   }
@@ -3861,8 +4225,8 @@ function chiudiCassa() {
     </style></head>
     <body>
       <h1>LA MARINELLA<br>Z-Report ${date}</h1>
-      <div class="row"><span>💵 Contanti</span><span>${cash}</span></div>
-      <div class="row"><span>💳 Carta POS</span><span>${card}</span></div>
+      <div class="row"><span>Contanti</span><span>${cash}</span></div>
+      <div class="row"><span>Carta POS</span><span>${card}</span></div>
       <div class="row total"><span>TOTALE INCASSATO</span><span>${totale}</span></div>
       <div class="row" style="color:red"><span>Da incassare (${unpaid} prenotazioni)</span><span>${daIncassare}</span></div>
       <div class="footer">Stampato il ${new Date().toLocaleString('it-IT')}<br>La Marinella — Albisola Superiore</div>
