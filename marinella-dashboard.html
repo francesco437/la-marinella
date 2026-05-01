@@ -1461,6 +1461,7 @@ tr:last-child td { border-bottom: none; }
     overflow-x: auto;
     overflow-y: hidden;
     box-shadow: 0 -12px 32px rgba(43, 58, 49, .08);
+    max-width: 100vw;
   }
   .brand,
   .sidebar-footer {
@@ -1517,6 +1518,18 @@ tr:last-child td { border-bottom: none; }
     width: 100%;
     max-width: 100%;
     overflow-x: hidden;
+  }
+  .multi-bar,
+  .toast {
+    left: 14px;
+    right: 14px;
+    width: auto;
+    max-width: none;
+    transform: translateY(100px);
+  }
+  .multi-bar.show,
+  .toast.show {
+    transform: translateY(0);
   }
   .kpi-row {
     grid-template-columns: repeat(2, minmax(0, 1fr));
