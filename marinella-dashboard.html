@@ -7,7 +7,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -17,20 +17,20 @@
    Coastal mediterranean · sabbia, mare ligure, coralli
    ============================================================ */
 :root {
-  --sand-50:  #FBF7F0;
-  --sand-100: #F4ECDD;
-  --sand-200: #E8D9BE;
-  --sand-300: #D4BE96;
-  --sand-400: #B89768;
-  --sand-700: #6B5437;
-  --sand-900: #2B2212;
+  --sand-50:  #F8F8F3;
+  --sand-100: #EEF0E8;
+  --sand-200: #E2E6DA;
+  --sand-300: #CCD4C5;
+  --sand-400: #9FAA9B;
+  --sand-700: #69766D;
+  --sand-900: #2F3A33;
 
-  --sea-50:   #E8F2F2;
-  --sea-100:  #C9E1E2;
-  --sea-200:  #9DC5C5;
-  --sea-400:  #4A8E93;
-  --sea-600:  #1F6268;
-  --sea-800:  #0E3A40;
+  --sea-50:   #EEF5F4;
+  --sea-100:  #DDE9E6;
+  --sea-200:  #BDD3CD;
+  --sea-400:  #7CA599;
+  --sea-600:  #587A6D;
+  --sea-800:  #32473E;
 
   --coral:    #E85A4F;
   --coral-dk: #C4423A;
@@ -40,35 +40,36 @@
   --warn:     #E89B3C;
   --err:      var(--coral);
 
-  --sh-sm: 0 1px 2px rgba(107,84,55,.08);
-  --sh-md: 0 4px 12px rgba(107,84,55,.12);
-  --sh-lg: 0 12px 32px rgba(107,84,55,.18);
+  --sh-sm: 0 1px 2px rgba(52,71,61,.03), 0 8px 24px rgba(52,71,61,.04);
+  --sh-md: 0 10px 28px rgba(52,71,61,.06);
+  --sh-lg: 0 18px 46px rgba(52,71,61,.08);
 
-  --r-sm: 8px;
-  --r-md: 14px;
-  --r-lg: 22px;
+  --r-sm: 10px;
+  --r-md: 16px;
+  --r-lg: 24px;
+  --ui-font: 'Instrument Sans', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body {
   height: 100%;
-  background: var(--sand-50);
+  background: #FBFBF8;
   color: var(--sand-900);
-  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: var(--ui-font);
   font-size: 14px;
   font-feature-settings: 'cv11', 'ss01';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow: hidden;
 }
-h1, h2, h3, h4 { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; letter-spacing: -0.04em; }
-.serif { font-family: 'DM Serif Display', 'Times New Roman', serif; font-weight: 400; letter-spacing: -0.02em; }
+h1, h2, h3, h4 { font-family: var(--ui-font); font-weight: 700; letter-spacing: -0.045em; }
+.serif { font-family: var(--ui-font); font-weight: 700; letter-spacing: -0.05em; }
 button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
 input, select, textarea {
   font-family: inherit; font-size: 14px;
-  border: 1px solid var(--sand-200);
+  border: 1px solid #E4E8E2;
   background: white;
-  padding: 10px 12px;
+  padding: 11px 13px;
   border-radius: var(--r-sm);
   color: var(--sand-900);
   width: 100%;
@@ -76,131 +77,181 @@ input, select, textarea {
 }
 input:focus, select:focus, textarea:focus {
   outline: none;
-  border-color: var(--sea-400);
-  box-shadow: 0 0 0 3px rgba(74,142,147,.15);
+  border-color: var(--sea-300, #A8C4BA);
+  box-shadow: 0 0 0 3px rgba(124,165,153,.12);
 }
-label { font-size: 11px; color: var(--sand-700); font-weight: 500; display: block; margin-bottom: 5px; letter-spacing: .02em; text-transform: uppercase; }
+label { font-size: 11px; color: #7D8A81; font-weight: 600; display: block; margin-bottom: 6px; letter-spacing: .08em; text-transform: uppercase; }
 
 /* LAYOUT */
-.app { display: grid; grid-template-columns: 220px 1fr; height: 100vh; }
+.app { display: grid; grid-template-columns: 200px 1fr; height: 100vh; }
 
 /* SIDEBAR */
 .sidebar {
-  background: linear-gradient(180deg, var(--sea-800) 0%, var(--sea-600) 100%);
-  color: var(--sand-50);
-  padding: 24px 16px;
+  background: linear-gradient(180deg, #FCFCF9 0%, #F7F8F3 100%);
+  color: var(--sand-900);
+  padding: 20px 16px;
   display: flex; flex-direction: column; gap: 4px;
+  border-right: 1px solid #E8ECE6;
 }
 .brand {
   display: flex; align-items: center; gap: 10px;
-  padding: 4px 8px 22px;
-  border-bottom: 1px solid rgba(255,255,255,.08);
+  padding: 6px 8px 18px;
+  border-bottom: 1px solid #E9ECE7;
   margin-bottom: 16px;
 }
 .brand-mark {
-  width: 52px;
-  height: 52px;
+  width: 40px;
+  height: 40px;
   flex-shrink: 0;
+  border-radius: 12px;
+  background: #F3F6F1;
+  border: 1px solid #E4E9E2;
+  padding: 7px;
 }
 .brand-mark img { width: 100%; height: 100%; display: block; }
-.brand h1 { font-family: 'DM Serif Display', serif; font-weight: 400; font-size: 27px; color: white; line-height: 1; letter-spacing: -0.02em; }
-.brand span { font-size: 10px; color: var(--sea-200); letter-spacing: .25em; text-transform: uppercase; font-weight: 500; }
+.brand h1 { font-family: var(--ui-font); font-weight: 700; font-size: 16px; color: #31413A; line-height: 1.1; letter-spacing: -0.045em; }
+.brand span { font-size: 9px; color: #8A978F; letter-spacing: .16em; text-transform: uppercase; font-weight: 600; }
 
 .nav-item {
   display: flex; align-items: center; gap: 12px;
-  padding: 10px 12px; border-radius: var(--r-sm);
-  color: rgba(255,255,255,.74); font-weight: 500; font-size: 13.5px;
+  padding: 11px 12px; border-radius: 14px;
+  color: #75837B; font-weight: 600; font-size: 13.5px;
   text-align: left; width: 100%;
-  letter-spacing: -0.005em;
+  letter-spacing: -0.015em;
   transition: all .15s;
 }
-.nav-item:hover { background: rgba(255,255,255,.06); color: white; }
-.nav-item.active { background: rgba(255,255,255,.14); color: white; font-weight: 700; }
+.nav-item:hover { background: #F3F6F2; color: #36463E; }
+.nav-item.active { background: #F0F5EF; color: #4C6F5F; font-weight: 700; box-shadow: inset 0 0 0 1px #E0E8E0; }
 .nav-item svg { width: 18px; height: 18px; flex-shrink: 0; }
 
 .sidebar-footer {
   margin-top: auto; padding-top: 14px;
-  border-top: 1px solid rgba(255,255,255,.08);
-  font-size: 10px; color: rgba(255,255,255,.4);
+  border-top: 1px solid #E9ECE7;
+  font-size: 10px; color: #95A19A;
   letter-spacing: .08em; text-transform: uppercase; font-weight: 500;
   line-height: 1.5;
 }
 
 /* MAIN */
-.main { overflow: hidden; display: flex; flex-direction: column; background: var(--sand-50); }
+.main { overflow: hidden; display: flex; flex-direction: column; background: #FBFBF8; min-width: 0; }
 .topbar {
-  background: white; border-bottom: 1px solid var(--sand-200);
-  padding: 14px 28px;
+  background: rgba(251,251,248,.94); border-bottom: 1px solid #E8ECE6;
+  padding: 14px 24px;
   display: flex; align-items: center; gap: 20px;
 }
-.topbar h2 { font-size: 21px; margin-right: auto; font-weight: 700; letter-spacing: -0.04em; }
+.topbar h2 { font-size: 18px; margin-right: auto; font-weight: 700; letter-spacing: -0.045em; color: #33433B; }
 
 .date-picker {
   display: flex; align-items: center; gap: 8px;
-  background: var(--sand-100); border-radius: var(--r-sm); padding: 2px;
+  background: white; border-radius: 999px; padding: 3px;
+  border: 1px solid #E5E9E3;
+  box-shadow: 0 4px 18px rgba(51,67,59,.04);
 }
 .date-picker button {
   width: 32px; height: 32px; border-radius: 6px;
-  color: var(--sand-700); font-weight: 600;
+  color: #728078; font-weight: 700;
   transition: background .15s;
 }
-.date-picker button:hover { background: white; }
+.date-picker button:hover { background: #F4F7F3; }
 .date-picker input[type="date"] {
-  border: none; background: transparent; font-weight: 600; font-size: 14px;
+  border: none; background: transparent; font-weight: 700; font-size: 13px;
   width: auto; padding: 6px 4px; color: var(--sand-900);
 }
 .date-picker input[type="date"]:focus { box-shadow: none; }
 
-.view { flex: 1; overflow: auto; padding: 24px 28px 28px; }
+.view { flex: 1; overflow: auto; padding: 22px 24px 26px; }
 .view.hidden { display: none; }
 
 /* KPI */
 .kpi-row {
-  display: grid; grid-template-columns: repeat(6, 1fr); gap: 14px; margin-bottom: 20px;
+  display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; margin-bottom: 20px;
 }
 .kpi {
-  background: white; border-radius: var(--r-md);
-  padding: 18px 20px; box-shadow: var(--sh-sm);
-  border: 1px solid var(--sand-100);
-  position: relative; overflow: hidden;
+  background: linear-gradient(180deg, #FFFFFF 0%, #FCFDFB 100%);
+  border-radius: 22px;
+  padding: 18px 20px 20px;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.95),
+    0 1px 2px rgba(52,71,61,.05),
+    0 14px 28px rgba(52,71,61,.07);
+  border: 1px solid #D8E0DA;
+  position: relative;
+  overflow: hidden;
+  min-height: 132px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
 }
 .kpi::before {
-  content: ''; position: absolute; top: 0; right: 0;
-  width: 80px; height: 80px; border-radius: 50%;
-  opacity: .08; transform: translate(30%, -30%);
+  content: '';
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  opacity: 1;
+  border: 2px solid rgba(255,255,255,.9);
+  box-shadow: 0 0 0 4px rgba(255,255,255,.92);
 }
-.kpi.k-booked::before   { background: var(--sea-600); }
-.kpi.k-free::before     { background: var(--ok); }
-.kpi.k-revenue::before  { background: var(--sunshine); }
-.kpi.k-occupancy::before{ background: var(--coral); }
-.kpi-label { font-size: 11px; color: var(--sand-700); text-transform: uppercase; letter-spacing: .08em; font-weight: 600; }
+.kpi.k-booked::before    { background: #6A8A7B; }
+.kpi.k-free::before      { background: #789A88; }
+.kpi.k-revenue::before   { background: #B78D5C; }
+.kpi.k-occupancy::before { background: #C58D82; }
+.kpi::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 3px;
+  opacity: .95;
+}
+.kpi.k-booked::after    { background: #6A8A7B; }
+.kpi.k-free::after      { background: #789A88; }
+.kpi.k-revenue::after   { background: #B78D5C; }
+.kpi.k-occupancy::after { background: #C58D82; }
+.kpi-label {
+  font-size: 11px;
+  color: #6C7A72;
+  text-transform: uppercase;
+  letter-spacing: .14em;
+  font-weight: 700;
+  margin-top: 10px;
+  position: relative;
+  z-index: 1;
+}
 .kpi-value {
-  font-family: 'DM Serif Display', serif;
-  font-size: 40px;
-  margin-top: 2px;
-  line-height: 1;
-  font-weight: 400;
-  letter-spacing: -0.02em;
-  color: var(--sand-900);
+  font-family: var(--ui-font);
+  font-size: 52px;
+  margin-top: 14px;
+  line-height: .9;
+  font-weight: 700;
+  letter-spacing: -0.07em;
+  color: #2F3E37;
+  font-variant-numeric: tabular-nums;
+  position: relative;
+  z-index: 1;
+  text-shadow: 0 1px 0 rgba(255,255,255,.55);
 }
 .kpi-value small {
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 14px;
-  color: var(--sand-700);
-  margin-left: 4px;
-  font-weight: 500;
+  font-family: var(--ui-font);
+  font-size: 18px;
+  color: #6C7A72;
+  margin-left: 3px;
+  font-weight: 700;
   letter-spacing: 0;
 }
 
 /* BEACH MAP */
 .map-wrap {
   background:
-    radial-gradient(circle at top right, rgba(93,173,182,.18), transparent 45%),
-    linear-gradient(180deg, #FFFFFF 0%, #F8F2E7 100%);
+    radial-gradient(circle at top right, rgba(124,165,153,.12), transparent 42%),
+    linear-gradient(180deg, #FFFFFF 0%, #F7F8F3 100%);
   border-radius: var(--r-lg);
   padding: 20px;
   box-shadow: var(--sh-md);
-  border: 1px solid rgba(184,151,104,.25);
+  border: 1px solid #E7EBE6;
 }
 .map-toolbar {
   display: flex;
@@ -499,15 +550,6 @@ label { font-size: 11px; color: var(--sand-700); font-weight: 500; display: bloc
 }
 .umbrella:hover .u-tip { opacity: 1; }
 
-/* HEATMAP OVERLAY */
-.heatmap-overlay {
-  position: absolute; width: 60px; height: 60px;
-  border-radius: 50%; transform: translate(-50%, -50%);
-  pointer-events: none; z-index: 1;
-  filter: blur(10px);
-  transition: opacity .3s;
-}
-
 /* Rubber band selection */
 .selection-box {
   position: absolute; border: 2px dashed var(--sea-600);
@@ -536,37 +578,47 @@ label { font-size: 11px; color: var(--sand-700); font-weight: 500; display: bloc
 
 /* PLANNER (Gantt) */
 .planner-wrap {
-  background: white; border-radius: var(--r-lg);
-  box-shadow: var(--sh-sm); border: 1px solid var(--sand-100);
+  background: white;
+  border-radius: 22px;
+  box-shadow: 0 10px 28px rgba(43,58,49,.05);
+  border: 1px solid #E7EBE6;
   overflow: hidden;
 }
 .planner-header-bar {
-  padding: 14px 18px; border-bottom: 1px solid var(--sand-100);
+  padding: 14px 16px;
+  border-bottom: 1px solid #E7EBE6;
   display: flex; align-items: center; gap: 10px;
-  background: white;
+  background: linear-gradient(180deg, #FFFFFF 0%, #FBFCFA 100%);
   flex-wrap: wrap;
 }
 .planner-range {
   padding: 8px 12px;
   border-radius: 999px;
-  background: rgba(31,98,104,.08);
-  color: var(--sea-800);
+  background: #F1F6F2;
+  color: #587A6D;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: .01em;
+  border: 1px solid #E0E8E1;
 }
 .planner-header-spacer { flex: 1; }
 .planner-nav {
-  display: flex; background: var(--sand-100);
-  border-radius: var(--r-sm); padding: 3px;
+  display: flex;
+  background: #F6F8F4;
+  border-radius: 12px;
+  padding: 3px;
+  border: 1px solid #E5EAE4;
   gap: 1px;
 }
 .planner-nav button {
-  padding: 6px 10px; border-radius: 6px; font-size: 12px;
-  font-weight: 500; color: var(--sand-700);
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #75837B;
   transition: all .12s;
 }
-.planner-nav button:hover { background: white; color: var(--sand-900); }
+.planner-nav button:hover { background: white; color: #33433B; }
 .planner-zoom {
   display: flex; background: var(--sand-100);
   border-radius: var(--r-sm); padding: 3px;
@@ -581,24 +633,24 @@ label { font-size: 11px; color: var(--sand-700); font-weight: 500; display: bloc
 .planner-print-btn {
   padding: 8px 14px;
   border-radius: 999px;
-  background: linear-gradient(135deg, var(--sea-600), var(--sea-400));
+  background: linear-gradient(135deg, #6E8E7E, #8DA99A);
   color: white;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: .01em;
-  box-shadow: 0 6px 16px rgba(31,98,104,.18);
+  box-shadow: 0 8px 18px rgba(88,122,109,.16);
 }
 
 .planner-scroll {
   overflow: auto; max-height: calc(100vh - 260px);
   position: relative;
   padding: 14px 16px 18px;
-  background: linear-gradient(180deg, rgba(251,247,240,.55), rgba(255,255,255,.9));
+  background: linear-gradient(180deg, #FAFBF8 0%, #FFFFFF 100%);
 }
 .planner-board {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 14px;
 }
 .planner-board-head {
   display: grid;
@@ -606,15 +658,43 @@ label { font-size: 11px; color: var(--sand-700); font-weight: 500; display: bloc
   gap: 14px;
   align-items: start;
 }
-.planner-board-note {
-  padding: 14px 16px;
+.planner-summary-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 2px;
+}
+.planner-summary-card {
+  background: linear-gradient(180deg, #FFFFFF 0%, #FCFDFB 100%);
+  border: 1px solid #E7EBE6;
   border-radius: 16px;
-  background: linear-gradient(180deg, #fffdf8 0%, #f7efe1 100%);
-  border: 1px solid rgba(232,217,190,.9);
-  box-shadow: 0 10px 24px rgba(43,34,18,.05);
+  padding: 12px 14px;
+  box-shadow: 0 8px 18px rgba(43,58,49,.035);
+}
+.planner-summary-card strong {
+  display: block;
+  font-size: 10px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: #88958D;
+  margin-bottom: 8px;
+}
+.planner-summary-card span {
+  font-size: 28px;
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: -.05em;
+  color: #2F3E37;
+}
+.planner-board-note {
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #FEFDF9 0%, #F7F4EB 100%);
+  border: 1px solid #ECE5D8;
+  box-shadow: 0 8px 18px rgba(43,34,18,.035);
   font-size: 12px;
   color: var(--sand-700);
-  line-height: 1.55;
+  line-height: 1.45;
 }
 .planner-board-note strong {
   display: block;
@@ -632,76 +712,80 @@ label { font-size: 11px; color: var(--sand-700); font-weight: 500; display: bloc
   position: sticky;
   top: 0;
   z-index: 2;
-  min-height: 92px;
+  min-height: 76px;
   border-radius: 18px;
-  background: linear-gradient(180deg, rgba(31,98,104,.12), rgba(31,98,104,.04));
-  border: 1px solid rgba(31,98,104,.12);
+  background: linear-gradient(180deg, #F4F8F5 0%, #EDF3EE 100%);
+  border: 1px solid #E2EAE3;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 6px;
+  box-shadow: 0 8px 18px rgba(43,58,49,.03);
 }
 .planner-row-letter {
-  font-family: 'DM Serif Display', serif;
-  font-size: 34px;
+  font-family: var(--ui-font);
+  font-size: 30px;
   line-height: 1;
-  color: var(--sea-800);
+  color: #56786B;
+  font-weight: 700;
+  letter-spacing: -.05em;
 }
 .planner-row-count {
   font-size: 10px;
   font-weight: 800;
   letter-spacing: .1em;
-  color: var(--sand-700);
+  color: #7B8A82;
   text-transform: uppercase;
 }
 .planner-row-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(220px, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(4, minmax(210px, 1fr));
+  gap: 12px;
 }
 .planner-card {
-  min-height: 140px;
-  background: white;
-  border: 1px solid rgba(232,217,190,.9);
+  min-height: 112px;
+  background: linear-gradient(180deg, #FFFFFF 0%, #FCFDFB 100%);
+  border: 1px solid #E8ECE7;
   border-radius: 18px;
-  box-shadow: 0 10px 24px rgba(43,34,18,.06);
-  padding: 14px;
+  box-shadow: 0 8px 18px rgba(43,58,49,.04);
+  padding: 12px;
   display: grid;
   grid-template-rows: auto auto 1fr auto;
-  gap: 10px;
+  gap: 8px;
   cursor: pointer;
   transition: transform .15s, box-shadow .15s, border-color .15s;
 }
 .planner-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 16px 28px rgba(43,34,18,.1);
+  box-shadow: 0 14px 26px rgba(43,58,49,.07);
+  border-color: #DCE5DE;
 }
-.planner-card.free { border-left: 4px solid var(--ok); }
-.planner-card.booked { border-left: 4px solid var(--warn); }
-.planner-card.arrived { border-left: 4px solid var(--sea-600); }
-.planner-card.off { border-left: 4px solid var(--sand-400); opacity: .8; }
+.planner-card.free { border-top: 3px solid #79A08E; }
+.planner-card.booked { border-top: 3px solid #C49C67; }
+.planner-card.arrived { border-top: 3px solid #5F8576; }
+.planner-card.off { border-top: 3px solid #B5B7AE; opacity: .8; }
 .planner-card-head {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 .planner-card-id {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  background: rgba(31,98,104,.08);
-  color: var(--sea-800);
+  background: #F2F6F3;
+  color: #5B7A6B;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 800;
   font-variant-numeric: tabular-nums;
   flex-shrink: 0;
 }
 .planner-card-arrived .planner-card-id {
-  background: rgba(31,98,104,.15);
+  background: #E9F1ED;
 }
 .planner-card-meta {
   display: flex;
@@ -712,12 +796,12 @@ label { font-size: 11px; color: var(--sand-700); font-weight: 500; display: bloc
   font-size: 10px;
   font-weight: 800;
   letter-spacing: .1em;
-  color: var(--sand-700);
+  color: #7F8C84;
   text-transform: uppercase;
 }
 .planner-card-type {
   font-size: 11px;
-  color: var(--sand-700);
+  color: #7F8C84;
 }
 .planner-umb-cell .tier-dot,
 .planner-card-tier {
@@ -731,9 +815,9 @@ label { font-size: 11px; color: var(--sand-700); font-weight: 500; display: bloc
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 7px 10px;
+  padding: 6px 9px;
   border-radius: 999px;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 800;
   letter-spacing: .05em;
   text-transform: uppercase;
@@ -748,28 +832,31 @@ label { font-size: 11px; color: var(--sand-700); font-weight: 500; display: bloc
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
-  gap: 4px;
+  gap: 3px;
 }
 .planner-customer-name {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 700;
   line-height: 1.2;
 }
 .planner-customer-meta {
-  font-size: 11px;
-  color: var(--sand-700);
+  font-size: 10px;
+  color: #7C8981;
   letter-spacing: .04em;
   text-transform: uppercase;
 }
 .planner-empty {
   color: var(--sand-400);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
 }
 .planner-note-text {
-  font-size: 12px;
-  color: var(--sand-700);
-  line-height: 1.45;
+  font-size: 11px;
+  color: #6D7A72;
+  line-height: 1.35;
+}
+.planner-note-text.empty {
+  display: none;
 }
 .planner-card-foot {
   display: flex;
@@ -781,30 +868,30 @@ label { font-size: 11px; color: var(--sand-700); font-weight: 500; display: bloc
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 88px;
-  padding: 8px 10px;
+  min-width: 78px;
+  padding: 7px 9px;
   border-radius: 999px;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 800;
   letter-spacing: .04em;
   text-transform: uppercase;
   white-space: nowrap;
 }
 .planner-payment-pill.paid {
-  color: #1E6E4F;
-  background: rgba(58,155,122,.14);
+  color: #587866;
+  background: #EEF5F0;
 }
 .planner-payment-pill.partial {
-  color: #9A671E;
-  background: rgba(232,155,60,.18);
+  color: #9A7A49;
+  background: #F8F1E4;
 }
 .planner-payment-pill.pending {
-  color: #B23E36;
-  background: rgba(232,90,79,.14);
+  color: #B16961;
+  background: #FAECEA;
 }
 .planner-payment-pill.free {
-  color: var(--sand-700);
-  background: rgba(184,151,104,.14);
+  color: #7B8A82;
+  background: #F3F5F1;
 }
 .planner-amount-cell {
   display: flex;
@@ -814,16 +901,19 @@ label { font-size: 11px; color: var(--sand-700); font-weight: 500; display: bloc
   gap: 5px;
 }
 .planner-amount-main {
-  font-family: 'DM Serif Display', serif;
-  font-size: 24px;
+  font-family: var(--ui-font);
+  font-size: 22px;
   line-height: 1;
+  font-weight: 700;
+  letter-spacing: -.05em;
 }
 .planner-amount-main.paid { color: #1E6E4F; }
-.planner-amount-main.partial { color: #9A671E; }
-.planner-amount-main.pending { color: #B23E36; }
+.planner-amount-main.paid { color: #587866; }
+.planner-amount-main.partial { color: #9A7A49; }
+.planner-amount-main.pending { color: #B16961; }
 .planner-amount-sub {
   font-size: 11px;
-  color: var(--sand-700);
+  color: #7F8C84;
   letter-spacing: .03em;
 }
 
@@ -865,7 +955,16 @@ label { font-size: 11px; color: var(--sand-700); font-weight: 500; display: bloc
     background: white !important;
   }
   .planner-board {
-    gap: 12px !important;
+    gap: 10px !important;
+  }
+  .planner-summary-strip {
+    grid-template-columns: repeat(4, minmax(120px, 1fr)) !important;
+    gap: 8px !important;
+    margin-bottom: 8px !important;
+  }
+  .planner-summary-card {
+    box-shadow: none !important;
+    padding: 8px 10px !important;
   }
   .planner-row-section {
     grid-template-columns: 64px 1fr !important;
@@ -874,21 +973,18 @@ label { font-size: 11px; color: var(--sand-700); font-weight: 500; display: bloc
   }
   .planner-row-grid {
     grid-template-columns: repeat(3, minmax(160px, 1fr)) !important;
-    gap: 10px !important;
+    gap: 8px !important;
   }
   .planner-card, .planner-row-label, .planner-board-note {
     box-shadow: none !important;
   }
-}
-
-/* HEATMAP LEGEND */
-.heatmap-legend {
-  display: flex; align-items: center; gap: 10px; font-size: 12px;
-  color: var(--sand-700);
-}
-.heatmap-legend-bar {
-  width: 120px; height: 10px; border-radius: 5px;
-  background: linear-gradient(90deg, var(--sea-100), var(--sunshine), var(--coral), var(--coral-dk));
+  .planner-card {
+    min-height: 96px !important;
+    padding: 10px !important;
+  }
+  .planner-note-text {
+    display: none !important;
+  }
 }
 
 /* MODAL */
@@ -1229,102 +1325,684 @@ tr:last-child td { border-bottom: none; }
 /* LOGOUT BUTTON in sidebar */
 .nav-logout {
   margin-top: 8px;
-  color: rgba(255,255,255,.5) !important;
+  color: #C46F66 !important;
   font-size: 13px;
+  background: #FBE9E6 !important;
+  border: 1px solid #F3D3CD;
 }
 .nav-logout:hover {
-  background: rgba(232,90,79,.2) !important;
-  color: white !important;
+  background: #F3D3CD !important;
+  color: #A8564E !important;
 }
 
 /* RESPONSIVE */
-@media (max-width: 900px) {
-  .app { grid-template-columns: 64px 1fr; }
-  .sidebar { padding: 16px 8px; }
-  .brand h1, .brand span, .nav-item span, .sidebar-footer { display: none; }
-  .nav-item { justify-content: center; }
-  .kpi-row { grid-template-columns: repeat(2, 1fr); }
-  .arrivals-grid { grid-template-columns: 1fr; }
-  .extras-list { grid-template-columns: repeat(2, 1fr); }
-  .map-toolbar h3 { width: 100%; margin-right: 0; }
-  .legend { width: 100%; }
-  .map-actions { width: 100%; margin-left: 0; }
-  .map-mode-toggle, .layout-toggle, .layout-commit-actions { width: 100%; }
+@media (max-width: 1180px) {
+  .app { grid-template-columns: 86px 1fr; }
+  .sidebar {
+    padding: 16px 10px;
+    overflow-y: auto;
+  }
+  .brand {
+    justify-content: center;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .brand > div,
+  .nav-item span,
+  .sidebar-footer {
+    display: none;
+  }
+  .nav-item,
+  .nav-logout {
+    justify-content: center;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .topbar {
+    padding: 14px 18px;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .topbar h2 {
+    width: 100%;
+    margin-right: 0;
+  }
+  .view {
+    padding: 18px;
+  }
+  .date-picker {
+    margin-left: auto;
+  }
+  .kpi-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .map-toolbar h3,
+  .legend,
+  .map-actions {
+    width: 100%;
+    margin-right: 0;
+    margin-left: 0;
+  }
+  .planner-header-bar {
+    flex-wrap: wrap;
+  }
+  .planner-header-spacer {
+    display: none;
+  }
+  .planner-range {
+    order: 3;
+  }
+  .planner-print-btn {
+    margin-left: auto;
+  }
+  .planner-row-section {
+    grid-template-columns: 72px 1fr;
+  }
+  .planner-row-grid {
+    grid-template-columns: repeat(2, minmax(220px, 1fr));
+  }
+  .arrivals-grid,
+  .cassa-grid,
+  .cassa-summary-grid {
+    grid-template-columns: 1fr;
+  }
+  .cassa-topbar {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+  .cassa-topbar-left {
+    width: 100%;
+  }
+  .form-grid,
+  .form-grid.triple {
+    grid-template-columns: 1fr 1fr;
+  }
+  .type-grid,
+  .extras-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 760px) {
+  html, body {
+    overflow: auto;
+  }
+  .app {
+    display: block;
+    height: auto;
+    min-height: 100dvh;
+  }
+  .sidebar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: auto;
+    z-index: 60;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+    border-right: none;
+    border-top: 1px solid #E8ECE6;
+    background: rgba(252, 252, 249, .94);
+    backdrop-filter: blur(18px);
+    overflow-x: auto;
+    overflow-y: hidden;
+    box-shadow: 0 -12px 32px rgba(43, 58, 49, .08);
+  }
+  .brand,
+  .sidebar-footer {
+    display: none;
+  }
+  .nav-item,
+  .nav-logout {
+    min-width: 86px;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border-radius: 16px;
+    flex-shrink: 0;
+  }
+  .nav-item span,
+  .nav-logout span {
+    display: none;
+  }
+  .main {
+    display: block;
+    min-height: 100dvh;
+    padding-bottom: 88px;
+  }
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    padding: 14px 16px;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .topbar h2 {
+    font-size: 20px;
+    line-height: 1.1;
+  }
+  .date-picker {
+    width: 100%;
+    border-radius: 18px;
+    justify-content: space-between;
+    padding: 4px;
+  }
+  .date-picker input[type="date"] {
+    min-width: 0;
+    flex: 1;
+  }
+  .view {
+    padding: 14px 14px 22px;
+  }
+  .kpi-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+  .kpi {
+    min-height: 112px;
+    padding: 14px 16px 16px;
+    border-radius: 20px;
+  }
+  .kpi-value {
+    font-size: 40px;
+    margin-top: 12px;
+  }
+  .kpi-value small {
+    font-size: 16px;
+  }
+  .map-wrap {
+    padding: 14px;
+    overflow: hidden;
+  }
+  .map-toolbar,
+  .map-actions,
+  .legend {
+    width: 100%;
+  }
+  .map-mode-toggle,
+  .layout-toggle,
+  .layout-commit-actions {
+    width: 100%;
+  }
   .map-mode-toggle button,
   .layout-toggle button,
   .layout-commit-actions button {
     flex: 1;
     justify-content: center;
   }
+  .beach {
+    min-width: 760px;
+    aspect-ratio: 16 / 10;
+  }
+  .planner-wrap,
+  .arrivals-panel,
+  .cassa-panel,
+  .cassa-summary-card,
+  .table-wrap {
+    border-radius: 18px;
+  }
+  .planner-header-bar {
+    padding: 14px;
+    gap: 10px;
+  }
+  .planner-nav {
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 2px;
+  }
+  .planner-nav button,
+  .planner-print-btn {
+    flex-shrink: 0;
+  }
+  .planner-range {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+  }
+  .planner-print-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  .planner-scroll {
+    padding: 14px;
+  }
+  .planner-summary-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .planner-board-head,
+  .planner-row-section {
+    grid-template-columns: 1fr;
+  }
+  .planner-row-label {
+    position: static;
+    min-height: auto;
+    padding: 12px 14px;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  .planner-row-letter {
+    font-size: 24px;
+  }
+  .planner-row-grid {
+    grid-template-columns: 1fr;
+  }
+  .planner-card {
+    min-height: 104px;
+  }
+  .arrivals-grid {
+    grid-template-columns: 1fr;
+  }
+  .cassa-topbar,
+  .cassa-topbar-left {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .cassa-date-controls {
+    width: 100%;
+  }
+  .cassa-date-label {
+    flex: 1;
+    text-align: center;
+  }
+  .cassa-date-picker {
+    width: 100%;
+    min-width: 0;
+  }
+  .cassa-hero {
+    padding: 20px 18px;
+    min-height: 120px;
+  }
+  .cassa-hero-total {
+    font-size: 44px;
+  }
+  .cassa-hero-mark {
+    font-size: 72px;
+    right: 18px;
+  }
+  .cassa-panel-head,
+  .cassa-item,
+  .cassa-movement-item,
+  .kpi-cassa {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .cassa-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .cassa-item-main,
+  .cassa-actions-stack,
+  .cassa-action-row {
+    width: 100%;
+  }
+  .cassa-actions-stack {
+    align-items: flex-start;
+  }
+  .cassa-action-row {
+    justify-content: flex-start;
+  }
+  .cassa-name {
+    font-size: 16px;
+  }
+  .cassa-amount {
+    font-size: 28px;
+    margin-right: 0;
+  }
+  .cassa-movement-item {
+    grid-template-columns: 1fr;
+  }
+  .cassa-movement-amount,
+  .cassa-movement-badges {
+    text-align: left;
+    justify-content: flex-start;
+  }
+  .btn-chiudi-cassa {
+    width: calc(100% - 32px);
+    margin: 14px 16px;
+  }
+  .table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .table-wrap table {
+    min-width: 720px;
+  }
+  .form-grid,
+  .form-grid.triple,
+  .type-grid,
+  .extras-list {
+    grid-template-columns: 1fr;
+  }
+  .modal {
+    width: min(100vw - 20px, 640px);
+    max-height: 92dvh;
+  }
+  .modal-head,
+  .modal-body,
+  .modal-foot {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .login-card {
+    width: min(100vw - 28px, 460px);
+  }
+}
+
+@media (max-width: 560px) {
+  .kpi-row,
+  .planner-summary-strip {
+    grid-template-columns: 1fr;
+  }
+  .kpi-value {
+    font-size: 36px;
+  }
 }
 
 /* CASSA */
+.cassa-stage {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.cassa-topbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.cassa-topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.cassa-date-controls {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--sand-200);
+  background: white;
+  border-radius: var(--r-md);
+  overflow: hidden;
+  box-shadow: var(--sh-sm);
+}
+.cassa-date-controls button {
+  padding: 10px 12px;
+  background: transparent;
+  border: none;
+  color: var(--sand-700);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.cassa-date-controls button:hover {
+  background: var(--sand-50);
+  color: var(--sand-900);
+}
+.cassa-date-label {
+  padding: 10px 14px;
+  border-left: 1px solid var(--sand-100);
+  border-right: 1px solid var(--sand-100);
+  color: var(--sea-800);
+  font-size: 13px;
+  font-weight: 700;
+  background: linear-gradient(180deg, rgba(226,243,243,.9), rgba(245,249,249,.9));
+}
+.cassa-date-picker {
+  width: auto;
+  min-width: 170px;
+  background: white;
+}
+.cassa-hero {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #EEF5F0 0%, #F8FBF8 55%, #EEF5F0 100%);
+  border: 1px solid #DDE9E1;
+  border-radius: 18px;
+  padding: 26px 28px;
+  min-height: 134px;
+  box-shadow: 0 10px 30px rgba(37, 74, 63, 0.07);
+}
+.cassa-hero-meta {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #7A8D84;
+  font-weight: 700;
+}
+.cassa-hero-total {
+  margin-top: 10px;
+  font-family: 'DM Serif Display', serif;
+  font-size: 56px;
+  line-height: .95;
+  letter-spacing: -0.03em;
+  color: #304338;
+}
+.cassa-hero-sub {
+  margin-top: 12px;
+  font-size: 13px;
+  color: #6E7E76;
+  font-weight: 600;
+}
+.cassa-hero-mark {
+  position: absolute;
+  right: 28px;
+  top: 18px;
+  font-family: 'DM Serif Display', serif;
+  font-size: 92px;
+  color: rgba(71, 110, 94, 0.08);
+  line-height: 1;
+  pointer-events: none;
+}
+.cassa-summary-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.cassa-summary-card {
+  background: white;
+  border-radius: 16px;
+  border: 1px solid #E6ECE7;
+  box-shadow: 0 8px 24px rgba(43, 58, 49, 0.05);
+  padding: 20px 22px;
+}
+.cassa-summary-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #33453B;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #E7ECE8;
+}
+.cassa-summary-value {
+  margin-top: 14px;
+  font-size: 42px;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 700;
+  color: #2F3E37;
+}
+.cassa-summary-value small {
+  font-size: 20px;
+  font-weight: 700;
+}
+.cassa-summary-note {
+  margin-top: 12px;
+  font-size: 12px;
+  color: #819088;
+}
 .cassa-grid {
   display: grid;
-  grid-template-columns: 1fr 320px;
+  grid-template-columns: minmax(0, 1fr) 340px;
   gap: 16px;
   align-items: start;
 }
 .cassa-panel {
   background: white;
-  border-radius: var(--r-md);
-  box-shadow: var(--sh-sm);
-  border: 1px solid var(--sand-100);
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(43, 58, 49, 0.05);
+  border: 1px solid #E6ECE7;
   overflow: hidden;
 }
 .cassa-panel-head {
-  padding: 16px 20px;
-  border-bottom: 1px solid var(--sand-100);
+  padding: 18px 22px 14px;
+  border-bottom: 1px solid #E7ECE8;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
-.cassa-panel-head h3 { font-size: 15px; font-weight: 600; }
+.cassa-panel-head h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #31433A;
+}
 .cassa-item {
-  padding: 14px 20px;
-  border-bottom: 1px solid var(--sand-100);
+  padding: 18px 22px;
+  border-bottom: 1px solid #EEF2EF;
   display: flex;
   align-items: center;
   gap: 12px;
 }
 .cassa-item:last-child { border: none; }
+.cassa-item-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
 .cassa-umbrella {
-  width: 40px; height: 40px; border-radius: 50%;
-  background: linear-gradient(135deg, var(--sea-400), var(--sea-600));
+  width: 42px; height: 42px; border-radius: 50%;
+  background: linear-gradient(135deg, #7CA599, #55796C);
   color: white;
   display: flex; align-items: center; justify-content: center;
   font-weight: 700; font-size: 14px; flex-shrink: 0;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.2);
 }
 .cassa-info { flex: 1; min-width: 0; }
-.cassa-name { font-size: 14px; font-weight: 600; color: var(--sand-900); }
-.cassa-meta { font-size: 12px; color: var(--sand-700); margin-top: 2px; }
-.cassa-amount { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--sand-900); margin-right: 8px; }
+.cassa-name { font-size: 18px; font-weight: 700; color: #33433B; letter-spacing: -0.02em; }
+.cassa-meta { font-size: 12px; color: #798880; margin-top: 4px; }
+.cassa-note {
+  font-size: 12px;
+  color: #91A097;
+  margin-top: 6px;
+  line-height: 1.45;
+}
+.cassa-amount { font-family: 'DM Serif Display', serif; font-size: 34px; color: #2F3F38; margin-right: 8px; line-height: 1; }
 .cassa-actions { display: flex; gap: 6px; flex-shrink: 0; align-items: center; }
+.cassa-actions-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+.cassa-action-row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
 .cassa-btn {
-  padding: 7px 12px; border-radius: var(--r-sm);
+  padding: 8px 12px; border-radius: 999px;
   font-size: 12px; font-weight: 600;
   transition: all .15s; cursor: pointer; border: none;
 }
-.cassa-btn-cash { background: #E8F5E9; color: #2E7D32; }
-.cassa-btn-cash:hover { background: #2E7D32; color: white; }
-.cassa-btn-card { background: #E3F2FD; color: #1565C0; }
-.cassa-btn-card:hover { background: #1565C0; color: white; }
+.cassa-btn-cash { background: #E7F1E8; color: #53725E; }
+.cassa-btn-cash:hover { background: #5F7E69; color: white; }
+.cassa-btn-card { background: #EEF2F7; color: #65758C; }
+.cassa-btn-card:hover { background: #6A7D93; color: white; }
 .pay-badge {
   display: inline-flex; align-items: center; gap: 4px;
-  padding: 4px 10px; border-radius: 20px;
+  padding: 5px 10px; border-radius: 999px;
   font-size: 11px; font-weight: 700;
 }
-.pay-badge.unpaid { background: #FBEDEC; color: var(--coral-dk); }
-.pay-badge.partial { background: #FEF3DC; color: #8E5F13; }
-.pay-badge.paid { background: #E8F5E9; color: #2E7D32; }
+.pay-badge.unpaid { background: #FBEDEC; color: #C45B55; }
+.pay-badge.partial { background: #F9F0DC; color: #9B7A2B; }
+.pay-badge.paid { background: #E7F1E8; color: #5D7A66; }
 .kpi-cassa {
-  padding: 16px 20px;
-  border-bottom: 1px solid var(--sand-100);
+  padding: 18px 22px;
+  border-bottom: 1px solid #EEF2EF;
   display: flex; justify-content: space-between; align-items: center;
 }
 .kpi-cassa:last-child { border: none; }
-.kpi-cassa-label { font-size: 13px; color: var(--sand-700); }
-.kpi-cassa-value { font-family: 'DM Serif Display', serif; font-size: 24px; color: var(--sand-900); }
+.kpi-cassa-label { font-size: 13px; color: #7A8880; }
+.kpi-cassa-value { font-family: 'DM Serif Display', serif; font-size: 34px; color: #304038; }
+.cassa-subvalue {
+  display: block;
+  font-size: 11px;
+  color: #8A9890;
+  margin-top: 4px;
+  text-align: right;
+}
+.cassa-movements {
+  max-height: 420px;
+  overflow: auto;
+}
+.cassa-movement-item {
+  padding: 16px 22px;
+  border-bottom: 1px solid #EEF2EF;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px 12px;
+  align-items: center;
+}
+.cassa-movement-item:last-child { border-bottom: none; }
+.cassa-movement-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #34443C;
+}
+.cassa-movement-meta {
+  font-size: 11px;
+  color: #7B8A82;
+  margin-top: 2px;
+}
+.cassa-movement-amount {
+  font-family: 'DM Serif Display', serif;
+  font-size: 30px;
+  color: #304038;
+  text-align: right;
+}
+.cassa-movement-badges {
+  display: flex;
+  gap: 6px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+.cassa-badge-soft {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  background: #F4F7F5;
+  color: #74837A;
+}
+.cassa-badge-soft.cash {
+  background: #E7F1E8;
+  color: #5B7865;
+}
+.cassa-badge-soft.card {
+  background: #EEF2F7;
+  color: #67798E;
+}
+.cassa-badge-soft.refund {
+  background: #FBEDEC;
+  color: #C45B55;
+}
+.cassa-empty {
+  padding: 24px;
+  text-align: center;
+  color: #7D8B83;
+  font-size: 13px;
+}
 .btn-chiudi-cassa {
   width: calc(100% - 40px);
   margin: 16px 20px;
@@ -1339,6 +2017,20 @@ tr:last-child td { border-bottom: none; }
   transition: all .15s;
 }
 .btn-chiudi-cassa:hover { background: var(--sea-800); }
+
+.login-brand h1,
+.brand h1,
+.kpi-value,
+.planner-total,
+.cassa-amount,
+.kpi-cassa-value,
+.cassa-hero-total,
+.cassa-movement-amount,
+.cassa-summary-value {
+  font-family: var(--ui-font) !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.055em !important;
+}
 
 /* SDRAIO LIVE — ai lati dell'ombrellone, stile approvato */
 .u-sunbed-L {
@@ -1391,8 +2083,14 @@ tr:last-child td { border-bottom: none; }
     </div>
     <form class="login-form" id="loginForm" onsubmit="handleLogin(event)">
       <div>
-        <label>Email</label>
-        <input type="email" id="loginEmail" required autocomplete="email" placeholder="email@esempio.it" />
+        <label>Nome</label>
+        <select id="loginName" required>
+          <option value="">Seleziona utente</option>
+          <option value="Eugenio">Eugenio</option>
+          <option value="Francesco">Francesco</option>
+          <option value="Ska">Ska</option>
+          <option value="Luca">Luca</option>
+        </select>
       </div>
       <div>
         <label>Password</label>
@@ -1437,17 +2135,9 @@ tr:last-child td { border-bottom: none; }
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="8" width="20" height="8" rx="2"/><path d="M6 8V6M18 8V6"/></svg>
       <span>Lettini singoli</span>
     </button>
-    <button class="nav-item" data-view="extras">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
-      <span>Extras (pedalò)</span>
-    </button>
     <button class="nav-item" data-view="cassa">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
       <span>Cassa</span>
-    </button>
-    <button class="nav-item" data-view="heatmap">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v6M12 17v6M4.22 4.22l4.24 4.24M15.54 15.54l4.24 4.24M1 12h6M17 12h6M4.22 19.78l4.24-4.24M15.54 8.46l4.24-4.24"/></svg>
-      <span>Heatmap</span>
     </button>
     <button class="nav-item" data-view="bookings">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
@@ -1591,100 +2281,105 @@ tr:last-child td { border-bottom: none; }
 
     <!-- VIEW: CASSA -->
     <section class="view hidden" id="view-cassa">
-      <div class="cassa-grid">
-        <!-- Colonna sinistra: lista da incassare -->
-        <div>
-          <div class="cassa-panel" style="margin-bottom:16px">
-            <div class="cassa-panel-head">
-              <h3>Da incassare oggi</h3>
-              <span class="arrivals-count" id="cassaUnpaidCount">0</span>
+      <div class="cassa-stage">
+        <div class="cassa-topbar">
+          <div class="cassa-topbar-left">
+            <div class="cassa-date-controls">
+              <button onclick="cassaShift(-1)">‹ Giorno</button>
+              <div class="cassa-date-label" id="cassaDateLabel">Cassa del giorno</div>
+              <button onclick="cassaShift(1)">Giorno ›</button>
             </div>
-            <div id="cassaUnpaidList">
-              <div class="loading">Caricamento…</div>
-            </div>
-          </div>
-          <div class="cassa-panel">
-            <div class="cassa-panel-head">
-              <h3>Già pagati oggi</h3>
-              <span class="arrivals-count" id="cassaPaidCount">0</span>
-            </div>
-            <div id="cassaPaidList">
-              <div class="loading">Caricamento…</div>
-            </div>
+            <button class="planner-print-btn" onclick="cassaToday()">Oggi</button>
+            <input type="date" id="cassaDateInput" class="cassa-date-picker" onchange="cassaPickDate(this.value)" />
           </div>
         </div>
 
-        <!-- Colonna destra: riepilogo + Z-Report -->
-        <div>
-          <div class="cassa-panel" style="margin-bottom:16px">
-            <div class="cassa-panel-head">
-              <h3>Riepilogo giornata</h3>
+        <div class="cassa-hero">
+          <div class="cassa-hero-meta" id="cassaHeroDate">Total sales</div>
+          <div class="cassa-hero-total" id="cassaHeroTotal">0 €</div>
+          <div class="cassa-hero-sub" id="cassaHeroSub">0 movimenti registrati · 0 posizioni aperte</div>
+          <div class="cassa-hero-mark">€</div>
+        </div>
+
+        <div class="cassa-summary-grid">
+          <div class="cassa-summary-card">
+            <div class="cassa-summary-label">Collected</div>
+            <div class="cassa-summary-value" id="cassaCollectedHero">0<small> €</small></div>
+            <div class="cassa-summary-note" id="cassaCollectedNote">Nessun pagamento registrato</div>
+          </div>
+          <div class="cassa-summary-card">
+            <div class="cassa-summary-label">Outstanding</div>
+            <div class="cassa-summary-value" id="cassaOutstandingHero">0<small> €</small></div>
+            <div class="cassa-summary-note" id="cassaOutstandingNote">Nessuna posizione aperta</div>
+          </div>
+        </div>
+
+        <div class="cassa-grid">
+          <!-- Colonna sinistra: lista da incassare -->
+          <div>
+            <div class="cassa-panel" style="margin-bottom:16px">
+              <div class="cassa-panel-head">
+                <h3>Da incassare</h3>
+                <span class="arrivals-count" id="cassaUnpaidCount">0</span>
+              </div>
+              <div id="cassaUnpaidList">
+                <div class="loading">Caricamento…</div>
+              </div>
             </div>
-            <div class="kpi-cassa">
-              <span class="kpi-cassa-label">Contanti</span>
-              <span class="kpi-cassa-value" id="cassaCash">0 €</span>
-            </div>
-            <div class="kpi-cassa">
-              <span class="kpi-cassa-label">Carta</span>
-              <span class="kpi-cassa-value" id="cassaCard">0 €</span>
-            </div>
-            <div class="kpi-cassa" style="border-top:2px solid var(--sand-200);margin-top:4px">
-              <span class="kpi-cassa-label" style="font-weight:600;color:var(--sand-900)">Totale incassato</span>
-              <span class="kpi-cassa-value" style="color:var(--ok)" id="cassaTotale">0 €</span>
-            </div>
-            <div class="kpi-cassa">
-              <span class="kpi-cassa-label" style="color:var(--coral-dk)">Da incassare</span>
-              <span class="kpi-cassa-value" style="color:var(--coral-dk)" id="cassaDaIncassare">0 €</span>
+            <div class="cassa-panel">
+              <div class="cassa-panel-head">
+                <h3>Già saldati</h3>
+                <span class="arrivals-count" id="cassaPaidCount">0</span>
+              </div>
+              <div id="cassaPaidList">
+                <div class="loading">Caricamento…</div>
+              </div>
             </div>
           </div>
 
-          <div class="cassa-panel">
-            <div class="cassa-panel-head">
-              <h3>Chiusura cassa</h3>
+          <!-- Colonna destra: riepilogo + Z-Report -->
+          <div>
+            <div class="cassa-panel" style="margin-bottom:16px">
+              <div class="cassa-panel-head">
+                <h3>Riepilogo cassa</h3>
+              </div>
+              <div class="kpi-cassa">
+                <span class="kpi-cassa-label">Contanti</span>
+                <span class="kpi-cassa-value" id="cassaCash">0 €</span>
+              </div>
+              <div class="kpi-cassa">
+                <span class="kpi-cassa-label">Carta</span>
+                <span class="kpi-cassa-value" id="cassaCard">0 €</span>
+              </div>
+              <div class="kpi-cassa" style="border-top:2px solid #E7ECE8;margin-top:4px">
+                <span class="kpi-cassa-label" style="font-weight:700;color:#33433B">Totale incassato</span>
+                <span class="kpi-cassa-value" style="color:#5A7B67" id="cassaTotale">0 €</span>
+              </div>
+              <div class="kpi-cassa">
+                <span class="kpi-cassa-label" style="color:#C45B55">Da incassare</span>
+                <span class="kpi-cassa-value" style="color:#C45B55" id="cassaDaIncassare">0 €</span>
+              </div>
             </div>
-            <div style="padding:16px 20px;font-size:13px;color:var(--sand-700);line-height:1.6">
-              Genera il riepilogo di fine giornata con totali per metodo di pagamento.
+
+            <div class="cassa-panel" style="margin-bottom:16px">
+              <div class="cassa-panel-head">
+                <h3>Movimenti del giorno</h3>
+                <span class="arrivals-count" id="cassaMovementsCount">0</span>
+              </div>
+              <div class="cassa-movements" id="cassaMovementsList">
+                <div class="loading">Caricamento…</div>
+              </div>
             </div>
-            <button class="btn-chiudi-cassa" onclick="chiudiCassa()">Chiudi cassa e stampa Z-Report</button>
-          </div>
-        </div>
-      </div>
-    </section>
 
-    <!-- VIEW: HEATMAP -->
-    <section class="view hidden" id="view-heatmap">
-      <div class="kpi-row">
-        <div class="kpi k-booked">
-          <div class="kpi-label">Prenotazioni totali</div>
-          <div class="kpi-value" id="hmTotalBookings">–</div>
-        </div>
-        <div class="kpi k-revenue">
-          <div class="kpi-label">Revenue totale</div>
-          <div class="kpi-value" id="hmTotalRevenue">–<small>€</small></div>
-        </div>
-        <div class="kpi k-free">
-          <div class="kpi-label">Ombrellone top</div>
-          <div class="kpi-value" id="hmTopUmbrella" style="font-size: 22px;">–</div>
-        </div>
-        <div class="kpi k-occupancy">
-          <div class="kpi-label">Ticket medio</div>
-          <div class="kpi-value" id="hmAvgTicket">–<small>€</small></div>
-        </div>
-      </div>
-
-      <div class="map-wrap">
-        <div class="map-toolbar">
-          <h3>Heatmap produttività (anno corrente)</h3>
-          <div class="heatmap-legend">
-            <span>€ min</span>
-            <div class="heatmap-legend-bar"></div>
-            <span>€ max</span>
-          </div>
-        </div>
-        <div class="beach" id="heatmapBeach">
-          <div class="sea-label">M A R E</div>
-          <div class="row-labels">
-            <span data-row="A">A</span><span data-row="B">B</span><span data-row="C">C</span><span data-row="D">D</span><span data-row="E">E</span>
+            <div class="cassa-panel">
+              <div class="cassa-panel-head">
+                <h3>Chiusura cassa</h3>
+              </div>
+              <div style="padding:16px 20px;font-size:13px;color:#7B8A82;line-height:1.6">
+                Genera il riepilogo del giorno selezionato con totali per metodo di pagamento e residuo ancora aperto.
+              </div>
+              <button class="btn-chiudi-cassa" onclick="chiudiCassa()">Chiudi cassa e stampa Z-Report</button>
+            </div>
           </div>
         </div>
       </div>
@@ -1692,6 +2387,19 @@ tr:last-child td { border-bottom: none; }
 
     <!-- VIEW: BOOKINGS -->
     <section class="view hidden" id="view-bookings">
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px;padding:12px 14px;background:white;border:1px solid var(--sand-100);border-radius:var(--r-md);box-shadow:var(--sh-sm)">
+        <div style="font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sand-700)">Filtro prenotazioni</div>
+        <div class="planner-nav">
+          <button onclick="shiftBookingsDate(-1)">‹ Giorno</button>
+          <button onclick="goTodayBookings()">Oggi</button>
+          <button onclick="shiftBookingsDate(1)">Giorno ›</button>
+        </div>
+        <input type="date" id="bookingsDate" onchange="setBookingsDate(this.value)" style="width:auto;min-width:170px" />
+        <div style="margin-left:auto;display:flex;gap:8px;flex-wrap:wrap">
+          <button class="planner-print-btn" onclick="printBookings()">Stampa</button>
+          <button class="planner-print-btn" onclick="exportBookingsCsv()" style="background:linear-gradient(135deg,#8EA79A,#6D877A)">CSV</button>
+        </div>
+      </div>
       <div class="table-wrap">
         <table>
           <thead>
@@ -1710,6 +2418,19 @@ tr:last-child td { border-bottom: none; }
 
     <!-- VIEW: CUSTOMERS -->
     <section class="view hidden" id="view-customers">
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px;padding:12px 14px;background:white;border:1px solid var(--sand-100);border-radius:var(--r-md);box-shadow:var(--sh-sm)">
+        <div style="font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sand-700)">Filtro clienti</div>
+        <div class="planner-nav">
+          <button onclick="shiftCustomersDate(-1)">‹ Giorno</button>
+          <button onclick="goTodayCustomers()">Oggi</button>
+          <button onclick="shiftCustomersDate(1)">Giorno ›</button>
+        </div>
+        <input type="date" id="customersDate" onchange="setCustomersDate(this.value)" style="width:auto;min-width:170px" />
+        <div style="margin-left:auto;display:flex;gap:8px;flex-wrap:wrap">
+          <button class="planner-print-btn" onclick="printCustomers()">Stampa</button>
+          <button class="planner-print-btn" onclick="exportCustomersCsv()" style="background:linear-gradient(135deg,#8EA79A,#6D877A)">CSV</button>
+        </div>
+      </div>
       <div class="table-wrap">
         <table>
           <thead>
@@ -1774,26 +2495,6 @@ tr:last-child td { border-bottom: none; }
       </div>
     </section>
 
-    <!-- VIEW: EXTRAS (PEDALÒ) -->
-    <section class="view hidden" id="view-extras">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-        <div>
-          <h3 style="font-size:16px;font-weight:600">Extras — Pedalò</h3>
-          <p style="font-size:13px;color:var(--sand-700);margin-top:4px">12 €/ora</p>
-        </div>
-        <button class="btn btn-primary" onclick="toast('Prossimamente disponibile','ok')">+ Nuovo pedalò</button>
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr><th>Data</th><th>Cliente</th><th>Orario inizio</th><th>Durata</th><th>Stato</th><th style="text-align:right">Totale</th></tr>
-          </thead>
-          <tbody id="extrasTable">
-            <tr><td colspan="6" style="text-align:center;padding:40px;color:var(--sand-700)">Nessuna prenotazione pedalò oggi</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
   </main>
 </div>
 
@@ -2054,23 +2755,24 @@ if (isConfigured) {
 // AUTH FLOW
 // ============================================================
 let currentUser = null;
+const LOCAL_AUTH_USERS = {
+  eugenio: 'Eugenio',
+  francesco: 'Francesco',
+  ska: 'Ska',
+  luca: 'Luca',
+};
+const LOCAL_AUTH_PASSWORD = '0000';
+const LOCAL_AUTH_STORAGE_KEY = 'marinella-local-user';
 
 async function checkAuth() {
-  if (!isConfigured) {
-    // Demo mode: mostra direttamente l'app e carica dati demo
+  const storedUser = window.localStorage.getItem(LOCAL_AUTH_STORAGE_KEY);
+  if (storedUser && LOCAL_AUTH_USERS[storedUser]) {
+    currentUser = { name: LOCAL_AUTH_USERS[storedUser] };
     showApp();
     loadAll();
     return;
   }
-
-  const { data: { session } } = await sb.auth.getSession();
-  if (session?.user) {
-    currentUser = session.user;
-    showApp();
-    loadAll();
-  } else {
-    showLogin();
-  }
+  showLogin();
 }
 
 function showLogin() {
@@ -2081,11 +2783,11 @@ function showLogin() {
 function showApp() {
   document.getElementById('loginScreen').style.display = 'none';
   document.getElementById('appContainer').style.display = 'grid';
+  document.getElementById('btnLogout').style.display = 'flex';
 
   if (isConfigured) {
     document.getElementById('connStatus').textContent = '● connesso';
     document.getElementById('connStatus').style.color = '#3A9B7A';
-    document.getElementById('btnLogout').style.display = 'flex';
     document.getElementById('setupBanner').style.display = 'none';
   } else {
     document.getElementById('connStatus').textContent = '● demo mode';
@@ -2095,24 +2797,27 @@ function showApp() {
 
 async function handleLogin(event) {
   event.preventDefault();
-  const email = document.getElementById('loginEmail').value.trim();
+  const name = document.getElementById('loginName').value.trim();
   const password = document.getElementById('loginPassword').value;
   const errorEl = document.getElementById('loginError');
   const btn = document.getElementById('loginBtn');
+  const normalized = name.toLowerCase();
 
   errorEl.classList.remove('show');
   btn.disabled = true;
   btn.textContent = 'Accesso in corso…';
 
   try {
-    const { data, error } = await sb.auth.signInWithPassword({ email, password });
-    if (error) throw error;
-    currentUser = data.user;
+    if (!LOCAL_AUTH_USERS[normalized] || password !== LOCAL_AUTH_PASSWORD) {
+      throw new Error('INVALID_LOCAL_CREDENTIALS');
+    }
+    currentUser = { name: LOCAL_AUTH_USERS[normalized] };
+    window.localStorage.setItem(LOCAL_AUTH_STORAGE_KEY, normalized);
     showApp();
     await loadAll();
   } catch (e) {
-    errorEl.textContent = e.message === 'Invalid login credentials'
-      ? 'Email o password errate'
+    errorEl.textContent = e.message === 'INVALID_LOCAL_CREDENTIALS'
+      ? 'Nome o password errati'
       : 'Errore: ' + (e.message || 'accesso fallito');
     errorEl.classList.add('show');
   } finally {
@@ -2123,11 +2828,12 @@ async function handleLogin(event) {
 
 async function handleLogout() {
   if (!confirm('Uscire dal gestionale?')) return;
-  if (isConfigured) {
+  window.localStorage.removeItem(LOCAL_AUTH_STORAGE_KEY);
+  if (isConfigured && sb?.auth) {
     await sb.auth.signOut();
   }
   currentUser = null;
-  document.getElementById('loginEmail').value = '';
+  document.getElementById('loginName').value = '';
   document.getElementById('loginPassword').value = '';
   showLogin();
 }
@@ -2145,7 +2851,6 @@ const state = {
   pricing: [],
   pricingPeriods: [],
   extras: [],
-  heatmapData: [],
   selected: null,        // {umbrella, existingBooking, isMulti, umbrellas:[]}
   selectedExtras: {},    // {extraId: quantity}
   mapMode: 'single',
@@ -2200,19 +2905,9 @@ const DEMO_PRICING = [
   { product_type:'single_sunbed',    booking_type:'daily',           price:12, year:2026, active:true },
   { product_type:'single_sunbed',    booking_type:'half_day_am',     price: 8, year:2026, active:true },
   { product_type:'single_sunbed',    booking_type:'half_day_pm',     price: 8, year:2026, active:true },
-  { product_type:'pedalo',           booking_type:'daily',           price:12, year:2026, active:true },
 ];
 
 const DEMO_EXTRAS = [];
-
-const DEMO_HEATMAP = DEMO_UMBRELLAS.map(u => ({
-  umbrella_id: u.id, row_label: u.row_label, col_number: u.col_number,
-  x: u.x, y: u.y,
-  total_bookings: Math.floor(Math.random() * 60 + 10),
-  total_revenue: Math.floor(Math.random() * 4000 + 500),
-  avg_ticket: 35 + Math.random() * 40,
-  no_shows: Math.floor(Math.random() * 5),
-}));
 
 // ============================================================
 // INIT
@@ -2340,12 +3035,22 @@ async function loadForDate() {
 }
 
 async function loadAllBookings() {
-  if (!isConfigured) { state.allBookings = DEMO_BOOKINGS; renderBookings(); return; }
+  const input = document.getElementById('bookingsDate');
+  if (input) input.value = state.currentDate;
+
+  if (!isConfigured) {
+    state.allBookings = DEMO_BOOKINGS.filter(b =>
+      b.date_from <= state.currentDate && b.date_to >= state.currentDate
+    );
+    renderBookings();
+    return;
+  }
   const { data } = await sb
     .from('bookings')
     .select(`*, customers(first_name, last_name, phone)`)
-    .order('date_from', { ascending: false })
-    .limit(200);
+    .lte('date_from', state.currentDate)
+    .gte('date_to', state.currentDate)
+    .order('date_from', { ascending: false });
   state.allBookings = (data || []).map(b => ({
     ...b,
     customer_name: b.customers ? `${b.customers.last_name} ${b.customers.first_name}` : '—',
@@ -2355,15 +3060,23 @@ async function loadAllBookings() {
 }
 
 async function loadCustomers() {
+  const input = document.getElementById('customersDate');
+  if (input) input.value = state.currentDate;
+
   if (!isConfigured) {
     state.customers = [
       { id:'c1', first_name:'Mario', last_name:'Rossi', phone:'+39 333 1234567', email:'m.rossi@email.it', created_at:'2026-04-10' },
       { id:'c2', first_name:'Laura', last_name:'Bianchi', phone:'+39 340 9988776', email:'laura@b.it', created_at:'2026-04-15' },
       { id:'c3', first_name:'Luca', last_name:'Ferrari', phone:'+39 347 5551234', email:'luca.f@email.it', created_at:'2026-04-12' },
-    ];
+    ].filter(c => (c.created_at || '').slice(0,10) === state.currentDate);
     renderCustomers(); return;
   }
-  const { data } = await sb.from('customers').select('*').order('created_at', { ascending: false }).limit(200);
+  const { data } = await sb
+    .from('customers')
+    .select('*')
+    .gte('created_at', state.currentDate + 'T00:00:00')
+    .lte('created_at', state.currentDate + 'T23:59:59')
+    .order('created_at', { ascending: false });
   state.customers = data || [];
   renderCustomers();
 }
@@ -2391,13 +3104,6 @@ async function loadPlannerBookings() {
     customer_name: b.customers ? `${b.customers.last_name} ${b.customers.first_name}` : '—',
   }));
   renderPlanner(bookings);
-}
-
-async function loadHeatmap() {
-  if (!isConfigured) { state.heatmapData = DEMO_HEATMAP; renderHeatmap(); return; }
-  const { data } = await sb.from('v_umbrella_heatmap').select('*');
-  state.heatmapData = data || [];
-  renderHeatmap();
 }
 
 // ============================================================
@@ -2831,6 +3537,10 @@ function renderPlanner(bookings) {
     (acc[u.row_label] ||= []).push(u);
     return acc;
   }, {});
+  const bookedCount = bookings.length;
+  const freeCount = sortedUmbrellas.filter(u => u.active).length - bookedCount;
+  const unpaidCount = bookings.filter(b => getPlannerPaymentState(b) !== 'paid').length;
+  const arrivedCount = bookings.filter(b => b.arrived_at && !b.departed_at).length;
 
   const boardSections = Object.entries(rowGroups).map(([rowLabel, umbrellas]) => {
     const cards = umbrellas.map(u => {
@@ -2845,11 +3555,14 @@ function renderPlanner(bookings) {
             ? `acconto ${(booking.price_paid || 0).toFixed(0)} €`
             : 'da pagare'
         : 'nessuna prenotazione';
+      const noteMarkup = booking?.notes
+        ? `<div class="planner-note-text">${booking.notes}</div>`
+        : `<div class="planner-note-text empty"></div>`;
       const customerBlock = booking
         ? `<div class="planner-customer-name">${booking.customer_name || '—'}</div>
            <div class="planner-customer-meta">${typeLabel(booking.booking_type)} · ${formatDate(booking.date_from)}${booking.date_from !== booking.date_to ? ' → ' + formatDate(booking.date_to) : ''}</div>
-           <div class="planner-note-text">${booking.notes ? booking.notes : 'Nessuna nota'}</div>`
-        : `<div class="planner-note-text">Nessuna nota</div>`;
+           ${noteMarkup}`
+        : `<div class="planner-empty">Postazione libera</div>`;
       const clickAction = booking ? `openBookingFromPlanner('${booking.id}', ${u.id})` : `plannerCellClick(${u.id}, '${day}')`;
 
       return `
@@ -2886,14 +3599,20 @@ function renderPlanner(bookings) {
 
   scroll.innerHTML = `
     <div class="planner-board">
+      <div class="planner-summary-strip">
+        <div class="planner-summary-card"><strong>Prenotati</strong><span>${bookedCount}</span></div>
+        <div class="planner-summary-card"><strong>Liberi</strong><span>${Math.max(0, freeCount)}</span></div>
+        <div class="planner-summary-card"><strong>Da pagare</strong><span>${unpaidCount}</span></div>
+        <div class="planner-summary-card"><strong>Presenti</strong><span>${arrivedCount}</span></div>
+      </div>
       <div class="planner-board-head">
         <div class="planner-row-label">
           <div class="planner-row-letter">${new Date(day).toLocaleDateString('it-IT', { day: '2-digit' })}</div>
           <div class="planner-row-count">${new Date(day).toLocaleDateString('it-IT', { month: 'short' }).replace('.', '').toUpperCase()}</div>
         </div>
         <div class="planner-board-note">
-          <strong>Planner operativo del giorno</strong>
-          Tocca una card per aprire la prenotazione o creare una nuova assegnazione. Il colore del badge pagamento mostra subito se l'importo e pagato, parziale o ancora da incassare.
+          <strong>Mockup stampa giornaliera</strong>
+          Layout più compatto pensato per reception e stampa: nome cliente, stato e importo sono le priorità; le note compaiono solo quando esistono davvero.
         </div>
       </div>
       ${boardSections}
@@ -2940,18 +3659,19 @@ function openBookingFromPlanner(bookingId, umbrellaId) {
 // RENDER: ARRIVALS
 // ============================================================
 function renderArrivals() {
-  // Arrivi attesi: prenotazioni con date_from = oggi, non ancora arrivate
-  // Partenze: prenotazioni con date_to = oggi
-  const todayStr = new Date().toISOString().slice(0,10);
+  // Arrivi attesi: iniziano nel giorno selezionato e non hanno ancora fatto check-in
+  // Presenti: hanno fatto check-in e non risultano partiti
+  // Partenze: sono presenti e terminano nel giorno selezionato
+  const selectedDate = state.currentDate;
 
   const arrivals = state.bookings.filter(b =>
-    b.date_from === todayStr && !b.arrived_at && b.status !== 'cancelled'
+    b.date_from === selectedDate && !b.arrived_at && b.status !== 'cancelled'
   );
   const arrived = state.bookings.filter(b =>
-    b.arrived_at && !b.departed_at
+    b.arrived_at && !b.departed_at && b.status !== 'cancelled'
   );
   const departures = state.bookings.filter(b =>
-    b.date_to === todayStr && b.status !== 'cancelled'
+    b.date_to === selectedDate && b.arrived_at && !b.departed_at && b.status !== 'cancelled'
   );
 
   const arrivalsList = document.getElementById('arrivalsList');
@@ -2999,14 +3719,17 @@ function renderArrivals() {
     departuresList.innerHTML = '<div class="loading">Nessuna partenza oggi</div>';
   } else {
     departuresList.innerHTML = departures.map(b => `
-      <div class="arrival-item ${b.arrived_at ? 'arrived' : ''}">
+      <div class="arrival-item arrived">
         <div class="arrival-umbrella">${b.umbrella_id}</div>
         <div class="arrival-info">
           <div class="arrival-name">${b.customer_name}</div>
           <div class="arrival-meta">
             ${typeLabel(b.booking_type)} ·
-            ${b.arrived_at && !b.departed_at ? '<span style="color:var(--ok)">presente</span>' : b.departed_at ? '<span style="color:var(--sand-700)">partito</span>' : '<span style="color:var(--warn)">non arrivato</span>'}
+            <span style="color:var(--ok)">presente</span>
           </div>
+        </div>
+        <div class="arrival-actions">
+          <button class="arrival-btn" onclick="quickDepart('${b.id}')">Partenza →</button>
         </div>
       </div>
     `).join('');
@@ -3046,86 +3769,6 @@ async function quickDepart(bookingId) {
 }
 
 // ============================================================
-// RENDER: HEATMAP
-// ============================================================
-function renderHeatmap() {
-  const beach = document.getElementById('heatmapBeach');
-  beach.querySelectorAll('.umbrella, .heatmap-overlay').forEach(el => el.remove());
-
-  if (!state.heatmapData.length) return;
-
-  const maxRev = Math.max(...state.heatmapData.map(h => h.total_revenue), 1);
-
-  state.heatmapData.forEach(h => {
-    // Cerchio di calore
-    const glow = document.createElement('div');
-    glow.className = 'heatmap-overlay';
-    glow.style.left = h.x + '%';
-    glow.style.top = h.y + '%';
-    const pct = h.total_revenue / maxRev;
-    const color = revenueToColor(pct);
-    glow.style.background = color;
-    glow.style.opacity = 0.3 + pct * 0.5;
-    beach.appendChild(glow);
-
-    // Ombrellone
-    const el = document.createElement('div');
-    el.className = 'umbrella';
-    el.style.left = h.x + '%';
-    el.style.top = h.y + '%';
-    // Per la heatmap usiamo un data-status custom che injecta il colore revenue
-    el.dataset.status = 'free';
-    el.style.setProperty('--u-color', color);
-    el.innerHTML = `
-      <div class="u-canopy">${umbrellaSVG()}</div>
-      <div class="u-badge">${h.umbrella_id}</div>
-      <div class="u-tip">
-        #${h.umbrella_id} · ${h.row_label}${h.col_number}<br>
-        ${Math.round(h.total_revenue)}€ · ${h.total_bookings} prenot.<br>
-        Ticket medio: ${Math.round(h.avg_ticket || 0)}€
-      </div>
-    `;
-    beach.appendChild(el);
-  });
-
-  syncRowLabels('heatmapBeach', state.heatmapData);
-
-  // KPI heatmap
-  const totalBookings = state.heatmapData.reduce((s,h) => s + (h.total_bookings || 0), 0);
-  const totalRevenue = state.heatmapData.reduce((s,h) => s + (h.total_revenue || 0), 0);
-  const top = [...state.heatmapData].sort((a,b) => b.total_revenue - a.total_revenue)[0];
-  const avgTicket = totalBookings ? Math.round(totalRevenue / totalBookings) : 0;
-
-  document.getElementById('hmTotalBookings').textContent = totalBookings;
-  document.getElementById('hmTotalRevenue').innerHTML = `${Math.round(totalRevenue)}<small>€</small>`;
-  document.getElementById('hmTopUmbrella').textContent = top ? `#${top.umbrella_id} (${top.row_label}${top.col_number})` : '–';
-  document.getElementById('hmAvgTicket').innerHTML = `${avgTicket}<small>€</small>`;
-}
-
-function revenueToColor(pct) {
-  // Gradient: sea-100 → sunshine → coral → coral-dk
-  if (pct < 0.33) {
-    const t = pct / 0.33;
-    return lerpColor('#C9E1E2', '#F2C14E', t);
-  } else if (pct < 0.66) {
-    const t = (pct - 0.33) / 0.33;
-    return lerpColor('#F2C14E', '#E85A4F', t);
-  } else {
-    const t = (pct - 0.66) / 0.34;
-    return lerpColor('#E85A4F', '#C4423A', t);
-  }
-}
-
-function lerpColor(c1, c2, t) {
-  const h1 = c1.match(/\w\w/g).map(x => parseInt(x, 16));
-  const h2 = c2.match(/\w\w/g).map(x => parseInt(x, 16));
-  const r = Math.round(h1[0] + (h2[0] - h1[0]) * t);
-  const g = Math.round(h1[1] + (h2[1] - h1[1]) * t);
-  const b = Math.round(h1[2] + (h2[2] - h1[2]) * t);
-  return `rgb(${r},${g},${b})`;
-}
-
-// ============================================================
 // RENDER: BOOKINGS / CUSTOMERS / PRICING
 // ============================================================
 function renderBookings() {
@@ -3150,6 +3793,99 @@ function renderBookings() {
   }).join('');
 }
 
+function printBookings() {
+  const date = state.currentDate;
+  const rows = state.allBookings || [];
+  const tableRows = rows.length
+    ? rows.map(b => {
+        const payStatus = b.price_paid >= b.price_total ? 'Pagato' : b.price_paid > 0 ? 'Parziale' : 'Da pagare';
+        return `
+          <tr>
+            <td>#${b.umbrella_id}</td>
+            <td>${b.customer_name || '—'}</td>
+            <td>${typeLabel(b.booking_type)}</td>
+            <td>${formatDate(b.date_from)}</td>
+            <td>${formatDate(b.date_to)}</td>
+            <td>${statusLabel(b.status)}</td>
+            <td>${payStatus}</td>
+            <td style="text-align:right">${Number(b.price_total || 0).toFixed(2)} €</td>
+          </tr>`;
+      }).join('')
+    : `<tr><td colspan="8" style="padding:18px;text-align:center;color:#666">Nessuna prenotazione per il giorno selezionato</td></tr>`;
+
+  const html = `
+    <html>
+      <head>
+        <title>Prenotazioni ${date}</title>
+        <style>
+          body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; padding: 28px; color: #24312b; }
+          h1 { font-size: 20px; margin-bottom: 4px; }
+          p { margin: 0 0 18px; color: #6b7a72; font-size: 12px; }
+          table { width: 100%; border-collapse: collapse; }
+          th, td { padding: 10px 12px; border-bottom: 1px solid #e3e8e3; font-size: 12px; text-align: left; }
+          th { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: #708078; }
+        </style>
+      </head>
+      <body>
+        <h1>Prenotazioni giornaliere</h1>
+        <p>${formatDate(date)} · ${rows.length} record</p>
+        <table>
+          <thead>
+            <tr>
+              <th>Ombr.</th><th>Cliente</th><th>Tipo</th><th>Dal</th><th>Al</th><th>Stato</th><th>Pag.</th><th style="text-align:right">Totale</th>
+            </tr>
+          </thead>
+          <tbody>${tableRows}</tbody>
+        </table>
+      </body>
+    </html>
+  `;
+
+  const win = window.open('', '_blank');
+  win.document.write(html);
+  win.document.close();
+  win.print();
+}
+
+function exportBookingsCsv() {
+  const rows = state.allBookings || [];
+  const headers = ['ombrellone', 'cliente', 'telefono', 'tipo', 'dal', 'al', 'stato', 'pagamento', 'totale'];
+  const csvRows = rows.map(b => {
+    const payStatus = b.price_paid >= b.price_total ? 'pagato' : b.price_paid > 0 ? 'parziale' : 'da pagare';
+    return [
+      `#${b.umbrella_id}`,
+      b.customer_name || '',
+      b.customer_phone || '',
+      typeLabel(b.booking_type),
+      b.date_from || '',
+      b.date_to || '',
+      statusLabel(b.status),
+      payStatus,
+      Number(b.price_total || 0).toFixed(2)
+    ];
+  });
+
+  const escapeCsv = value => {
+    const str = String(value ?? '');
+    return /[",\n;]/.test(str) ? `"${str.replace(/"/g, '""')}"` : str;
+  };
+
+  const csv = [headers, ...csvRows]
+    .map(row => row.map(escapeCsv).join(';'))
+    .join('\n');
+
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `prenotazioni-${state.currentDate}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+  toast('CSV esportato', 'ok');
+}
+
 function renderCustomers() {
   const tbody = document.getElementById('customersTable');
   if (!state.customers.length) {
@@ -3166,12 +3902,88 @@ function renderCustomers() {
   `).join('');
 }
 
+function printCustomers() {
+  const date = state.currentDate;
+  const rows = state.customers || [];
+  const tableRows = rows.length
+    ? rows.map(c => `
+        <tr>
+          <td>${c.last_name || ''} ${c.first_name || ''}</td>
+          <td>${c.phone || '—'}</td>
+          <td>${c.email || '—'}</td>
+          <td>${formatDate(c.created_at)}</td>
+        </tr>
+      `).join('')
+    : `<tr><td colspan="4" style="padding:18px;text-align:center;color:#666">Nessun cliente registrato per il giorno selezionato</td></tr>`;
+
+  const html = `
+    <html>
+      <head>
+        <title>Clienti ${date}</title>
+        <style>
+          body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; padding: 28px; color: #24312b; }
+          h1 { font-size: 20px; margin-bottom: 4px; }
+          p { margin: 0 0 18px; color: #6b7a72; font-size: 12px; }
+          table { width: 100%; border-collapse: collapse; }
+          th, td { padding: 10px 12px; border-bottom: 1px solid #e3e8e3; font-size: 12px; text-align: left; }
+          th { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: #708078; }
+        </style>
+      </head>
+      <body>
+        <h1>Clienti registrati</h1>
+        <p>${formatDate(date)} · ${rows.length} record</p>
+        <table>
+          <thead>
+            <tr><th>Nome</th><th>Telefono</th><th>Email</th><th>Registrato</th></tr>
+          </thead>
+          <tbody>${tableRows}</tbody>
+        </table>
+      </body>
+    </html>
+  `;
+
+  const win = window.open('', '_blank');
+  win.document.write(html);
+  win.document.close();
+  win.print();
+}
+
+function exportCustomersCsv() {
+  const rows = state.customers || [];
+  const headers = ['nome', 'telefono', 'email', 'registrato'];
+  const csvRows = rows.map(c => [
+    `${c.last_name || ''} ${c.first_name || ''}`.trim(),
+    c.phone || '',
+    c.email || '',
+    c.created_at || ''
+  ]);
+
+  const escapeCsv = value => {
+    const str = String(value ?? '');
+    return /[",\n;]/.test(str) ? `"${str.replace(/"/g, '""')}"` : str;
+  };
+
+  const csv = [headers, ...csvRows]
+    .map(row => row.map(escapeCsv).join(';'))
+    .join('\n');
+
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `clienti-${state.currentDate}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+  toast('CSV esportato', 'ok');
+}
+
 function renderPricing() {
   const tbody = document.getElementById('pricingTable');
   const ROWS = [
     { label:'Ombrellone + 2 lettini', product:'umbrella_package', cols:['daily','half_day_am','half_day_pm','reduced_nursery'] },
     { label:'Lettino singolo (spiaggia libera)', product:'single_sunbed', cols:['daily','half_day_am','half_day_pm', null] },
-    { label:'Pedalò (€/ora)', product:'pedalo', cols:['daily', null, null, null] },
   ];
   const pool = state.pricing.length ? state.pricing : [
     { product_type:'umbrella_package', booking_type:'daily', price:25 },
@@ -3181,7 +3993,6 @@ function renderPricing() {
     { product_type:'single_sunbed', booking_type:'daily', price:12 },
     { product_type:'single_sunbed', booking_type:'half_day_am', price:8 },
     { product_type:'single_sunbed', booking_type:'half_day_pm', price:8 },
-    { product_type:'pedalo', booking_type:'daily', price:12 },
   ];
   const get = (product, btype) => {
     if (!btype) return '—';
@@ -3526,6 +4337,8 @@ async function saveBooking() {
       const extrasPrice = 0;
       const total = basePrice + extrasPrice;
       const depositToken = deposit > 0 ? generateToken() : null;
+      const existingPaid = (!s.isMulti && s.existingBooking) ? Number(s.existingBooking.price_paid || 0) : 0;
+      const nextPaid = payment ? total : existingPaid;
 
       const payload = {
         umbrella_id: u.id,
@@ -3537,9 +4350,12 @@ async function saveBooking() {
         price_base: basePrice,
         price_extras: extrasPrice,
         price_total: total,
+        price_paid: nextPaid,
         deposit_amount: deposit,
         deposit_token: depositToken,
         deposit_expires_at: deposit > 0 ? new Date(Date.now() + 72*3600*1000).toISOString() : null,
+        payment_method: payment || null,
+        payment_status: nextPaid >= total ? 'paid' : nextPaid > 0 ? 'partial' : 'pending',
         status: 'confirmed',
         source: 'staff',
         notes: notes || null,
@@ -3683,11 +4499,10 @@ function switchView(name) {
 
   const titles = {
     map:'Mappa spiaggia', planner:'Planner prenotazioni',
-    arrivals:'Arrivi e partenze', heatmap:'Heatmap produttività',
+    arrivals:'Arrivi e partenze',
     bookings:'Prenotazioni', customers:'Clienti',
     pricing:'Tariffe (Delibera 173/2025)',
     sunbeds:'Lettini singoli — Spiaggia libera',
-    extras:'Extras — Pedalò',
     cassa:'Cassa',
   };
   document.getElementById('viewTitle').textContent = titles[name];
@@ -3697,7 +4512,6 @@ function switchView(name) {
   if (name === 'customers') loadCustomers();
   if (name === 'pricing') renderPricing();
   if (name === 'planner') loadPlannerBookings();
-  if (name === 'heatmap') loadHeatmap();
   if (name === 'arrivals') renderArrivals();
   if (name === 'cassa') loadCassa();
   if (name === 'sunbeds') loadSunbeds();
@@ -3715,6 +4529,46 @@ function goToday() {
   state.currentDate = new Date().toISOString().slice(0,10);
   document.getElementById('currentDate').value = state.currentDate;
   loadForDate();
+}
+
+function setBookingsDate(value) {
+  if (!value) return;
+  state.currentDate = value;
+  const currentDateInput = document.getElementById('currentDate');
+  if (currentDateInput) currentDateInput.value = value;
+  const bookingsDateInput = document.getElementById('bookingsDate');
+  if (bookingsDateInput) bookingsDateInput.value = value;
+  loadAllBookings();
+}
+
+function shiftBookingsDate(delta) {
+  const d = new Date(state.currentDate);
+  d.setDate(d.getDate() + delta);
+  setBookingsDate(d.toISOString().slice(0,10));
+}
+
+function goTodayBookings() {
+  setBookingsDate(new Date().toISOString().slice(0,10));
+}
+
+function setCustomersDate(value) {
+  if (!value) return;
+  state.currentDate = value;
+  const currentDateInput = document.getElementById('currentDate');
+  if (currentDateInput) currentDateInput.value = value;
+  const customersDateInput = document.getElementById('customersDate');
+  if (customersDateInput) customersDateInput.value = value;
+  loadCustomers();
+}
+
+function shiftCustomersDate(delta) {
+  const d = new Date(state.currentDate);
+  d.setDate(d.getDate() + delta);
+  setCustomersDate(d.toISOString().slice(0,10));
+}
+
+function goTodayCustomers() {
+  setCustomersDate(new Date().toISOString().slice(0,10));
 }
 
 function setSunbedsDate(value) {
@@ -4078,6 +4932,7 @@ async function incassaSunbed(id, method, amount) {
     booking.payment_status = 'paid';
     toast(`Incassato ${amount} € (demo)`, 'ok');
     loadSunbeds();
+    loadCassa();
     return;
   }
   try {
@@ -4090,6 +4945,7 @@ async function incassaSunbed(id, method, amount) {
     await sb.from('single_sunbed_bookings').update({ payment_status: 'paid' }).eq('id', id);
     toast(`Incassato ${amount} €`, 'ok');
     loadSunbeds();
+    loadCassa();
   } catch (e) {
     toast('Errore: ' + e.message, 'err');
   }
@@ -4098,104 +4954,330 @@ async function incassaSunbed(id, method, amount) {
 // ============================================================
 // CASSA
 // ============================================================
+function cassaToday() {
+  state.currentDate = new Date().toISOString().slice(0,10);
+  const currentDateInput = document.getElementById('currentDate');
+  if (currentDateInput) currentDateInput.value = state.currentDate;
+  const cassaDateInput = document.getElementById('cassaDateInput');
+  if (cassaDateInput) cassaDateInput.value = state.currentDate;
+  loadForDate();
+}
+
+function cassaShift(delta) {
+  state.currentDate = addDays(state.currentDate, delta);
+  const currentDateInput = document.getElementById('currentDate');
+  if (currentDateInput) currentDateInput.value = state.currentDate;
+  const cassaDateInput = document.getElementById('cassaDateInput');
+  if (cassaDateInput) cassaDateInput.value = state.currentDate;
+  loadForDate();
+}
+
+function cassaPickDate(value) {
+  if (!value) return;
+  state.currentDate = value;
+  const currentDateInput = document.getElementById('currentDate');
+  if (currentDateInput) currentDateInput.value = state.currentDate;
+  loadForDate();
+}
+
+function formatCassaDateLabel(date) {
+  try {
+    return new Date(date + 'T12:00:00').toLocaleDateString('it-IT', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    });
+  } catch {
+    return date;
+  }
+}
+
+function cassaMethodLabel(method) {
+  if (method === 'cash') return 'Contanti';
+  if (method === 'card_pos') return 'Carta';
+  return method || 'Altro';
+}
+
+function cassaMethodClass(method, type) {
+  if (type === 'refund') return 'refund';
+  return method === 'cash' ? 'cash' : 'card';
+}
+
+function cassaItemTypeLabel(kind) {
+  return kind === 'sunbed' ? 'Lettini' : 'Ombrellone';
+}
+
 async function loadCassa() {
   const date = state.currentDate;
+  const cassaDateLabel = document.getElementById('cassaDateLabel');
+  const cassaDateInput = document.getElementById('cassaDateInput');
+  if (cassaDateLabel) cassaDateLabel.textContent = formatCassaDateLabel(date);
+  if (cassaDateInput) cassaDateInput.value = date;
 
   let bookings = [];
+  let sunbeds = [];
+  let payments = [];
+
   if (!isConfigured) {
     bookings = state.bookings.map(b => ({
-      ...b,
-      payment_method: b.price_paid >= b.price_total ? 'cash' : null,
+      kind: 'booking',
+      id: b.id,
+      label: `#${b.umbrella_id}`,
+      customer_name: b.customer_name,
+      booking_type: b.booking_type,
+      date_label: `${formatDate(b.date_from)}${b.date_from !== b.date_to ? ' → ' + formatDate(b.date_to) : ''}`,
+      price_total: Number(b.price_total || 0),
+      paid_amount: Number(b.price_paid || 0),
+      payment_status: Number(b.price_paid || 0) >= Number(b.price_total || 0) ? 'paid' : Number(b.price_paid || 0) > 0 ? 'partial' : 'pending',
+      notes: b.notes || '',
     }));
+    sunbeds = DEMO_SUNBED_BOOKINGS
+      .filter(r => r.date_booking === date)
+      .map(r => ({
+        kind: 'sunbed',
+        id: r.id,
+        label: `${r.quantity} lett.`,
+        customer_name: r.customers ? `${r.customers.last_name} ${r.customers.first_name}` : '—',
+        booking_type: r.booking_type,
+        date_label: formatDate(r.date_booking),
+        price_total: Number(r.price_total || 0),
+        paid_amount: r.payment_status === 'paid' ? Number(r.price_total || 0) : 0,
+        payment_status: r.payment_status || 'pending',
+        notes: r.notes || '',
+      }));
+    payments = [
+      ...bookings.filter(b => b.paid_amount > 0).map(b => ({
+        amount: b.paid_amount,
+        method: 'cash',
+        type: 'payment',
+        created_at: `${date}T12:00:00`,
+        booking_id: b.id,
+      })),
+      ...sunbeds.filter(s => s.payment_status === 'paid').map(s => ({
+        amount: s.price_total,
+        method: 'cash',
+        type: 'payment',
+        created_at: `${date}T13:00:00`,
+        single_sunbed_booking_id: s.id,
+      })),
+    ];
   } else {
-    const { data } = await sb
-      .from('bookings')
-      .select('*, customers(first_name, last_name, phone)')
-      .lte('date_from', date)
-      .gte('date_to', date)
-      .in('status', ['confirmed','checked_in','completed']);
-    bookings = (data || []).map(b => ({
-      ...b,
-      customer_name: b.customers ? `${b.customers.last_name} ${b.customers.first_name}` : '—',
-      customer_phone: b.customers?.phone,
-    }));
+    const [{ data: bookingData }, { data: sunbedData }, { data: dayPayments }] = await Promise.all([
+      sb.from('bookings')
+        .select('id, umbrella_id, booking_type, date_from, date_to, price_total, price_paid, payment_status, notes, customers(first_name, last_name, phone)')
+        .lte('date_from', date)
+        .gte('date_to', date)
+        .in('status', ['confirmed','checked_in','completed']),
+      sb.from('single_sunbed_bookings')
+        .select('id, booking_type, date_booking, quantity, price_total, payment_status, notes, customers(first_name, last_name, phone)')
+        .eq('date_booking', date)
+        .in('status', ['confirmed','checked_in','completed']),
+      sb.from('payments')
+        .select('*')
+        .gte('created_at', date + 'T00:00:00')
+        .lte('created_at', date + 'T23:59:59')
+        .order('created_at', { ascending: false }),
+    ]);
+
+    const bookingsRaw = bookingData || [];
+    const sunbedsRaw = sunbedData || [];
+    payments = dayPayments || [];
+
+    const bookingIds = bookingsRaw.map(b => b.id);
+    const sunbedIds = sunbedsRaw.map(r => r.id);
+
+    let bookingPayments = [];
+    let sunbedPayments = [];
+    if (bookingIds.length) {
+      const { data } = await sb.from('payments').select('booking_id, amount, type').in('booking_id', bookingIds);
+      bookingPayments = data || [];
+    }
+    if (sunbedIds.length) {
+      const { data } = await sb.from('payments').select('single_sunbed_booking_id, amount, type').in('single_sunbed_booking_id', sunbedIds);
+      sunbedPayments = data || [];
+    }
+
+    const bookingPaidMap = {};
+    bookingPayments.forEach(p => {
+      const key = p.booking_id;
+      if (!key) return;
+      const delta = p.type === 'refund' ? -Number(p.amount || 0) : Number(p.amount || 0);
+      bookingPaidMap[key] = (bookingPaidMap[key] || 0) + delta;
+    });
+
+    const sunbedPaidMap = {};
+    sunbedPayments.forEach(p => {
+      const key = p.single_sunbed_booking_id;
+      if (!key) return;
+      const delta = p.type === 'refund' ? -Number(p.amount || 0) : Number(p.amount || 0);
+      sunbedPaidMap[key] = (sunbedPaidMap[key] || 0) + delta;
+    });
+
+    bookings = bookingsRaw.map(b => {
+      const paidAmount = Math.max(0, bookingPaidMap[b.id] ?? Number(b.price_paid || 0));
+      const total = Number(b.price_total || 0);
+      return {
+        kind: 'booking',
+        id: b.id,
+        label: `#${b.umbrella_id}`,
+        customer_name: b.customers ? `${b.customers.last_name} ${b.customers.first_name}` : '—',
+        booking_type: b.booking_type,
+        date_label: `${formatDate(b.date_from)}${b.date_from !== b.date_to ? ' → ' + formatDate(b.date_to) : ''}`,
+        price_total: total,
+        paid_amount: paidAmount,
+        payment_status: paidAmount >= total ? 'paid' : paidAmount > 0 ? 'partial' : 'pending',
+        notes: b.notes || '',
+      };
+    });
+
+    sunbeds = sunbedsRaw.map(r => {
+      const total = Number(r.price_total || 0);
+      const paidAmount = Math.max(0, sunbedPaidMap[r.id] || 0);
+      return {
+        kind: 'sunbed',
+        id: r.id,
+        label: `${r.quantity} lett.`,
+        customer_name: r.customers ? `${r.customers.last_name} ${r.customers.first_name}` : '—',
+        booking_type: r.booking_type,
+        date_label: formatDate(r.date_booking),
+        price_total: total,
+        paid_amount: paidAmount,
+        payment_status: paidAmount >= total ? 'paid' : paidAmount > 0 ? 'partial' : 'pending',
+        notes: r.notes || '',
+      };
+    });
   }
 
-  // Carica pagamenti di oggi
-  let payments = [];
-  if (isConfigured) {
-    const { data } = await sb
-      .from('payments')
-      .select('*')
-      .gte('paid_at', date + 'T00:00:00')
-      .lte('paid_at', date + 'T23:59:59');
-    payments = data || [];
-  }
-
-  // Calcola totali per metodo
   let cashTotal = 0, cardTotal = 0;
   payments.forEach(p => {
-    const amt = p.type === 'refund' ? -p.amount : p.amount;
+    const amt = p.type === 'refund' ? -Number(p.amount || 0) : Number(p.amount || 0);
     if (p.method === 'cash') cashTotal += amt;
     else if (p.method === 'card_pos') cardTotal += amt;
   });
 
-  // Dividi prenotazioni in pagate e da pagare
-  const unpaid = bookings.filter(b => b.payment_status !== 'paid');
-  const paid   = bookings.filter(b => b.payment_status === 'paid');
-  const daIncassare = unpaid.reduce((s, b) => s + (b.price_total - b.price_paid), 0);
+  const allItems = [...bookings, ...sunbeds];
+  const unpaid = allItems
+    .map(item => ({ ...item, due_amount: Math.max(0, item.price_total - item.paid_amount) }))
+    .filter(item => item.due_amount > 0.009)
+    .sort((a, b) => b.due_amount - a.due_amount);
+  const paid = allItems
+    .filter(item => item.price_total > 0 && item.paid_amount >= item.price_total)
+    .sort((a, b) => a.customer_name.localeCompare(b.customer_name, 'it'));
+  const daIncassare = unpaid.reduce((s, item) => s + item.due_amount, 0);
 
-  // Aggiorna contatori
   document.getElementById('cassaUnpaidCount').textContent = unpaid.length;
   document.getElementById('cassaPaidCount').textContent = paid.length;
+  document.getElementById('cassaMovementsCount').textContent = payments.length;
   document.getElementById('cassaCash').textContent = cashTotal.toFixed(2) + ' €';
   document.getElementById('cassaCard').textContent = cardTotal.toFixed(2) + ' €';
   document.getElementById('cassaTotale').textContent = (cashTotal + cardTotal).toFixed(2) + ' €';
   document.getElementById('cassaDaIncassare').textContent = daIncassare.toFixed(2) + ' €';
+  const cassaHeroDate = document.getElementById('cassaHeroDate');
+  const cassaHeroTotal = document.getElementById('cassaHeroTotal');
+  const cassaHeroSub = document.getElementById('cassaHeroSub');
+  const cassaCollectedHero = document.getElementById('cassaCollectedHero');
+  const cassaOutstandingHero = document.getElementById('cassaOutstandingHero');
+  const cassaCollectedNote = document.getElementById('cassaCollectedNote');
+  const cassaOutstandingNote = document.getElementById('cassaOutstandingNote');
+  if (cassaHeroDate) cassaHeroDate.textContent = `Total sales · ${formatCassaDateLabel(date)}`;
+  if (cassaHeroTotal) cassaHeroTotal.textContent = (cashTotal + cardTotal).toFixed(2) + ' €';
+  if (cassaHeroSub) cassaHeroSub.textContent = `${payments.length} movimenti registrati · ${unpaid.length} posizioni aperte`;
+  if (cassaCollectedHero) cassaCollectedHero.innerHTML = `${(cashTotal + cardTotal).toFixed(2)}<small> €</small>`;
+  if (cassaOutstandingHero) cassaOutstandingHero.innerHTML = `${daIncassare.toFixed(2)}<small> €</small>`;
+  if (cassaCollectedNote) cassaCollectedNote.textContent = `${payments.length} movimenti in data ${formatDate(date)}.`;
+  if (cassaOutstandingNote) cassaOutstandingNote.textContent = unpaid.length
+    ? `${unpaid.length} posizioni ancora aperte nel giorno selezionato.`
+    : 'Saldo completamente chiuso per questa data.';
 
-  // Render lista da pagare
   const unpaidList = document.getElementById('cassaUnpaidList');
   if (!unpaid.length) {
-    unpaidList.innerHTML = '<div style="padding:24px;text-align:center;color:var(--sand-700);font-size:13px">Tutti hanno pagato</div>';
+    unpaidList.innerHTML = '<div class="cassa-empty">Nessun importo aperto per il giorno selezionato</div>';
   } else {
-    unpaidList.innerHTML = unpaid.map(b => {
-      const resto = (b.price_total - b.price_paid).toFixed(2);
-      const badgeClass = b.payment_status === 'partial' ? 'partial' : 'unpaid';
-      const badgeLabel = b.payment_status === 'partial' ? `Acconto · resta ${resto} €` : `Da pagare ${resto} €`;
+    unpaidList.innerHTML = unpaid.map(item => {
+      const badgeClass = item.payment_status === 'partial' ? 'partial' : 'unpaid';
+      const badgeLabel = item.payment_status === 'partial'
+        ? `Acconto ${item.paid_amount.toFixed(2)} €`
+        : 'Da pagare';
+      const noteLine = item.notes ? `<div class="cassa-note">${item.notes}</div>` : '';
       return `
         <div class="cassa-item">
-          <div class="cassa-umbrella">${b.umbrella_id}</div>
-          <div class="cassa-info">
-            <div class="cassa-name">${b.customer_name}</div>
-            <div class="cassa-meta">${typeLabel(b.booking_type)} · ${formatDate(b.date_from)}${b.date_from !== b.date_to ? ' → ' + formatDate(b.date_to) : ''}</div>
+          <div class="cassa-item-main">
+            <div class="cassa-umbrella">${item.label}</div>
+            <div class="cassa-info">
+              <div class="cassa-name">${item.customer_name}</div>
+              <div class="cassa-meta">${cassaItemTypeLabel(item.kind)} · ${typeLabel(item.booking_type)} · ${item.date_label}</div>
+              ${noteLine}
+            </div>
           </div>
-          <div class="cassa-amount">${resto} €</div>
-          <div class="cassa-actions">
-            <span class="pay-badge ${badgeClass}">${badgeClass === 'partial' ? '½' : '€'}</span>
-            <button class="cassa-btn cassa-btn-cash" onclick="incassa('${b.id}', 'cash', ${resto})">Contanti</button>
-            <button class="cassa-btn cassa-btn-card" onclick="incassa('${b.id}', 'card_pos', ${resto})">Carta</button>
+          <div class="cassa-actions-stack">
+            <div class="cassa-amount">${item.due_amount.toFixed(2)} €</div>
+            <div class="cassa-action-row">
+              <span class="pay-badge ${badgeClass}">${badgeLabel}</span>
+              ${item.kind === 'sunbed'
+                ? `<button class="cassa-btn cassa-btn-cash" onclick="incassaSunbed('${item.id}', 'cash', ${item.due_amount.toFixed(2)})">Contanti</button>
+                   <button class="cassa-btn cassa-btn-card" onclick="incassaSunbed('${item.id}', 'card_pos', ${item.due_amount.toFixed(2)})">Carta</button>`
+                : `<button class="cassa-btn cassa-btn-cash" onclick="incassa('${item.id}', 'cash', ${item.due_amount.toFixed(2)})">Contanti</button>
+                   <button class="cassa-btn cassa-btn-card" onclick="incassa('${item.id}', 'card_pos', ${item.due_amount.toFixed(2)})">Carta</button>`
+              }
+            </div>
           </div>
         </div>
       `;
     }).join('');
   }
 
-  // Render lista pagati
   const paidList = document.getElementById('cassaPaidList');
   if (!paid.length) {
-    paidList.innerHTML = '<div style="padding:24px;text-align:center;color:var(--sand-700);font-size:13px">Nessuna prenotazione pagata oggi</div>';
+    paidList.innerHTML = '<div class="cassa-empty">Nessun saldo chiuso per il giorno selezionato</div>';
   } else {
-    paidList.innerHTML = paid.map(b => `
+    paidList.innerHTML = paid.map(item => `
       <div class="cassa-item">
-        <div class="cassa-umbrella" style="background:linear-gradient(135deg,var(--ok),#2F7E63)">${b.umbrella_id}</div>
-        <div class="cassa-info">
-          <div class="cassa-name">${b.customer_name}</div>
-          <div class="cassa-meta">${typeLabel(b.booking_type)}</div>
+        <div class="cassa-item-main">
+          <div class="cassa-umbrella" style="background:linear-gradient(135deg,var(--ok),#2F7E63)">${item.label}</div>
+          <div class="cassa-info">
+            <div class="cassa-name">${item.customer_name}</div>
+            <div class="cassa-meta">${cassaItemTypeLabel(item.kind)} · ${typeLabel(item.booking_type)} · ${item.date_label}</div>
+          </div>
         </div>
-        <div class="cassa-amount">${b.price_total.toFixed(2)} €</div>
-        <span class="pay-badge paid">Pagato</span>
+        <div class="cassa-actions-stack">
+          <div class="cassa-amount">${item.price_total.toFixed(2)} €</div>
+          <span class="pay-badge paid">Pagato</span>
+        </div>
       </div>
     `).join('');
+  }
+
+  const movementsList = document.getElementById('cassaMovementsList');
+  if (!payments.length) {
+    movementsList.innerHTML = '<div class="cassa-empty">Nessun movimento registrato in questa data</div>';
+  } else {
+    const bookingMap = Object.fromEntries(bookings.map(item => [item.id, item]));
+    const sunbedMap = Object.fromEntries(sunbeds.map(item => [item.id, item]));
+    movementsList.innerHTML = payments.map(p => {
+      const related = p.booking_id ? bookingMap[p.booking_id] : sunbedMap[p.single_sunbed_booking_id];
+      const title = related
+        ? `${related.customer_name} · ${related.label}`
+        : (p.single_sunbed_booking_id ? 'Pagamento lettini' : 'Pagamento ombrellone');
+      const meta = related
+        ? `${cassaItemTypeLabel(related.kind)} · ${typeLabel(related.booking_type)}`
+        : 'Movimento manuale';
+      const amount = (p.type === 'refund' ? -Number(p.amount || 0) : Number(p.amount || 0)).toFixed(2);
+      return `
+        <div class="cassa-movement-item">
+          <div>
+            <div class="cassa-movement-title">${title}</div>
+            <div class="cassa-movement-meta">${meta} · ${new Date(p.created_at).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })}</div>
+          </div>
+          <div class="cassa-movement-amount">${amount} €</div>
+          <div></div>
+          <div class="cassa-movement-badges">
+            <span class="cassa-badge-soft ${cassaMethodClass(p.method, p.type)}">${cassaMethodLabel(p.method)}</span>
+            <span class="cassa-badge-soft ${p.type === 'refund' ? 'refund' : ''}">${p.type === 'refund' ? 'Storno' : 'Incasso'}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
   }
 }
 
@@ -4205,16 +5287,25 @@ async function incassa(bookingId, method, amount) {
     return;
   }
   try {
-    // Inserisci pagamento
+    const parsedAmount = parseFloat(amount);
     const { error: payErr } = await sb.from('payments').insert({
       booking_id: bookingId,
-      amount: parseFloat(amount),
+      amount: parsedAmount,
       method: method,
       type: 'payment',
     });
     if (payErr) throw payErr;
-    toast(`Incassato ${amount} € (${method === 'cash' ? 'contanti' : 'carta'})`, 'ok');
+    const { data: booking } = await sb.from('bookings').select('price_total, price_paid').eq('id', bookingId).single();
+    if (booking) {
+      const nextPaid = Math.min(Number(booking.price_total || 0), Number(booking.price_paid || 0) + parsedAmount);
+      await sb.from('bookings').update({
+        price_paid: nextPaid,
+        payment_status: nextPaid >= Number(booking.price_total || 0) ? 'paid' : nextPaid > 0 ? 'partial' : 'pending',
+      }).eq('id', bookingId);
+    }
+    toast(`Incassato ${parsedAmount.toFixed(2)} € (${method === 'cash' ? 'contanti' : 'carta'})`, 'ok');
     loadCassa();
+    loadForDate();
   } catch (e) {
     toast('Errore: ' + e.message, 'err');
   }
