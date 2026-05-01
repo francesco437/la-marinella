@@ -1556,10 +1556,28 @@ tr:last-child td { border-bottom: none; }
     justify-content: center;
   }
   .beach {
-    width: 760px;
-    min-width: 760px;
-    max-width: none;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
     aspect-ratio: 16 / 10;
+  }
+  .umbrella {
+    transform: translate(-50%, -50%) scale(.76);
+  }
+  .umbrella:hover,
+  .umbrella.selected,
+  #beachMap.layout-active .umbrella:hover,
+  #beachMap.layout-active .umbrella.dragging {
+    transform: translate(-50%, -50%) scale(.84);
+  }
+  .sea-label {
+    font-size: 12px;
+    letter-spacing: .22em;
+  }
+  .row-labels span {
+    width: 22px;
+    height: 22px;
+    font-size: 11px;
   }
   #plannerDateInput,
   #bookingsDate,
