@@ -3366,6 +3366,8 @@ if (isConfigured) {
 // ============================================================
 let currentUser = null;
 let bookingsRealtimeChannel = null;
+let localSyncChannel = null;
+let localSyncReady = false;
 const LOCAL_AUTH_USERS = {
   eugenio: 'Eugenio',
   francesco: 'Francesco',
@@ -3374,6 +3376,9 @@ const LOCAL_AUTH_USERS = {
 };
 const LOCAL_AUTH_PASSWORD = '0000';
 const LOCAL_AUTH_STORAGE_KEY = 'marinella-local-user';
+const LOCAL_SYNC_STORAGE_KEY = 'marinella-dashboard-sync-event';
+const LOCAL_SYNC_CHANNEL_NAME = 'marinella-dashboard-sync';
+const LOCAL_SYNC_SOURCE_ID = Math.random().toString(36).slice(2);
 const OPERATING_TIME_ZONE = 'Europe/Rome';
 
 async function checkAuth() {
@@ -3445,6 +3450,11 @@ async function handleLogout() {
     try { await sb.removeChannel(bookingsRealtimeChannel); } catch (_) {}
     bookingsRealtimeChannel = null;
   }
+  if (localSyncChannel) {
+    try { localSyncChannel.close(); } catch (_) {}
+    localSyncChannel = null;
+  }
+  localSyncReady = false;
   if (isConfigured && sb?.auth) {
     await sb.auth.signOut();
   }
@@ -3570,6 +3580,53 @@ async function setOperationalDate(value, options = {}) {
   if (refresh) await loadForDate();
 }
 
+async function applyExternalSync(payload = {}) {
+  if (!currentUser) return;
+  if (payload.reloadUmbrellas) await loadUmbrellas();
+  await loadForDate();
+}
+
+function notifyLocalChange(type, options = {}) {
+  const payload = {
+    type,
+    reloadUmbrellas: !!options.reloadUmbrellas,
+    source: LOCAL_SYNC_SOURCE_ID,
+    at: Date.now(),
+  };
+
+  if (localSyncChannel) {
+    try { localSyncChannel.postMessage(payload); } catch (_) {}
+  }
+
+  try {
+    window.localStorage.setItem(LOCAL_SYNC_STORAGE_KEY, JSON.stringify(payload));
+    window.localStorage.removeItem(LOCAL_SYNC_STORAGE_KEY);
+  } catch (_) {}
+}
+
+function setupLocalSync() {
+  if (localSyncReady) return;
+  localSyncReady = true;
+
+  if (typeof BroadcastChannel !== 'undefined') {
+    localSyncChannel = new BroadcastChannel(LOCAL_SYNC_CHANNEL_NAME);
+    localSyncChannel.addEventListener('message', event => {
+      const payload = event.data;
+      if (!payload || payload.source === LOCAL_SYNC_SOURCE_ID) return;
+      applyExternalSync(payload);
+    });
+  }
+
+  window.addEventListener('storage', event => {
+    if (event.key !== LOCAL_SYNC_STORAGE_KEY || !event.newValue) return;
+    try {
+      const payload = JSON.parse(event.newValue);
+      if (!payload || payload.source === LOCAL_SYNC_SOURCE_ID) return;
+      applyExternalSync(payload);
+    } catch (_) {}
+  });
+}
+
 if (currentDateInput) {
   currentDateInput.addEventListener('change', e => {
     setOperationalDate(e.target.value);
@@ -3665,6 +3722,7 @@ if (bookingModalEl) {
 // LOAD
 // ============================================================
 async function loadAll() {
+  setupLocalSync();
   await loadUmbrellas();
   await loadPricing();
   await loadExtras();
@@ -4199,6 +4257,7 @@ async function saveLayoutChanges() {
     state.activeDrag = null;
     stopDragListeners();
     renderMap();
+    notifyLocalChange('layout-save', { reloadUmbrellas: true });
     toast(`Layout salvato in demo (${changed.length} ombrelloni)`, 'ok');
     return;
   }
@@ -4217,6 +4276,7 @@ async function saveLayoutChanges() {
     state.layoutMode = false;
     state.layoutSnapshot = null;
     renderMap();
+    notifyLocalChange('layout-save', { reloadUmbrellas: true });
     toast(`Layout salvato (${changed.length} ombrelloni)`, 'ok');
   } catch (e) {
     console.error(e);
@@ -4574,6 +4634,7 @@ async function quickCheckIn(bookingId) {
     const b = DEMO_BOOKINGS.find(x => x.id === bookingId);
     if (b) b.arrived_at = new Date().toISOString();
     await loadForDate();
+    notifyLocalChange('quick-check-in');
     toast('Check-in registrato (demo)', 'ok');
     return;
   }
@@ -4583,6 +4644,7 @@ async function quickCheckIn(bookingId) {
   if (error) { toast('Errore check-in', 'err'); return; }
   toast('Check-in registrato', 'ok');
   await loadForDate();
+  notifyLocalChange('quick-check-in');
 }
 
 async function quickDepart(bookingId) {
@@ -4593,6 +4655,7 @@ async function quickDepart(bookingId) {
       b.status = 'completed';
     }
     await loadForDate();
+    notifyLocalChange('quick-depart');
     toast('Partenza registrata (demo)', 'ok');
     return;
   }
@@ -4602,6 +4665,7 @@ async function quickDepart(bookingId) {
   if (error) { toast('Errore partenza', 'err'); return; }
   toast('Partenza registrata', 'ok');
   await loadForDate();
+  notifyLocalChange('quick-depart');
 }
 
 // ============================================================
@@ -5241,6 +5305,7 @@ async function saveBooking() {
 
     multiClear();
     await loadForDate();
+    notifyLocalChange('save-booking');
   } catch (e) {
     console.error(e);
     toast(e.message?.includes('overlap') ? 'Date sovrapposte già prenotate' : 'Errore: ' + (e.message || 'sconosciuto'), 'err');
@@ -5259,6 +5324,7 @@ async function deleteBooking() {
   toast('Prenotazione cancellata', 'ok');
   closeModal();
   await loadForDate();
+  notifyLocalChange('delete-booking');
 }
 
 async function checkIn() {
@@ -5270,6 +5336,7 @@ async function checkIn() {
     toast('Check-in registrato (demo)', 'ok');
     closeModal();
     await loadForDate();
+    notifyLocalChange('modal-check-in');
     return;
   }
   const { error } = await sb.from('bookings')
@@ -5279,6 +5346,7 @@ async function checkIn() {
   toast('Check-in registrato', 'ok');
   closeModal();
   await loadForDate();
+  notifyLocalChange('modal-check-in');
 }
 
 // ============================================================
@@ -5509,6 +5577,7 @@ async function toggleUmbrellaService() {
     toast(`Ombrellone ${umbrella.id} ${label} (demo)`, 'ok');
     closeModal();
     loadForDate();
+    notifyLocalChange('toggle-umbrella-service', { reloadUmbrellas: true });
     return;
   }
 
@@ -5519,6 +5588,7 @@ async function toggleUmbrellaService() {
     closeModal();
     await loadUmbrellas();
     render();
+    notifyLocalChange('toggle-umbrella-service', { reloadUmbrellas: true });
   } catch (e) {
     toast('Errore: ' + e.message, 'err');
   }
@@ -5548,6 +5618,7 @@ async function toggleSunbed(event, bookingId, side) {
 
   if (!isConfigured) {
     toast(`Sdraio ${side} ${newValue ? 'occupata' : 'libera'} (demo)`, 'ok');
+    notifyLocalChange('toggle-sunbed');
     return;
   }
 
@@ -5557,6 +5628,7 @@ async function toggleSunbed(event, bookingId, side) {
       .eq('id', bookingId);
     if (error) throw error;
     toast(`Sdraio ${side === 'L' ? 'sinistra' : 'destra'} ${newValue ? 'occupata' : 'libera'}`, 'ok');
+    notifyLocalChange('toggle-sunbed');
   } catch (e) {
     // Rollback
     booking[field] = !newValue;
@@ -5669,6 +5741,7 @@ async function saveSunbedBooking() {
     closeSunbedModal();
     loadSunbeds();
     if (date === state.currentDate) await loadForDate();
+    notifyLocalChange('save-sunbed');
     return;
   }
 
@@ -5716,6 +5789,7 @@ async function saveSunbedBooking() {
     closeSunbedModal();
     loadSunbeds();
     if (date === state.currentDate) await loadForDate();
+    notifyLocalChange('save-sunbed');
   } catch (e) {
     toast('Errore: ' + e.message, 'err');
   }
@@ -5796,6 +5870,7 @@ async function incassaSunbed(id, method, amount) {
     loadSunbeds();
     loadCassa();
     if (state.sunbedsDate === state.currentDate) await loadForDate();
+    notifyLocalChange('incassa-sunbed');
     return;
   }
   try {
@@ -5810,6 +5885,7 @@ async function incassaSunbed(id, method, amount) {
     loadSunbeds();
     loadCassa();
     if (state.sunbedsDate === state.currentDate) await loadForDate();
+    notifyLocalChange('incassa-sunbed');
   } catch (e) {
     toast('Errore: ' + e.message, 'err');
   }
@@ -6201,6 +6277,7 @@ async function incassa(bookingId, method, amount) {
     toast(`Incassato ${parsedAmount.toFixed(2)} € (${method === 'cash' ? 'contanti' : 'carta'})`, 'ok');
     loadCassa();
     await loadForDate();
+    notifyLocalChange('incassa-booking');
   } catch (e) {
     toast('Errore: ' + e.message, 'err');
   }
