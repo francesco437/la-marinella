@@ -3014,13 +3014,13 @@ tr:last-child td { border-bottom: none; }
         <table class="mobile-cards">
           <thead>
             <tr>
-              <th>Ombr.</th><th>Cliente</th><th>Tipo</th>
+              <th>Categoria</th><th>Postazione</th><th>Cliente</th><th>Tipo</th>
               <th>Dal</th><th>Al</th><th>Stato</th><th>Pag.</th>
               <th style="text-align:right">Totale</th>
             </tr>
           </thead>
           <tbody id="bookingsTable">
-            <tr class="empty-row"><td colspan="8" class="loading mobile-no-label">Caricamento…</td></tr>
+            <tr class="empty-row"><td colspan="9" class="loading mobile-no-label">Caricamento…</td></tr>
           </tbody>
         </table>
       </div>
@@ -3788,6 +3788,7 @@ async function loadDailyFinance(date) {
     return { paid, unpaid };
   }
 
+  const { from, to } = getItalyQueryWindow(date);
   const [{ data: bookingData }, { data: sunbedData }, { data: dayPayments }] = await Promise.all([
     sb.from('bookings')
       .select('id, price_total, price_paid, payment_method, payment_status')
@@ -3798,14 +3799,14 @@ async function loadDailyFinance(date) {
       .eq('date_booking', date)
       .in('status', bookingStatusesForCassa),
     sb.from('payments')
-      .select('booking_id, single_sunbed_booking_id, amount, method, type')
-      .gte('created_at', date + 'T00:00:00')
-      .lte('created_at', date + 'T23:59:59'),
+      .select('booking_id, single_sunbed_booking_id, amount, method, type, created_at')
+      .gte('created_at', from)
+      .lte('created_at', to),
   ]);
 
   const bookings = bookingData || [];
   const sunbeds = sunbedData || [];
-  const payments = dayPayments || [];
+  const payments = (dayPayments || []).filter(p => dateValueToItalyDate(p.created_at) === date);
 
   const bookingIds = bookings.map(b => b.id);
   const sunbedIds = sunbeds.map(r => r.id);
@@ -3916,23 +3917,66 @@ async function loadAllBookings() {
   if (input) input.value = state.currentDate;
 
   if (!isConfigured) {
-    state.allBookings = DEMO_BOOKINGS.filter(b =>
+    const umbrellaRows = DEMO_BOOKINGS.filter(b =>
       b.date_from <= state.currentDate && b.date_to >= state.currentDate
-    );
+    ).map(b => ({
+      ...b,
+      category: 'umbrella',
+      category_label: 'Ombrellone',
+      resource_label: getUmbrellaDisplayLabelById(b.umbrella_id),
+    }));
+    const sunbedRows = DEMO_SUNBED_BOOKINGS.filter(r => r.date_booking === state.currentDate).map(r => ({
+      ...r,
+      category: 'sunbed',
+      category_label: 'Lettino',
+      resource_label: `${r.quantity} lett.`,
+      customer_name: r.customers ? `${r.customers.last_name} ${r.customers.first_name}` : '—',
+      customer_phone: r.customers?.phone || '',
+      date_from: r.date_booking,
+      date_to: r.date_booking,
+      price_paid: r.payment_status === 'paid' ? Number(r.price_total || 0) : 0,
+    }));
+    state.allBookings = [...umbrellaRows, ...sunbedRows];
     renderBookings();
     return;
   }
-  const { data } = await sb
+  const [bookingRes, sunbedRes] = await Promise.all([
+    sb
     .from('bookings')
     .select(`*, customers(first_name, last_name, phone)`)
     .lte('date_from', state.currentDate)
     .gte('date_to', state.currentDate)
-    .order('date_from', { ascending: false });
-  state.allBookings = (data || []).map(b => ({
+    .order('date_from', { ascending: false }),
+    sb
+      .from('single_sunbed_bookings')
+      .select(`*, customers(first_name, last_name, phone)`)
+      .eq('date_booking', state.currentDate)
+      .order('created_at', { ascending: false }),
+  ]);
+  const umbrellaRows = (bookingRes.data || []).map(b => ({
     ...b,
+    category: 'umbrella',
+    category_label: 'Ombrellone',
+    resource_label: getUmbrellaDisplayLabelById(b.umbrella_id),
     customer_name: b.customers ? `${b.customers.last_name} ${b.customers.first_name}` : '—',
     customer_phone: b.customers?.phone,
   }));
+  const sunbedRows = (sunbedRes.data || []).map(r => ({
+    ...r,
+    category: 'sunbed',
+    category_label: 'Lettino',
+    resource_label: `${r.quantity} lett.`,
+    customer_name: r.customers ? `${r.customers.last_name} ${r.customers.first_name}` : '—',
+    customer_phone: r.customers?.phone || '',
+    date_from: r.date_booking,
+    date_to: r.date_booking,
+    price_paid: r.payment_status === 'paid' ? Number(r.price_total || 0) : 0,
+  }));
+  state.allBookings = [...umbrellaRows, ...sunbedRows].sort((a, b) => {
+    const left = `${b.date_from || ''} ${b.created_at || ''}`;
+    const right = `${a.date_from || ''} ${a.created_at || ''}`;
+    return left.localeCompare(right);
+  });
   renderBookings();
 }
 
@@ -3948,13 +3992,14 @@ async function loadCustomers() {
     ].filter(c => (c.created_at || '').slice(0,10) === state.currentDate);
     renderCustomers(); return;
   }
+  const { from, to } = getItalyQueryWindow(state.currentDate);
   const { data } = await sb
     .from('customers')
     .select('*')
-    .gte('created_at', state.currentDate + 'T00:00:00')
-    .lte('created_at', state.currentDate + 'T23:59:59')
+    .gte('created_at', from)
+    .lte('created_at', to)
     .order('created_at', { ascending: false });
-  state.customers = data || [];
+  state.customers = (data || []).filter(c => dateValueToItalyDate(c.created_at) === state.currentDate);
   renderCustomers();
 }
 
@@ -4092,13 +4137,40 @@ function syncRowLabels(beachId, items) {
   });
 }
 
+function getUmbrellaDisplayLabel(umbrella) {
+  if (!umbrella) return '—';
+  if (umbrella.row_label && umbrella.col_number != null) {
+    return `${umbrella.row_label}${umbrella.col_number}`;
+  }
+  return String(umbrella.id ?? '—');
+}
+
+function getUmbrellaDisplayLabelById(umbrellaId) {
+  const umbrella = state.umbrellas.find(u => String(u.id) === String(umbrellaId));
+  return umbrella ? getUmbrellaDisplayLabel(umbrella) : `#${umbrellaId}`;
+}
+
+function idsMatch(left, right) {
+  return String(left) === String(right);
+}
+
+function isPublicWebBooking(item) {
+  return String(item?.notes || '').includes('app utente');
+}
+
+function bookingSourceBadge(item) {
+  return isPublicWebBooking(item)
+    ? '<span style="display:inline-flex;align-items:center;gap:6px;margin-top:4px;padding:3px 8px;border-radius:999px;background:#eef4f0;color:#5d756a;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase">App utente</span>'
+    : '';
+}
+
 function renderMap() {
   const beach = document.getElementById('beachMap');
   beach.classList.toggle('layout-active', state.layoutMode);
   beach.querySelectorAll('.umbrella').forEach(u => u.remove());
 
   state.umbrellas.forEach(u => {
-    const booking = state.bookings.find(b => b.umbrella_id === u.id);
+    const booking = state.bookings.find(b => idsMatch(b.umbrella_id, u.id));
     let status = 'free';
     if (!u.active) status = 'off';
     else if (booking?.arrived_at && !booking.departed_at) status = 'arrived';
@@ -4124,11 +4196,11 @@ function renderMap() {
       <div class="u-sunbed-R ${sunbedR ? 'occupied' : ''}" onclick="toggleSunbed(event,'${bookingId}','R')" title="${tR}"></div>`;
     el.innerHTML = `
       <div class="u-canopy">${umbrellaSVG()}</div>
-      <div class="u-badge">${u.id}</div>
+      <div class="u-badge">${getUmbrellaDisplayLabel(u)}</div>
       ${booking?.arrived_at && !booking.departed_at ? '<div class="u-arrived-dot"></div>' : ''}
       ${sunbedsHtml}
       <div class="u-tip">
-        ${u.row_label}${u.col_number}
+        ${getUmbrellaDisplayLabel(u)}
         ${booking ? '<br>' + booking.customer_name : '<br>libero'}
         ${booking ? '<br>' + typeLabel(booking.booking_type) : ''}
       </div>
@@ -4440,7 +4512,7 @@ function renderPlanner(bookings) {
 
   const boardSections = Object.entries(rowGroups).map(([rowLabel, umbrellas]) => {
     const cards = umbrellas.map(u => {
-      const booking = bookings.find(b => b.umbrella_id === u.id);
+      const booking = bookings.find(b => idsMatch(b.umbrella_id, u.id));
       const rowState = getPlannerRowState(u, booking);
       const paymentState = booking ? getPlannerPaymentState(booking) : 'free';
       const amount = booking ? `${(booking.price_total || 0).toFixed(0)} €` : '—';
@@ -4465,9 +4537,9 @@ function renderPlanner(bookings) {
         <div class="planner-card ${rowState}${rowState === 'arrived' ? ' planner-card-arrived' : ''}" onclick="${clickAction}">
           <div class="planner-card-head">
             <span class="planner-card-tier tier-dot ${u.tier}"></span>
-            <div class="planner-card-id">${u.id}</div>
+            <div class="planner-card-id">${getUmbrellaDisplayLabel(u)}</div>
             <div class="planner-card-meta">
-              <div class="planner-card-pos">Fila ${u.row_label}${u.col_number}</div>
+              <div class="planner-card-pos">Postazione ${getUmbrellaDisplayLabel(u)}</div>
               <div class="planner-card-type">${booking ? typeLabel(booking.booking_type) : 'Postazione libera'}</div>
             </div>
           </div>
@@ -4531,7 +4603,7 @@ function plannerCellClick(umbrellaId, date) {
   syncSharedDateInputs(date);
   // cerca prenotazione esistente su questa data
   const booking = (state.allBookings.length ? state.allBookings : state.bookings).find(b =>
-    b.umbrella_id === umbrellaId && b.date_from <= date && b.date_to >= date &&
+    idsMatch(b.umbrella_id, umbrellaId) && b.date_from <= date && b.date_to >= date &&
     ['pending','confirmed','checked_in'].includes(b.status)
   );
   openModal(u, booking);
@@ -4581,7 +4653,7 @@ function renderArrivals() {
     arrivals.forEach(b => {
       html += `
         <div class="arrival-item">
-          <div class="arrival-umbrella">${b.umbrella_id}</div>
+          <div class="arrival-umbrella">${getUmbrellaDisplayLabelById(b.umbrella_id)}</div>
           <div class="arrival-info">
             <div class="arrival-name">${b.customer_name}</div>
             <div class="arrival-meta">${typeLabel(b.booking_type)} · ${b.price_total}€ · ${b.customer_phone || '—'}</div>
@@ -4594,7 +4666,7 @@ function renderArrivals() {
     arrived.forEach(b => {
       html += `
         <div class="arrival-item arrived">
-          <div class="arrival-umbrella">${b.umbrella_id}</div>
+          <div class="arrival-umbrella">${getUmbrellaDisplayLabelById(b.umbrella_id)}</div>
           <div class="arrival-info">
             <div class="arrival-name">${b.customer_name} <span style="color:var(--ok);font-size:11px;font-weight:700">● presente</span></div>
             <div class="arrival-meta">Arrivato ${formatTime(b.arrived_at)} · ${typeLabel(b.booking_type)}</div>
@@ -4613,7 +4685,7 @@ function renderArrivals() {
   } else {
     departuresList.innerHTML = departures.map(b => `
       <div class="arrival-item arrived">
-        <div class="arrival-umbrella">${b.umbrella_id}</div>
+        <div class="arrival-umbrella">${getUmbrellaDisplayLabelById(b.umbrella_id)}</div>
         <div class="arrival-info">
           <div class="arrival-name">${b.customer_name}</div>
           <div class="arrival-meta">
@@ -4674,15 +4746,19 @@ async function quickDepart(bookingId) {
 function renderBookings() {
   const tbody = document.getElementById('bookingsTable');
   if (!state.allBookings.length) {
-    tbody.innerHTML = '<tr class="empty-row"><td colspan="8" class="loading mobile-no-label">Nessuna prenotazione</td></tr>';
+    tbody.innerHTML = '<tr class="empty-row"><td colspan="9" class="loading mobile-no-label">Nessuna prenotazione</td></tr>';
     return;
   }
   tbody.innerHTML = state.allBookings.map(b => {
     const payStatus = b.price_paid >= b.price_total ? 'paid' : b.price_paid > 0 ? 'partial' : 'pending';
+    const rowClick = b.category === 'umbrella'
+      ? ` onclick="openBookingFromPlanner('${b.id}', ${b.umbrella_id}, '${b.date_from}')" style="cursor:pointer"`
+      : '';
     return `
-    <tr onclick="openBookingFromPlanner('${b.id}', ${b.umbrella_id})">
-      <td data-label="Ombrellone" class="mobile-title"><strong>#${b.umbrella_id}</strong></td>
-      <td data-label="Cliente">${b.customer_name}<br><small style="color:var(--sand-700)">${b.customer_phone || ''}</small></td>
+    <tr${rowClick}>
+      <td data-label="Categoria">${b.category_label}</td>
+      <td data-label="Postazione" class="mobile-title"><strong>${b.resource_label || '—'}</strong></td>
+      <td data-label="Cliente">${b.customer_name}${bookingSourceBadge(b)}<br><small style="color:var(--sand-700)">${b.customer_phone || ''}</small></td>
       <td data-label="Tipo">${typeLabel(b.booking_type)}</td>
       <td data-label="Dal">${formatDate(b.date_from)}</td>
       <td data-label="Al">${formatDate(b.date_to)}</td>
@@ -4701,7 +4777,8 @@ function printBookings() {
         const payStatus = b.price_paid >= b.price_total ? 'Pagato' : b.price_paid > 0 ? 'Parziale' : 'Da pagare';
         return `
           <tr>
-            <td>#${b.umbrella_id}</td>
+            <td>${b.category_label || '—'}</td>
+            <td>${b.resource_label || '—'}</td>
             <td>${b.customer_name || '—'}</td>
             <td>${typeLabel(b.booking_type)}</td>
             <td>${formatDate(b.date_from)}</td>
@@ -4711,7 +4788,7 @@ function printBookings() {
             <td style="text-align:right">${Number(b.price_total || 0).toFixed(2)} €</td>
           </tr>`;
       }).join('')
-    : `<tr><td colspan="8" style="padding:18px;text-align:center;color:#666">Nessuna prenotazione per il giorno selezionato</td></tr>`;
+    : `<tr><td colspan="9" style="padding:18px;text-align:center;color:#666">Nessuna prenotazione per il giorno selezionato</td></tr>`;
 
   const html = `
     <html>
@@ -4732,7 +4809,7 @@ function printBookings() {
         <table>
           <thead>
             <tr>
-              <th>Ombr.</th><th>Cliente</th><th>Tipo</th><th>Dal</th><th>Al</th><th>Stato</th><th>Pag.</th><th style="text-align:right">Totale</th>
+              <th>Categoria</th><th>Postazione</th><th>Cliente</th><th>Tipo</th><th>Dal</th><th>Al</th><th>Stato</th><th>Pag.</th><th style="text-align:right">Totale</th>
             </tr>
           </thead>
           <tbody>${tableRows}</tbody>
@@ -4749,11 +4826,12 @@ function printBookings() {
 
 function exportBookingsCsv() {
   const rows = state.allBookings || [];
-  const headers = ['ombrellone', 'cliente', 'telefono', 'tipo', 'dal', 'al', 'stato', 'pagamento', 'totale'];
+  const headers = ['categoria', 'postazione', 'cliente', 'telefono', 'tipo', 'dal', 'al', 'stato', 'pagamento', 'totale'];
   const csvRows = rows.map(b => {
     const payStatus = b.price_paid >= b.price_total ? 'pagato' : b.price_paid > 0 ? 'parziale' : 'da pagare';
     return [
-      `#${b.umbrella_id}`,
+      b.category_label || '',
+      b.resource_label || '',
       b.customer_name || '',
       b.customer_phone || '',
       typeLabel(b.booking_type),
@@ -4926,9 +5004,10 @@ function openModal(umbrella, existingBooking) {
   state.selected = { umbrella, existingBooking, isMulti: false };
   state.selectedExtras = {};
 
-  document.getElementById('mBadge').textContent = umbrella.id;
-  document.getElementById('mTitle').textContent = `Ombrellone ${umbrella.id}`;
-  document.getElementById('mSubtitle').textContent = `Fila ${umbrella.row_label}${umbrella.col_number} · Delibera 173/2025 — 25 €/giornata`;
+  const umbrellaLabel = getUmbrellaDisplayLabel(umbrella);
+  document.getElementById('mBadge').textContent = umbrellaLabel;
+  document.getElementById('mTitle').textContent = `Postazione ${umbrellaLabel}`;
+  document.getElementById('mSubtitle').textContent = `${umbrellaLabel} · Delibera 173/2025 — 25 €/giornata`;
 
   // reset
   document.getElementById('mDateFrom').value = state.currentDate;
@@ -5023,8 +5102,8 @@ function openMultiModal(umbrellas) {
   state.selectedExtras = {};
 
   document.getElementById('mBadge').textContent = umbrellas.length;
-  document.getElementById('mTitle').textContent = `${umbrellas.length} ombrelloni`;
-  document.getElementById('mSubtitle').textContent = umbrellas.map(u => `#${u.id}`).join(', ');
+  document.getElementById('mTitle').textContent = `${umbrellas.length} postazioni`;
+  document.getElementById('mSubtitle').textContent = umbrellas.map(u => getUmbrellaDisplayLabel(u)).join(', ');
 
   document.getElementById('mDateFrom').value = state.currentDate;
   document.getElementById('mDateTo').value = state.currentDate;
@@ -5373,7 +5452,7 @@ function sendDepositWA() {
 Grazie per aver prenotato a *La Marinella*.
 
 📅 ${dateStr}
-⛱️ Ombrellone ${s.umbrella.id} (${s.umbrella.row_label}${s.umbrella.col_number})
+⛱️ Postazione ${getUmbrellaDisplayLabel(s.umbrella)}
 💰 Totale: ${s.calculatedTotal}€
 *Acconto richiesto: ${deposit}€*
 
@@ -5511,6 +5590,17 @@ function formatDateOnly(date) {
   const { year, month, day } = getItalyDateParts(date);
   return `${year}-${month}-${day}`;
 }
+function dateValueToItalyDate(value) {
+  if (!value) return '';
+  if (isDateOnlyString(value)) return value;
+  return formatDateOnly(new Date(value));
+}
+function getItalyQueryWindow(date) {
+  return {
+    from: addDays(date, -1) + 'T00:00:00',
+    to: addDays(date, 1) + 'T23:59:59',
+  };
+}
 function daysBetween(d1, d2) {
   return Math.round((parseDateOnly(d2) - parseDateOnly(d1)) / 86400000);
 }
@@ -5574,7 +5664,7 @@ async function toggleUmbrellaService() {
   if (!isConfigured) {
     umbrella.state = newState;
     umbrella.active = newState === 'active';
-    toast(`Ombrellone ${umbrella.id} ${label} (demo)`, 'ok');
+    toast(`Postazione ${getUmbrellaDisplayLabel(umbrella)} ${label} (demo)`, 'ok');
     closeModal();
     loadForDate();
     notifyLocalChange('toggle-umbrella-service', { reloadUmbrellas: true });
@@ -5584,7 +5674,7 @@ async function toggleUmbrellaService() {
   try {
     const { error } = await sb.from('umbrellas').update({ state: newState }).eq('id', umbrella.id);
     if (error) throw error;
-    toast(`Ombrellone ${umbrella.id} ${label}`, 'ok');
+    toast(`Postazione ${getUmbrellaDisplayLabel(umbrella)} ${label}`, 'ok');
     closeModal();
     await loadUmbrellas();
     render();
@@ -5960,7 +6050,7 @@ async function loadCassa() {
       .map(b => ({
         kind: 'booking',
         id: b.id,
-        label: `#${b.umbrella_id}`,
+        label: getUmbrellaDisplayLabelById(b.umbrella_id),
         customer_name: b.customer_name,
         booking_type: b.booking_type,
         date_label: `${formatDate(b.date_from)}${b.date_from !== b.date_to ? ' → ' + formatDate(b.date_to) : ''}`,
@@ -6002,6 +6092,7 @@ async function loadCassa() {
       })),
     ];
   } else {
+    const { from, to } = getItalyQueryWindow(date);
     const [{ data: bookingData }, { data: sunbedData }, { data: dayPayments }] = await Promise.all([
       sb.from('bookings')
         .select('id, umbrella_id, booking_type, date_from, date_to, price_total, price_paid, payment_method, payment_status, notes, customers(first_name, last_name, phone)')
@@ -6013,14 +6104,14 @@ async function loadCassa() {
         .in('status', bookingStatusesForCassa),
       sb.from('payments')
         .select('*')
-        .gte('created_at', date + 'T00:00:00')
-        .lte('created_at', date + 'T23:59:59')
+        .gte('created_at', from)
+        .lte('created_at', to)
         .order('created_at', { ascending: false }),
     ]);
 
     const bookingsRaw = bookingData || [];
     const sunbedsRaw = sunbedData || [];
-    payments = dayPayments || [];
+    payments = (dayPayments || []).filter(p => dateValueToItalyDate(p.created_at) === date);
 
     const bookingIds = bookingsRaw.map(b => b.id);
     const sunbedIds = sunbedsRaw.map(r => r.id);
@@ -6058,7 +6149,7 @@ async function loadCassa() {
       return {
         kind: 'booking',
         id: b.id,
-        label: `#${b.umbrella_id}`,
+        label: getUmbrellaDisplayLabelById(b.umbrella_id),
         customer_name: b.customers ? `${b.customers.last_name} ${b.customers.first_name}` : '—',
         booking_type: b.booking_type,
         date_label: `${formatDate(b.date_from)}${b.date_from !== b.date_to ? ' → ' + formatDate(b.date_to) : ''}`,
@@ -6177,6 +6268,7 @@ async function loadCassa() {
             <div class="cassa-umbrella">${item.label}</div>
             <div class="cassa-info">
               <div class="cassa-name">${item.customer_name}</div>
+              ${bookingSourceBadge(item)}
               <div class="cassa-meta">${cassaItemTypeLabel(item.kind)} · ${typeLabel(item.booking_type)} · ${item.date_label}</div>
               ${noteLine}
             </div>
@@ -6208,6 +6300,7 @@ async function loadCassa() {
           <div class="cassa-umbrella" style="background:linear-gradient(135deg,var(--ok),#2F7E63)">${item.label}</div>
           <div class="cassa-info">
             <div class="cassa-name">${item.customer_name}</div>
+            ${bookingSourceBadge(item)}
             <div class="cassa-meta">${cassaItemTypeLabel(item.kind)} · ${typeLabel(item.booking_type)} · ${item.date_label}</div>
           </div>
         </div>
