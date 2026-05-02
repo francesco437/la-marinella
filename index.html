@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Dolphin's Beach Bar — User Mockup</title>
+<title>Dolphin's Beach Bar — Prenotazioni</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
@@ -670,6 +670,49 @@ body {
   line-height: 1.45;
 }
 
+.check-copy strong {
+  color: #455a51;
+}
+
+.check-copy a {
+  color: #455f54;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.health-consent-card {
+  margin-top: 10px;
+  background: linear-gradient(180deg, #fffaf5 0%, #fff4e8 100%);
+  border-color: #eedbc0;
+}
+
+.legal-links {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.legal-btn {
+  min-height: 42px;
+  padding: 0 10px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,.94);
+  color: #61756b;
+  font-size: 12px;
+  font-weight: 700;
+  box-shadow: var(--shadow-card);
+}
+
+.policy-note {
+  margin: 10px 4px 0;
+  color: #8e9c95;
+  font-size: 11px;
+  line-height: 1.45;
+  text-align: center;
+}
+
 .ghost-cta {
   width: 100%;
   height: 46px;
@@ -957,6 +1000,76 @@ body {
   font-weight: 700;
 }
 
+.policy-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+  display: flex;
+  align-items: end;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(35, 43, 38, .46);
+  backdrop-filter: blur(8px);
+}
+
+.policy-card {
+  width: min(100%, 440px);
+  max-height: min(82vh, 760px);
+  overflow: auto;
+  padding: 18px;
+  border-radius: 28px;
+  background: linear-gradient(180deg, #fffefc 0%, #f8f1e4 100%);
+  border: 1px solid #eadcca;
+  box-shadow: 0 24px 44px rgba(42, 54, 47, .20);
+}
+
+.policy-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.policy-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 24px;
+  line-height: 1.05;
+  color: #354b41;
+}
+
+.policy-close {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid #eadfce;
+  background: rgba(255,255,255,.9);
+  color: #566960;
+  font-size: 22px;
+}
+
+.policy-body {
+  color: #687a72;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.policy-body h4 {
+  margin: 16px 0 6px;
+  color: #42584e;
+  font-size: 13px;
+}
+
+.policy-body p {
+  margin: 0 0 10px;
+}
+
+.policy-body ul {
+  margin: 0 0 10px 18px;
+  padding: 0;
+}
+
 @media (max-width: 560px) {
   .stage {
     padding: 0;
@@ -992,6 +1105,9 @@ body {
   }
   .map-row {
     column-gap: 10px;
+  }
+  .legal-links {
+    grid-template-columns: 1fr;
   }
 }
 </style>
@@ -1137,7 +1253,7 @@ body {
                 </label>
 
                 <label>
-                  <span class="field-label">Email</span>
+                  <span class="field-label">Email opzionale</span>
                   <input class="field-input" id="guestEmail" type="email" inputmode="email" placeholder="nome@email.com">
                 </label>
 
@@ -1150,8 +1266,20 @@ body {
 
             <label class="check-card">
               <input id="privacyCheck" type="checkbox">
-              <span class="check-copy">Accetto di essere ricontattato per la gestione della prenotazione e confermo che i dati inseriti sono corretti.</span>
+              <span class="check-copy">Dichiaro che i dati inseriti sono corretti, ho letto l'<a href="#" data-open-policy="privacy">informativa privacy</a> e accetto i <a href="#" data-open-policy="terms">termini di prenotazione</a>.</span>
             </label>
+
+            <label class="check-card health-consent-card hidden" id="healthConsentCard">
+              <input id="healthConsentCheck" type="checkbox">
+              <span class="check-copy">Richiedendo la tariffa agevolata, <strong>autodichiaro di avere i requisiti previsti</strong> e presto <strong>consenso esplicito</strong> al trattamento del dato relativo alla salute esclusivamente per applicare lo sconto e verificare il diritto in struttura.</span>
+            </label>
+
+            <div class="legal-links">
+              <button class="legal-btn" type="button" data-open-policy="privacy">Privacy</button>
+              <button class="legal-btn" type="button" data-open-policy="terms">Termini</button>
+              <button class="legal-btn" type="button" data-open-policy="cookies">Cookie</button>
+            </div>
+            <div class="policy-note">Questa app non usa cookie di profilazione propri. Sono presenti solo strumenti tecnici necessari alla prenotazione.</div>
 
             <button class="cta" type="button" id="goToPaymentBtn">Vai al riepilogo <span class="icon sm" data-icon="arrow-right"></span></button>
             <button class="ghost-cta" type="button" id="changeSelectionBtn">Modifica selezione</button>
@@ -1242,6 +1370,16 @@ body {
             <button class="cta" type="button" id="closeSuccessBtn">Chiudi</button>
           </div>
         </div>
+
+        <div class="policy-sheet hidden" id="policySheet">
+          <div class="policy-card">
+            <div class="policy-head">
+              <h3 class="policy-title" id="policyTitle">Informativa privacy</h3>
+              <button class="policy-close" type="button" id="closePolicyBtn">×</button>
+            </div>
+            <div class="policy-body" id="policyBody"></div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -1300,6 +1438,7 @@ const customerState = {
   email: '',
   notes: '',
   acceptedPrivacy: false,
+  acceptedHealthConsent: false,
 };
 
 const paymentState = {
@@ -1312,6 +1451,58 @@ let lastBookingResult = null;
 const pricing = {
   umbrella: { daily: 25, am: 15, pm: 15 },
   sunbed: { daily: 12, am: 8, pm: 8 },
+};
+
+const POLICY_CONTENT = {
+  privacy: {
+    title: 'Informativa privacy',
+    body: `
+      <p><strong>Titolare del trattamento:</strong> Dolphin's Beach Bar. Prima della messa online definitiva inserisci qui ragione sociale completa, indirizzo, email privacy e recapito del titolare.</p>
+      <h4>Dati raccolti</h4>
+      <p>Nome, cognome, telefono, eventuale email, note di prenotazione, scelta della postazione, data, fascia oraria e dati necessari alla gestione del pagamento.</p>
+      <h4>Finalità</h4>
+      <ul>
+        <li>gestione della richiesta di prenotazione;</li>
+        <li>contatto con il cliente per conferma, modifiche o assistenza;</li>
+        <li>gestione amministrativa e contabile della prenotazione.</li>
+      </ul>
+      <h4>Base giuridica</h4>
+      <p>Esecuzione di misure precontrattuali e del contratto di prenotazione. L'eventuale richiesta di tariffa agevolata viene trattata solo con consenso esplicito dell'interessato.</p>
+      <h4>Dati particolari</h4>
+      <p>Se richiedi la tariffa agevolata, l'app tratta solo la tua autodichiarazione di possesso dei requisiti. La verifica documentale avviene esclusivamente in struttura.</p>
+      <h4>Destinatari</h4>
+      <p>I dati sono trattati dal personale autorizzato e dai fornitori tecnici necessari all'erogazione del servizio, inclusa l'infrastruttura cloud di prenotazione.</p>
+      <h4>Conservazione</h4>
+      <p>I dati di prenotazione vanno conservati per il tempo necessario alla gestione del servizio e agli obblighi amministrativi e fiscali. Prima del go-live inserisci il periodo esatto deciso con il tuo consulente.</p>
+      <h4>Diritti</h4>
+      <p>Puoi chiedere accesso, rettifica, cancellazione, limitazione, opposizione e proporre reclamo al Garante per la protezione dei dati personali.</p>
+    `,
+  },
+  terms: {
+    title: 'Termini di prenotazione',
+    body: `
+      <p>La prenotazione si considera ricevuta quando viene registrata nel gestionale. La conferma definitiva e le modalità di pagamento sono comunicate al recapito indicato dal cliente.</p>
+      <h4>Tariffe e disponibilità</h4>
+      <p>Prezzi e disponibilità possono variare in base alla data e alla fascia oraria selezionata. La disponibilità viene verificata in tempo reale al momento della conferma.</p>
+      <h4>Tariffa agevolata</h4>
+      <p>La tariffa agevolata per invalidità viene richiesta tramite autodichiarazione e resta soggetta a verifica in struttura. In caso di mancata conferma dei requisiti, il cliente dovrà corrispondere la differenza rispetto alla tariffa ordinaria.</p>
+      <h4>Modifiche e annullamenti</h4>
+      <p>Prima della pubblicazione definitiva inserisci qui le regole ufficiali di modifica, rimborso, cancellazione e no-show che intendi applicare.</p>
+    `,
+  },
+  cookies: {
+    title: 'Cookie e strumenti tecnici',
+    body: `
+      <p>Questa app non utilizza cookie di profilazione propri né strumenti pubblicitari. Sono usati solo strumenti tecnici necessari al funzionamento del servizio di prenotazione.</p>
+      <h4>Cosa significa</h4>
+      <ul>
+        <li>nessun tracciamento marketing lato app;</li>
+        <li>nessuna profilazione commerciale del visitatore;</li>
+        <li>solo componenti tecnici indispensabili per caricare interfaccia, disponibilità e invio della prenotazione.</li>
+      </ul>
+      <p>Se in futuro aggiungerai analytics, pixel o remarketing, servirà una cookie policy estesa e un banner di consenso preventivo.</p>
+    `,
+  },
 };
 
 const ICONS = {
@@ -1744,6 +1935,7 @@ function getPublicBookingNote() {
   const parts = [];
   if (customerState.notes) parts.push(customerState.notes);
   if (bookingState.disabilityDiscount) parts.push('Sconto disabili -30% applicato da app utente');
+  if (bookingState.disabilityDiscount && customerState.acceptedHealthConsent) parts.push(`Consenso esplicito sconto agevolato raccolto il ${new Date().toISOString()}`);
   parts.push(paymentState.mode === 'full' ? 'Pagamento completo richiesto da app utente' : 'Acconto 30% richiesto da app utente');
   return parts.join(' | ');
 }
@@ -1764,6 +1956,7 @@ function resetBookingFlow() {
   customerState.email = '';
   customerState.notes = '';
   customerState.acceptedPrivacy = false;
+  customerState.acceptedHealthConsent = false;
   paymentState.mode = 'deposit';
   document.getElementById('guestFirstName').value = '';
   document.getElementById('guestLastName').value = '';
@@ -1771,6 +1964,7 @@ function resetBookingFlow() {
   document.getElementById('guestEmail').value = '';
   document.getElementById('guestNotes').value = '';
   document.getElementById('privacyCheck').checked = false;
+  document.getElementById('healthConsentCheck').checked = false;
   document.getElementById('disabilityDiscount').checked = false;
 }
 
@@ -1786,6 +1980,18 @@ function openSuccessSheet(result) {
 function closeSuccessSheet() {
   document.getElementById('successSheet').classList.add('hidden');
   lastBookingResult = null;
+}
+
+function openPolicy(key) {
+  const policy = POLICY_CONTENT[key];
+  if (!policy) return;
+  document.getElementById('policyTitle').textContent = policy.title;
+  document.getElementById('policyBody').innerHTML = policy.body;
+  document.getElementById('policySheet').classList.remove('hidden');
+}
+
+function closePolicy() {
+  document.getElementById('policySheet').classList.add('hidden');
 }
 
 function renderStep() {
@@ -1813,6 +2019,7 @@ function renderState() {
   document.getElementById('dateInput').value = bookingState.date;
   document.getElementById('summaryDate').textContent = formatItalianDate(bookingState.date);
   document.getElementById('disabilityDiscount').checked = bookingState.disabilityDiscount;
+  document.getElementById('healthConsentCard').classList.toggle('hidden', !bookingState.disabilityDiscount);
 
   const isUmbrella = bookingState.kind === 'umbrella';
   document.getElementById('umbrellaMapCard').classList.toggle('hidden', !isUmbrella);
@@ -1888,6 +2095,7 @@ function renderState() {
   document.getElementById('closingPaymentMode').textContent = paymentState.mode === 'full' ? 'Pagamento completo' : 'Acconto 30%';
   document.getElementById('closingPayNow').textContent = formatEuro(getPayNowAmount());
   document.getElementById('privacyCheck').checked = customerState.acceptedPrivacy;
+  document.getElementById('healthConsentCheck').checked = customerState.acceptedHealthConsent;
 
   document.querySelectorAll('input[name="paymentMode"]').forEach(input => {
     input.checked = input.value === paymentState.mode;
@@ -1909,6 +2117,7 @@ function collectCustomerState() {
   customerState.email = document.getElementById('guestEmail').value.trim();
   customerState.notes = document.getElementById('guestNotes').value.trim();
   customerState.acceptedPrivacy = document.getElementById('privacyCheck').checked;
+  customerState.acceptedHealthConsent = document.getElementById('healthConsentCheck').checked;
 }
 
 document.getElementById('dateInput').addEventListener('change', event => {
@@ -1918,7 +2127,27 @@ document.getElementById('dateInput').addEventListener('change', event => {
 
 document.getElementById('disabilityDiscount').addEventListener('change', event => {
   bookingState.disabilityDiscount = event.target.checked;
+  if (!bookingState.disabilityDiscount) {
+    customerState.acceptedHealthConsent = false;
+  }
   renderState();
+});
+
+document.querySelectorAll('[data-open-policy]').forEach(button => {
+  button.addEventListener('click', event => {
+    event.preventDefault();
+    openPolicy(button.dataset.openPolicy);
+  });
+});
+
+document.getElementById('closePolicyBtn').addEventListener('click', () => {
+  closePolicy();
+});
+
+document.getElementById('policySheet').addEventListener('click', event => {
+  if (event.target.id === 'policySheet') {
+    closePolicy();
+  }
 });
 
 document.querySelectorAll('.segment button').forEach(button => {
@@ -1973,8 +2202,8 @@ document.getElementById('goToPaymentBtn').addEventListener('click', () => {
   if (!customerState.firstName) missing.push('nome');
   if (!customerState.lastName) missing.push('cognome');
   if (!customerState.phone) missing.push('telefono');
-  if (!customerState.email) missing.push('email');
-  if (!customerState.acceptedPrivacy) missing.push('privacy');
+  if (!customerState.acceptedPrivacy) missing.push('privacy e termini');
+  if (bookingState.disabilityDiscount && !customerState.acceptedHealthConsent) missing.push('consenso esplicito sconto agevolato');
 
   if (missing.length) {
     alert(`Completa: ${missing.join(', ')}.`);
