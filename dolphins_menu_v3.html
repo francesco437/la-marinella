@@ -17,9 +17,8 @@ body { background: #F5F0E8; font-family: 'Lato', sans-serif; color: #1a1a1a; }
 .nav-tabs::-webkit-scrollbar { display: none; }
 .tab-btn { flex-shrink: 0; padding: 7px 14px 7px 10px; border-radius: 20px; border: 1px solid rgba(200,169,110,0.4); background: transparent; color: #C8A96E; font-family: 'Lato', sans-serif; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: all 0.2s; font-weight: 400; display: flex; align-items: center; gap: 6px; }
 .tab-btn.active, .tab-btn:hover { background: #C8A96E; color: #1a1a1a; border-color: #C8A96E; }
-.tab-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
-.tab-btn.active svg, .tab-btn:hover svg { stroke: #1a1a1a; fill: none; }
-.tab-btn svg { stroke: #C8A96E; fill: none; transition: stroke 0.2s; }
+.tab-btn svg { width: 14px; height: 14px; flex-shrink: 0; stroke: #C8A96E; fill: none; transition: stroke 0.2s; }
+.tab-btn.active svg, .tab-btn:hover svg { stroke: #1a1a1a; }
 .section-block { display: none; padding: 0 16px 32px; max-width: 680px; margin: 0 auto; }
 .section-block.active { display: block; }
 .section-title { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 400; font-style: italic; color: #1a1a1a; padding: 24px 0 6px; border-bottom: 1px solid #C8A96E; margin-bottom: 4px; }
@@ -33,6 +32,19 @@ body { background: #F5F0E8; font-family: 'Lato', sans-serif; color: #1a1a1a; }
 .badge-new { background: #C8A96E; color: #1a1a1a; }
 .badge-veg { background: #5a8a5a; color: #fff; }
 .badge-hot { background: #c84a3a; color: #fff; }
+
+/* ALLERGENI */
+.allergens { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+.al { display: inline-flex; align-items: center; gap: 3px; background: #ede8df; border: 1px solid #d4cfc6; border-radius: 4px; padding: 2px 5px; font-size: 9px; font-weight: 700; color: #5a4a3a; letter-spacing: 0.5px; text-transform: uppercase; }
+.al svg { width: 11px; height: 11px; flex-shrink: 0; }
+.allergen-legend { background: #1a1a1a; color: #F5F0E8; padding: 20px 16px; margin-top: 8px; }
+.allergen-legend { text-align: center; }
+.allergen-legend h3 { font-family: 'Playfair Display', serif; font-size: 14px; font-weight: 400; font-style: italic; color: #C8A96E; margin-bottom: 12px; letter-spacing: 1px; }
+.legend-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 16px; }
+.legend-item { display: flex; align-items: center; gap: 6px; font-size: 10px; color: #ccc; letter-spacing: 0.5px; white-space: nowrap; }
+.legend-item svg { width: 14px; height: 14px; flex-shrink: 0; }
+.legend-item span { font-weight: 700; color: #F5F0E8; margin-right: 2px; }
+
 .divider-wave { text-align: center; padding: 16px 0 4px; color: #C8A96E; font-size: 18px; letter-spacing: 8px; opacity: 0.5; }
 .footer-note { text-align: center; font-size: 10px; color: #9a9a9a; padding: 12px 16px 32px; letter-spacing: 1px; line-height: 1.9; }
 .price-note { font-size: 10px; color: #9a9a9a; text-align: right; margin-top: 4px; margin-bottom: 2px; letter-spacing: 0.5px; }
@@ -50,64 +62,90 @@ body { background: #F5F0E8; font-family: 'Lato', sans-serif; color: #1a1a1a; }
 </div>
 
 <nav class="nav-tabs">
-  <!-- Sole -->
   <button class="tab-btn active" onclick="showSection('colazione', this)">
-    <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/>
-      <line x1="4.22" y1="4.22" x2="6.34" y2="6.34"/><line x1="17.66" y1="17.66" x2="19.78" y2="19.78"/>
-      <line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/>
-      <line x1="4.22" y1="19.78" x2="6.34" y2="17.66"/><line x1="17.66" y1="6.34" x2="19.78" y2="4.22"/>
-    </svg>
+    <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="4.22" y1="4.22" x2="6.34" y2="6.34"/><line x1="17.66" y1="17.66" x2="19.78" y2="19.78"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/><line x1="4.22" y1="19.78" x2="6.34" y2="17.66"/><line x1="17.66" y1="6.34" x2="19.78" y2="4.22"/></svg>
     Colazione
   </button>
-  <!-- Tazza caffè -->
   <button class="tab-btn" onclick="showSection('bar', this)">
-    <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M17 8h1a4 4 0 0 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/>
-      <line x1="6" y1="2" x2="6" y2="5"/><line x1="10" y1="2" x2="10" y2="5"/><line x1="14" y1="2" x2="14" y2="5"/>
-    </svg>
+    <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8h1a4 4 0 0 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/><line x1="6" y1="2" x2="6" y2="5"/><line x1="10" y1="2" x2="10" y2="5"/><line x1="14" y1="2" x2="14" y2="5"/></svg>
     Bar & Bibite
   </button>
-  <!-- Forchetta foglia -->
   <button class="tab-btn" onclick="showSection('pranzo', this)">
-    <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M3 11l19-9-9 19-2-8-8-2z"/>
-    </svg>
+    <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>
     Pranzo
   </button>
-  <!-- Calice -->
   <button class="tab-btn" onclick="showSection('aperitivo', this)">
-    <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M8 22h8"/><path d="M12 11v11"/><path d="M20 2H4l6 9.46V17l4 .01V11.46L20 2z"/>
-    </svg>
+    <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 22h8"/><path d="M12 11v11"/><path d="M20 2H4l6 9.46V17l4 .01V11.46L20 2z"/></svg>
     Aperitivi
   </button>
-  <!-- Cocktail shaker -->
   <button class="tab-btn" onclick="showSection('cocktail', this)">
-    <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M8 22h8l1-8H7l1 8z"/><path d="M5 14h14"/><path d="M7 14V8l-2-4h14l-2 4v6"/>
-      <line x1="14" y1="4" x2="14" y2="8"/>
-    </svg>
+    <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 22h8l1-8H7l1 8z"/><path d="M5 14h14"/><path d="M7 14V8l-2-4h14l-2 4v6"/><line x1="14" y1="4" x2="14" y2="8"/></svg>
     Cocktail
   </button>
 </nav>
+
+<!-- SVG ALLERGENI - definizioni inline riusabili -->
+<!-- G=Glutine, L=Latte, U=Uova, P=Pesce, C=Crostacei, M=Molluschi, SO=Solfiti, SE=Sedano, SE2=Senape, S=Sesamo, A=Arachidi, F=Frutta a guscio, SO2=Soia, LU=Lupino -->
+
+<script>
+// Mappa SVG allergeni
+const AL = {
+  G:  { label:'Glutine',         path:'M12 2a5 5 0 0 1 5 5c0 3-2 5-5 8-3-3-5-5-5-8a5 5 0 0 1 5-5zm0 4v6m-2-3h4' },
+  L:  { label:'Latte',           path:'M8 2h8l2 6H6L8 2zM6 8v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V8' },
+  U:  { label:'Uova',            path:'M12 2C9 2 6 6 6 10a6 6 0 0 0 12 0C18 6 15 2 12 2z' },
+  P:  { label:'Pesce',           path:'M2 12s4-6 10-6 10 6 10 6-4 6-10 6S2 12 2 12zm10 0a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm6-1 3-3m-3 7 3 3' },
+  C:  { label:'Crostacei',       path:'M12 2c-2 0-4 2-4 4s2 4 4 4 4-2 4-4-2-4-4-4zm-6 8c-2 1-3 3-2 5l2 5h12l2-5c1-2 0-4-2-5' },
+  M:  { label:'Molluschi',       path:'M12 3C8 3 5 7 5 12s3 9 7 9 7-4 7-9-3-9-7-9zm0 4v5l3 3' },
+  SO: { label:'Solfiti',         path:'M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18' },
+  SE: { label:'Sedano',          path:'M12 22V12m0 0C12 7 8 4 4 3m8 9c0-5 4-8 8-9M7 17c1-2 3-4 5-5m0 0c2 1 4 3 5 5' },
+  SN: { label:'Senape',          path:'M12 2l3 7h7l-6 4 2 7-6-4-6 4 2-7-6-4h7z' },
+  S:  { label:'Sesamo',          path:'M12 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6zm-6 8a3 3 0 1 0 0 6 3 3 0 0 0 0-6zm12 0a3 3 0 1 0 0 6 3 3 0 0 0 0-6zm-6 8a3 3 0 1 0 0 6 3 3 0 0 0 0-6z' },
+  A:  { label:'Arachidi',        path:'M8 3C6 3 4 5 4 8c0 4 4 6 8 6s8-2 8-6c0-3-2-5-4-5-1 0-2 1-4 1s-3-1-4-1z' },
+  F:  { label:'Frutta a guscio', path:'M17 8C8 10 5.9 16.17 3.82 19.34L5.71 21l1-1 1 1 1-1 1 1 1-1 1 1 1.71-1.71C10.93 18 12 17 14 17c3 0 5-2 5-5 0-1-.5-2.5-2-4z' },
+  SO2:{ label:'Soia',            path:'M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm-1 14v-4H7l5-8v4h4l-5 8z' },
+  LU: { label:'Lupino',          path:'M12 2C9 2 7 4 7 7s2 5 5 7c3-2 5-4 5-7s-2-5-5-5zm0 14c-3 2-7 3-7 6h14c0-3-4-4-7-6z' },
+};
+
+function allergen(...keys) {
+  return keys.map(k => {
+    const a = AL[k];
+    return `<span class="al" title="${a.label}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="${a.path}"/></svg>
+      ${a.label}
+    </span>`;
+  }).join('');
+}
+
+function renderAllergens(el, ...keys) {
+  el.innerHTML = `<div class="allergens">${allergen(...keys)}</div>`;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('[data-al]').forEach(el => {
+    const keys = el.dataset.al.split(',');
+    el.innerHTML = `<div class="allergens">${allergen(...keys)}</div>`;
+  });
+});
+</script>
 
 <!-- COLAZIONE -->
 <div class="section-block active" id="sec-colazione">
   <div class="section-title">Colazione</div>
   <div class="subsection-title">Dolce</div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Espresso + Cornetto</div><div class="item-desc">Cornetto classico, integrale o al cioccolato</div></div><div class="item-price">2,50 €</div></div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Cappuccino + Cornetto</div><div class="item-desc">Cornetto classico, integrale o al cioccolato</div></div><div class="item-price">3,00 €</div></div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Colazione Completa</div><div class="item-desc">Succo di frutta, cappuccino e cornetto</div></div><div class="item-price">4,50 €</div></div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Yogurt con Granola e Frutta <span class="badge badge-veg">VEG</span></div><div class="item-desc">Yogurt greco, granola, frutti di bosco o banana</div></div><div class="item-price">5,00 €</div></div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Fetta di Torta del Giorno</div><div class="item-desc">Produzione propria — chiedi la disponibilità</div></div><div class="item-price">3,00 €</div></div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Pancakes</div><div class="item-desc">Con miele, marmellata o Nutella</div></div><div class="item-price">6,00 €</div></div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Avocado Toast</div><div class="item-desc">Pane tostato, avocado, uova strapazzate, pepe e limone</div></div><div class="item-price">8,00 €</div></div>
+
+  <div class="menu-item"><div class="item-left"><div class="item-name">Espresso + Cornetto</div><div class="item-desc">Cornetto classico, integrale o al cioccolato</div><div data-al="G,L,U,SO2"></div></div><div class="item-price">2,50 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Cappuccino + Cornetto</div><div class="item-desc">Cornetto classico, integrale o al cioccolato</div><div data-al="G,L,U,SO2"></div></div><div class="item-price">3,00 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Colazione Completa</div><div class="item-desc">Succo di frutta, cappuccino e cornetto</div><div data-al="G,L,U,SO2"></div></div><div class="item-price">4,50 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Yogurt con Granola e Frutta <span class="badge badge-veg">VEG</span></div><div class="item-desc">Yogurt greco, granola, frutti di bosco o banana</div><div data-al="G,L,F"></div></div><div class="item-price">5,00 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Fetta di Torta del Giorno</div><div class="item-desc">Produzione propria — chiedi la disponibilità</div><div data-al="G,L,U"></div></div><div class="item-price">3,00 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Pancakes</div><div class="item-desc">Con miele, marmellata o Nutella</div><div data-al="G,L,U,F"></div></div><div class="item-price">6,00 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Avocado Toast</div><div class="item-desc">Pane tostato, avocado, uova strapazzate, pepe e limone</div><div data-al="G,U"></div></div><div class="item-price">8,00 €</div></div>
+
   <div class="subsection-title">Salato</div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Toast Classico</div><div class="item-desc">Prosciutto cotto e formaggio, pan carré tostato</div></div><div class="item-price">4,50 €</div></div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Toast Salmone & Robiola</div><div class="item-desc">Salmone affumicato, robiola, capperi, limone</div></div><div class="item-price">6,50 €</div></div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Tramezzino</div><div class="item-desc">Tonno e pomodoro · Prosciutto e formaggio · Caprese</div></div><div class="item-price">3,50 €</div></div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Frittata di Verdure <span class="badge badge-veg">VEG</span></div><div class="item-desc">Zucchine, peperoni, erbette — con pane tostato</div></div><div class="item-price">6,00 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Toast Classico</div><div class="item-desc">Prosciutto cotto e formaggio, pan carré tostato</div><div data-al="G,L"></div></div><div class="item-price">4,50 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Toast Salmone & Robiola</div><div class="item-desc">Salmone affumicato, robiola, capperi, limone</div><div data-al="G,L,P"></div></div><div class="item-price">6,50 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Tramezzino</div><div class="item-desc">Tonno e pomodoro · Prosciutto e formaggio · Caprese</div><div data-al="G,L,U,P"></div></div><div class="item-price">3,50 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Frittata di Verdure <span class="badge badge-veg">VEG</span></div><div class="item-desc">Zucchine, peperoni, erbette — con pane tostato</div><div data-al="G,U"></div></div><div class="item-price">6,00 €</div></div>
 </div>
 
 <!-- BAR & BIBITE -->
@@ -115,12 +153,13 @@ body { background: #F5F0E8; font-family: 'Lato', sans-serif; color: #1a1a1a; }
   <div class="section-title">Bar & Bibite</div>
   <div class="subsection-title">Caffetteria</div>
   <div class="menu-item"><div class="item-left"><div class="item-name">Espresso</div></div><div class="item-price">1,20 €</div></div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Caffè Macchiato</div></div><div class="item-price">1,40 €</div></div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Cappuccino</div></div><div class="item-price">1,80 €</div></div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Latte Macchiato</div><div class="item-desc">Caldo o freddo</div></div><div class="item-price">2,20 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Caffè Macchiato</div><div data-al="L"></div></div><div class="item-price">1,40 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Cappuccino</div><div data-al="L"></div></div><div class="item-price">1,80 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Latte Macchiato</div><div class="item-desc">Caldo o freddo</div><div data-al="L"></div></div><div class="item-price">2,20 €</div></div>
   <div class="menu-item"><div class="item-left"><div class="item-name">Caffè Shakerato</div><div class="item-desc">Espresso ghiacciato, leggermente zuccherato</div></div><div class="item-price">2,50 €</div></div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Caffè in Ghiaccio</div><div class="item-desc">Con o senza latte di mandorla</div></div><div class="item-price">2,20 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Caffè in Ghiaccio</div><div class="item-desc">Con o senza latte di mandorla</div><div data-al="F"></div></div><div class="item-price">2,20 €</div></div>
   <div class="menu-item"><div class="item-left"><div class="item-name">Tè Freddo / Tisana</div><div class="item-desc">Tè verde, nero, alla pesca · Camomilla, menta, frutti rossi</div></div><div class="item-price">2,00 €</div></div>
+
   <div class="subsection-title">Acqua & Bibite</div>
   <div class="menu-item"><div class="item-left"><div class="item-name">Acqua Minerale</div><div class="item-desc">Naturale o frizzante — 50cl / 1L</div></div><div class="item-price">1,50 / 2,50 €</div></div>
   <div class="menu-item"><div class="item-left"><div class="item-name">Bibite in Lattina</div><div class="item-desc">Coca-Cola, Fanta, Sprite, Chinotto, Gazzosa — 33cl</div></div><div class="item-price">3,00 €</div></div>
@@ -129,13 +168,15 @@ body { background: #F5F0E8; font-family: 'Lato', sans-serif; color: #1a1a1a; }
   <div class="menu-item"><div class="item-left"><div class="item-name">Limonata della Casa</div><div class="item-desc">Limone fresco, zucchero di canna, menta — 40cl</div></div><div class="item-price">4,00 €</div></div>
   <div class="menu-item"><div class="item-left"><div class="item-name">Centrifugato Fresco</div><div class="item-desc">Carota, mela, zenzero — chiedi il gusto del giorno</div></div><div class="item-price">4,50 €</div></div>
   <div class="menu-item"><div class="item-left"><div class="item-name">Red Bull</div><div class="item-desc">Energy drink — 25cl</div></div><div class="item-price">4,00 €</div></div>
+
   <div class="subsection-title">Birra</div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Birra in Bottiglia</div><div class="item-desc">Peroni / Menabrea / Heineken — 33cl</div></div><div class="item-price">4,00 €</div></div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Birra Artigianale</div><div class="item-desc">Chiara / Ambrata / IPA — 33cl, selezione locale</div></div><div class="item-price">5,00 €</div></div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Birra Analcolica</div><div class="item-desc">Nastro Azzurro 0.0 — 33cl</div></div><div class="item-price">3,50 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Birra in Bottiglia</div><div class="item-desc">Peroni / Menabrea / Heineken — 33cl</div><div data-al="G"></div></div><div class="item-price">4,00 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Birra Artigianale</div><div class="item-desc">Chiara / Ambrata / IPA — 33cl, selezione locale</div><div data-al="G"></div></div><div class="item-price">5,00 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Birra Analcolica</div><div class="item-desc">Nastro Azzurro 0.0 — 33cl</div><div data-al="G"></div></div><div class="item-price">3,50 €</div></div>
+
   <div class="subsection-title">Snack</div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Patatine in Busta</div><div class="item-desc">San Carlo / Pringles — gusti assortiti</div></div><div class="item-price">2,50 €</div></div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Crackers / Tarallini</div></div><div class="item-price">2,00 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Patatine in Busta</div><div class="item-desc">San Carlo / Pringles — gusti assortiti</div><div data-al="G,L"></div></div><div class="item-price">2,50 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Crackers / Tarallini</div><div data-al="G"></div></div><div class="item-price">2,00 €</div></div>
   <div class="menu-item"><div class="item-left"><div class="item-name">Frutta Fresca di Stagione</div><div class="item-desc">Macedonia o spicchi — porzione</div></div><div class="item-price">4,00 €</div></div>
 </div>
 
@@ -143,29 +184,34 @@ body { background: #F5F0E8; font-family: 'Lato', sans-serif; color: #1a1a1a; }
 <div class="section-block" id="sec-pranzo">
   <div class="section-title">Pranzo Leggero</div>
   <div class="section-intro">Cucina attiva 12:00 – 15:30</div>
+
   <div class="subsection-title">Panini & Piadine</div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Piadina Crudo & Squacquerone</div><div class="item-desc">Prosciutto crudo DOP, squacquerone, rucola, pomodoro</div></div><div class="item-price">8,00 €</div></div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Piadina Tonno & Cipolla</div><div class="item-desc">Tonno, cipolla di Tropea, olive, lattuga, maionese</div></div><div class="item-price">7,50 €</div></div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Piadina Caprese <span class="badge badge-veg">VEG</span></div><div class="item-desc">Mozzarella, pomodoro, basilico, pesto genovese</div></div><div class="item-price">7,00 €</div></div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Panino del Marinaio</div><div class="item-desc">Polpo alla ligure, patate, prezzemolo, limone</div></div><div class="item-price">9,50 €</div></div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Panino Speck & Brie</div><div class="item-desc">Speck, brie, miele di acacia, noce — su pane di segale</div></div><div class="item-price">7,50 €</div></div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Focaccia Farcita</div><div class="item-desc">Focaccia ligure con prosciutto cotto e stracchino</div></div><div class="item-price">6,50 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Piadina Crudo & Squacquerone</div><div class="item-desc">Prosciutto crudo DOP, squacquerone, rucola, pomodoro</div><div data-al="G,L"></div></div><div class="item-price">8,00 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Piadina Tonno & Cipolla</div><div class="item-desc">Tonno, cipolla di Tropea, olive, lattuga, maionese</div><div data-al="G,P,U"></div></div><div class="item-price">7,50 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Piadina Caprese <span class="badge badge-veg">VEG</span></div><div class="item-desc">Mozzarella, pomodoro, basilico, pesto genovese</div><div data-al="G,L,F"></div></div><div class="item-price">7,00 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Panino del Marinaio</div><div class="item-desc">Polpo alla ligure, patate, prezzemolo, limone</div><div data-al="G,M"></div></div><div class="item-price">9,50 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Panino Speck & Brie</div><div class="item-desc">Speck, brie, miele di acacia, noce — su pane di segale</div><div data-al="G,L,F"></div></div><div class="item-price">7,50 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Focaccia Farcita</div><div class="item-desc">Focaccia ligure con prosciutto cotto e stracchino</div><div data-al="G,L"></div></div><div class="item-price">6,50 €</div></div>
+
   <div class="subsection-title">Insalate</div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Insalata Nizzarda</div><div class="item-desc">Tonno, uova sode, fagiolini, olive, pomodorini, acciughe</div></div><div class="item-price">11,00 €</div></div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Caesar Salad con Pollo</div><div class="item-desc">Lattuga romana, pollo, crostini, parmigiano, salsa caesar</div></div><div class="item-price">11,00 €</div></div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Insalata del Mare <span class="badge badge-new">NEW</span></div><div class="item-desc">Gamberi, calamari, polpo, rucola, pomodorini, limone</div></div><div class="item-price">14,00 €</div></div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Insalata di Farro <span class="badge badge-veg">VEG</span></div><div class="item-desc">Farro, zucchine grigliate, peperoni, feta, menta</div></div><div class="item-price">10,00 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Insalata Nizzarda</div><div class="item-desc">Tonno, uova sode, fagiolini, olive, pomodorini, acciughe</div><div data-al="P,U"></div></div><div class="item-price">11,00 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Caesar Salad con Pollo</div><div class="item-desc">Lattuga romana, pollo, crostini, parmigiano, salsa caesar</div><div data-al="G,L,U,P"></div></div><div class="item-price">11,00 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Insalata del Mare <span class="badge badge-new">NEW</span></div><div class="item-desc">Gamberi, calamari, polpo, rucola, pomodorini, limone</div><div data-al="C,M,P"></div></div><div class="item-price">14,00 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Insalata di Farro <span class="badge badge-veg">VEG</span></div><div class="item-desc">Farro, zucchine grigliate, peperoni, feta, menta</div><div data-al="G,L"></div></div><div class="item-price">10,00 €</div></div>
   <div class="menu-item"><div class="item-left"><div class="item-name">Insalata Mista <span class="badge badge-veg">VEG</span></div><div class="item-desc">Verdure fresche, pomodorini, carote, cetrioli, olio e limone</div></div><div class="item-price">6,00 €</div></div>
+
   <div class="subsection-title">Piatti Freddi</div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Carpaccio di Tonno</div><div class="item-desc">Tonno fresco, rucola, capperi, olio evo, pepe rosa</div></div><div class="item-price">13,00 €</div></div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Tartare di Salmone</div><div class="item-desc">Salmone scozzese, avocado, sesamo, salsa ponzu</div></div><div class="item-price">13,00 €</div></div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Tagliere Ligure</div><div class="item-desc">Salumi misti, focaccia, olive taggiasche, acciughe sott'olio</div></div><div class="item-price">13,00 €</div></div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Tagliere di Formaggi <span class="badge badge-veg">VEG</span></div><div class="item-desc">Formaggi misti, miele, noci, grissini</div></div><div class="item-price">11,00 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Carpaccio di Tonno</div><div class="item-desc">Tonno fresco, rucola, capperi, olio evo, pepe rosa</div><div data-al="P"></div></div><div class="item-price">13,00 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Tartare di Salmone</div><div class="item-desc">Salmone scozzese, avocado, sesamo, salsa ponzu</div><div data-al="P,S,SO2,G"></div></div><div class="item-price">13,00 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Tagliere Ligure</div><div class="item-desc">Salumi misti, focaccia, olive taggiasche, acciughe sott'olio</div><div data-al="G,P"></div></div><div class="item-price">13,00 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Tagliere di Formaggi <span class="badge badge-veg">VEG</span></div><div class="item-desc">Formaggi misti, miele, noci, grissini</div><div data-al="G,L,F"></div></div><div class="item-price">11,00 €</div></div>
+
   <div class="subsection-title">Fritti di Pesce</div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Fritto Misto Marinara</div><div class="item-desc">Calamari, gamberi, alici — con maionese al limone</div></div><div class="item-price">14,00 €</div></div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Bocconcini di Calamaro</div><div class="item-desc">In pastella leggera, con salsa tartara</div></div><div class="item-price">10,00 €</div></div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Gamberoni in Tempura <span class="badge badge-hot">HOT</span></div><div class="item-desc">Con salsa agrodolce allo zenzero</div></div><div class="item-price">12,00 €</div></div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Alici Fritte alla Ligure</div><div class="item-desc">Alici fresche, farina di mais, limone e prezzemolo</div></div><div class="item-price">9,00 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Fritto Misto Marinara</div><div class="item-desc">Calamari, gamberi, alici — con maionese al limone</div><div data-al="G,P,C,M,U"></div></div><div class="item-price">14,00 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Bocconcini di Calamaro</div><div class="item-desc">In pastella leggera, con salsa tartara</div><div data-al="G,M,U"></div></div><div class="item-price">10,00 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Gamberoni in Tempura <span class="badge badge-hot">HOT</span></div><div class="item-desc">Con salsa agrodolce allo zenzero</div><div data-al="G,C,SO2"></div></div><div class="item-price">12,00 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Alici Fritte alla Ligure</div><div class="item-desc">Alici fresche, farina di mais, limone e prezzemolo</div><div data-al="G,P"></div></div><div class="item-price">9,00 €</div></div>
+
   <div class="subsection-title">Contorni</div>
   <div class="menu-item"><div class="item-left"><div class="item-name">Patatine Fritte</div></div><div class="item-price">5,00 €</div></div>
   <div class="menu-item"><div class="item-left"><div class="item-name">Insalata Mista</div></div><div class="item-price">4,00 €</div></div>
@@ -177,44 +223,69 @@ body { background: #F5F0E8; font-family: 'Lato', sans-serif; color: #1a1a1a; }
   <div class="section-title">Aperitivi</div>
   <div class="price-note">Stuzzichini della casa inclusi · Happy Hour 18:00 – 20:00</div>
   <div class="subsection-title">Spritz & Aperitivi</div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Aperol Spritz</div><div class="item-desc">Aperol, Prosecco, acqua frizzante, fettina d'arancia</div></div><div class="item-price">7,00 €</div></div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Campari Spritz</div><div class="item-desc">Campari, Prosecco, soda, scorza d'arancia</div></div><div class="item-price">7,00 €</div></div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Hugo</div><div class="item-desc">Elderflower, Prosecco, soda, menta, lime</div></div><div class="item-price">7,00 €</div></div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Negroni</div><div class="item-desc">Gin, Campari, Vermouth rosso, scorza d'arancia</div></div><div class="item-price">8,00 €</div></div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Americano</div><div class="item-desc">Campari, Vermouth rosso, soda, arancia</div></div><div class="item-price">7,00 €</div></div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Cynar Spritz</div><div class="item-desc">Cynar, Prosecco, soda — amaricante e dissetante</div></div><div class="item-price">7,00 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Aperol Spritz</div><div class="item-desc">Aperol, Prosecco, acqua frizzante, fettina d'arancia</div><div data-al="SO"></div></div><div class="item-price">7,00 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Campari Spritz</div><div class="item-desc">Campari, Prosecco, soda, scorza d'arancia</div><div data-al="SO"></div></div><div class="item-price">7,00 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Hugo</div><div class="item-desc">Elderflower, Prosecco, soda, menta, lime</div><div data-al="SO"></div></div><div class="item-price">7,00 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Negroni</div><div class="item-desc">Gin, Campari, Vermouth rosso, scorza d'arancia</div><div data-al="SO"></div></div><div class="item-price">8,00 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Americano</div><div class="item-desc">Campari, Vermouth rosso, soda, arancia</div><div data-al="SO"></div></div><div class="item-price">7,00 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Cynar Spritz</div><div class="item-desc">Cynar, Prosecco, soda — amaricante e dissetante</div><div data-al="SO"></div></div><div class="item-price">7,00 €</div></div>
   <div class="menu-item"><div class="item-left"><div class="item-name">Spritz Analcolico <span class="badge badge-veg">0%</span></div><div class="item-desc">Sanbittèr o Crodino, soda, arancia, ghiaccio</div></div><div class="item-price">4,50 €</div></div>
+
   <div class="subsection-title">Vini & Bollicine</div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Prosecco DOC</div><div class="item-desc">Calice</div></div><div class="item-price">5,00 €</div></div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Vermentino Ligure</div><div class="item-desc">Bianco fresco, note agrumate — calice</div></div><div class="item-price">5,50 €</div></div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Pigato della Riviera di Ponente</div><div class="item-desc">Vino bianco DOC ligure — calice</div></div><div class="item-price">5,50 €</div></div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Rosé Riviera</div><div class="item-desc">Rosato fruttato — calice</div></div><div class="item-price">5,00 €</div></div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Bottiglia di Vino</div><div class="item-desc">Vermentino / Pigato / Rosato — chiedi disponibilità</div></div><div class="item-price">22–28 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Prosecco DOC</div><div class="item-desc">Calice</div><div data-al="SO"></div></div><div class="item-price">5,00 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Vermentino Ligure</div><div class="item-desc">Bianco fresco, note agrumate — calice</div><div data-al="SO"></div></div><div class="item-price">5,50 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Pigato della Riviera di Ponente</div><div class="item-desc">Vino bianco DOC ligure — calice</div><div data-al="SO"></div></div><div class="item-price">5,50 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Rosé Riviera</div><div class="item-desc">Rosato fruttato — calice</div><div data-al="SO"></div></div><div class="item-price">5,00 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Bottiglia di Vino</div><div class="item-desc">Vermentino / Pigato / Rosato — chiedi disponibilità</div><div data-al="SO"></div></div><div class="item-price">22–28 €</div></div>
 </div>
 
 <!-- COCKTAIL -->
 <div class="section-block" id="sec-cocktail">
   <div class="section-title">Cocktail</div>
   <div class="subsection-title">Signature Dolphin's</div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Dolphin's Sunrise <span class="badge badge-new">NEW</span></div><div class="item-desc">Rum bianco, maracuja, ananas, lime, sciroppo cocco</div></div><div class="item-price">8,00 €</div></div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Ligure Mule</div><div class="item-desc">Vodka, limone ligure, ginger beer, basilico fresco</div></div><div class="item-price">8,00 €</div></div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Alba Marina</div><div class="item-desc">Gin, limoncello artigianale, tonica, rosmarino e timo</div></div><div class="item-price">8,00 €</div></div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Beige Sand</div><div class="item-desc">Rum scuro, cocco, mango, lime, sciroppo alla cannella</div></div><div class="item-price">8,00 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Dolphin's Sunrise <span class="badge badge-new">NEW</span></div><div class="item-desc">Rum bianco, maracuja, ananas, lime, sciroppo cocco</div><div data-al="SO"></div></div><div class="item-price">8,00 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Ligure Mule</div><div class="item-desc">Vodka, limone ligure, ginger beer, basilico fresco</div><div data-al="G,SO"></div></div><div class="item-price">8,00 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Alba Marina</div><div class="item-desc">Gin, limoncello artigianale, tonica, rosmarino e timo</div><div data-al="SO"></div></div><div class="item-price">8,00 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Beige Sand</div><div class="item-desc">Rum scuro, cocco, mango, lime, sciroppo alla cannella</div><div data-al="SO"></div></div><div class="item-price">8,00 €</div></div>
+
   <div class="subsection-title">Classici</div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Mojito</div><div class="item-desc">Rum Havana 3, lime, zucchero di canna, menta, soda</div></div><div class="item-price">7,00 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Mojito</div><div class="item-desc">Rum Havana 3, lime, zucchero di canna, menta, soda</div><div data-al="SO"></div></div><div class="item-price">7,00 €</div></div>
   <div class="menu-item"><div class="item-left"><div class="item-name">Mojito Analcolico <span class="badge badge-veg">0%</span></div><div class="item-desc">Lime, zucchero di canna, menta, soda, ghiaccio</div></div><div class="item-price">6,00 €</div></div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Daiquiri alla Fragola</div><div class="item-desc">Rum bianco, fragole fresche, lime, zucchero</div></div><div class="item-price">7,00 €</div></div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Piña Colada</div><div class="item-desc">Rum, crema di cocco, ananas — classica o frozen</div></div><div class="item-price">8,00 €</div></div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Sex on the Beach</div><div class="item-desc">Vodka, Peach Schnapps, arancia, mirtillo rosso</div></div><div class="item-price">7,00 €</div></div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Margarita</div><div class="item-desc">Tequila Blanco, Triple Sec, lime, sale marino</div></div><div class="item-price">8,00 €</div></div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Tequila Sunrise</div><div class="item-desc">Tequila, succo d'arancia, sciroppo di granatina</div></div><div class="item-price">7,00 €</div></div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Espresso Martini</div><div class="item-desc">Vodka, Kahlúa, espresso doppio, sciroppo di zucchero</div></div><div class="item-price">8,00 €</div></div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Long Island Iced Tea</div><div class="item-desc">Vodka, Gin, Rum, Tequila, Triple Sec, cola, limone</div></div><div class="item-price">8,00 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Daiquiri alla Fragola</div><div class="item-desc">Rum bianco, fragole fresche, lime, zucchero</div><div data-al="SO"></div></div><div class="item-price">7,00 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Piña Colada</div><div class="item-desc">Rum, crema di cocco, ananas — classica o frozen</div><div data-al="SO"></div></div><div class="item-price">8,00 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Sex on the Beach</div><div class="item-desc">Vodka, Peach Schnapps, arancia, mirtillo rosso</div><div data-al="SO"></div></div><div class="item-price">7,00 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Margarita</div><div class="item-desc">Tequila Blanco, Triple Sec, lime, sale marino</div><div data-al="SO"></div></div><div class="item-price">8,00 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Tequila Sunrise</div><div class="item-desc">Tequila, succo d'arancia, sciroppo di granatina</div><div data-al="SO"></div></div><div class="item-price">7,00 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Espresso Martini</div><div class="item-desc">Vodka, Kahlúa, espresso doppio, sciroppo di zucchero</div><div data-al="G,L,SO"></div></div><div class="item-price">8,00 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Long Island Iced Tea</div><div class="item-desc">Vodka, Gin, Rum, Tequila, Triple Sec, cola, limone</div><div data-al="SO"></div></div><div class="item-price">8,00 €</div></div>
+
   <div class="subsection-title">Shots & Digestivi</div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Limoncello di Sorrento</div></div><div class="item-price">3,50 €</div></div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Amaro del Capo / Montenegro / Averna</div></div><div class="item-price">4,00 €</div></div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Sambuca / Grappa Ligure</div></div><div class="item-price">3,50 €</div></div>
-  <div class="menu-item"><div class="item-left"><div class="item-name">Fernet Branca</div></div><div class="item-price">4,00 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Limoncello di Sorrento</div><div data-al="SO"></div></div><div class="item-price">3,50 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Amaro del Capo / Montenegro / Averna</div><div data-al="SO"></div></div><div class="item-price">4,00 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Sambuca / Grappa Ligure</div><div data-al="SO"></div></div><div class="item-price">3,50 €</div></div>
+  <div class="menu-item"><div class="item-left"><div class="item-name">Fernet Branca</div><div data-al="SO"></div></div><div class="item-price">4,00 €</div></div>
+</div>
+
+<!-- LEGENDA ALLERGENI -->
+<div class="allergen-legend">
+  <h3>Legenda Allergeni</h3>
+  <div class="legend-grid">
+    <div class="legend-item"><svg viewBox="0 0 24 24" fill="none" stroke="#C8A96E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a5 5 0 0 1 5 5c0 3-2 5-5 8-3-3-5-5-5-8a5 5 0 0 1 5-5zm0 4v6m-2-3h4"/></svg><span>G</span> Glutine</div>
+    <div class="legend-item"><svg viewBox="0 0 24 24" fill="none" stroke="#C8A96E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h8l2 6H6L8 2zM6 8v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V8"/></svg><span>L</span> Latte</div>
+    <div class="legend-item"><svg viewBox="0 0 24 24" fill="none" stroke="#C8A96E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C9 2 6 6 6 10a6 6 0 0 0 12 0C18 6 15 2 12 2z"/></svg><span>U</span> Uova</div>
+    <div class="legend-item"><svg viewBox="0 0 24 24" fill="none" stroke="#C8A96E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s4-6 10-6 10 6 10 6-4 6-10 6S2 12 2 12zm10 0a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm6-1 3-3m-3 7 3 3"/></svg><span>P</span> Pesce</div>
+    <div class="legend-item"><svg viewBox="0 0 24 24" fill="none" stroke="#C8A96E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c-2 0-4 2-4 4s2 4 4 4 4-2 4-4-2-4-4-4zm-6 8c-2 1-3 3-2 5l2 5h12l2-5c1-2 0-4-2-5"/></svg><span>C</span> Crostacei</div>
+    <div class="legend-item"><svg viewBox="0 0 24 24" fill="none" stroke="#C8A96E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3C8 3 5 7 5 12s3 9 7 9 7-4 7-9-3-9-7-9zm0 4v5l3 3"/></svg><span>M</span> Molluschi</div>
+    <div class="legend-item"><svg viewBox="0 0 24 24" fill="none" stroke="#C8A96E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18"/></svg><span>SO</span> Solfiti</div>
+    <div class="legend-item"><svg viewBox="0 0 24 24" fill="none" stroke="#C8A96E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22V12m0 0C12 7 8 4 4 3m8 9c0-5 4-8 8-9M7 17c1-2 3-4 5-5m0 0c2 1 4 3 5 5"/></svg><span>SE</span> Sedano</div>
+    <div class="legend-item"><svg viewBox="0 0 24 24" fill="none" stroke="#C8A96E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 7h7l-6 4 2 7-6-4-6 4 2-7-6-4h7z"/></svg><span>SN</span> Senape</div>
+    <div class="legend-item"><svg viewBox="0 0 24 24" fill="none" stroke="#C8A96E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6zm-6 8a3 3 0 1 0 0 6 3 3 0 0 0 0-6zm12 0a3 3 0 1 0 0 6 3 3 0 0 0 0-6zm-6 8a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/></svg><span>S</span> Sesamo</div>
+    <div class="legend-item"><svg viewBox="0 0 24 24" fill="none" stroke="#C8A96E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3C6 3 4 5 4 8c0 4 4 6 8 6s8-2 8-6c0-3-2-5-4-5-1 0-2 1-4 1s-3-1-4-1z"/></svg><span>A</span> Arachidi</div>
+    <div class="legend-item"><svg viewBox="0 0 24 24" fill="none" stroke="#C8A96E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8C8 10 5.9 16.17 3.82 19.34L5.71 21l1-1 1 1 1-1 1 1 1-1 1 1 1.71-1.71C10.93 18 12 17 14 17c3 0 5-2 5-5 0-1-.5-2.5-2-4z"/></svg><span>F</span> Frutta a guscio</div>
+    <div class="legend-item"><svg viewBox="0 0 24 24" fill="none" stroke="#C8A96E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm-1 14v-4H7l5-8v4h4l-5 8z"/></svg><span>SO2</span> Soia</div>
+    <div class="legend-item"><svg viewBox="0 0 24 24" fill="none" stroke="#C8A96E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C9 2 7 4 7 7s2 5 5 7c3-2 5-4 5-7s-2-5-5-5zm0 14c-3 2-7 3-7 6h14c0-3-4-4-7-6z"/></svg><span>LU</span> Lupino</div>
+  </div>
+  <p style="font-size:9px;color:#888;margin-top:14px;line-height:1.6;">Per allergie o intolleranze non indicate, chiedi al nostro staff. Le informazioni sugli allergeni si riferiscono agli ingredienti utilizzati nella preparazione. Possibile contaminazione crociata in cucina.</p>
 </div>
 
 <div class="divider-wave">· · ·</div>
