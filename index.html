@@ -1,0 +1,1979 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dolphin's Beach Bar — User Mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root {
+  --hero-photo: url("./booking-hero.png");
+  --bg-sky: #cfe8ff;
+  --bg-sand: #f5efe5;
+  --card: rgba(255,255,255,.92);
+  --card-strong: #fffdf9;
+  --line: #ede3d3;
+  --ink: #30453c;
+  --muted: #7f8f86;
+  --green-900: #334940;
+  --green-700: #4a685d;
+  --green-500: #709788;
+  --green-300: #b8d1c4;
+  --green-100: #edf5f1;
+  --coral-500: #e4957e;
+  --coral-200: #f6d8ce;
+  --gold-500: #c8a157;
+  --gold-300: #e2c68c;
+  --shadow-phone: 0 24px 60px rgba(41, 48, 42, .28);
+  --shadow-card: 0 14px 32px rgba(57, 72, 63, .08);
+  --font-ui: "Instrument Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display: "Fraunces", Georgia, serif;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; }
+body {
+  font-family: var(--font-ui);
+  color: var(--ink);
+  background:
+    linear-gradient(180deg, #e6f1fb 0%, #eef6fb 28%, #f7f0e5 68%, #efe1c8 100%);
+}
+
+.stage {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px 40px;
+  position: relative;
+  overflow: visible;
+}
+
+.backdrop-card {
+  display: none;
+}
+
+.phone {
+  position: relative;
+  z-index: 2;
+  width: min(100%, 460px);
+}
+
+.screen {
+  position: relative;
+  overflow: hidden;
+  min-height: 820px;
+  border-radius: 32px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.98) 0%, #fffdf9 100%);
+  box-shadow: 0 24px 60px rgba(44, 55, 49, .14);
+  border: 1px solid rgba(255,255,255,.7);
+}
+.statusbar {
+  display: none;
+}
+
+.hero {
+  position: relative;
+  margin: 12px 12px 0;
+  border-radius: 24px;
+  overflow: hidden;
+  min-height: 248px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.12)),
+    var(--hero-photo) center 36%/cover no-repeat;
+}
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 54%;
+  background: linear-gradient(180deg, rgba(255,255,255,0), rgba(255,255,255,.78) 48%, rgba(255,255,255,.98) 100%);
+  z-index: 2;
+}
+.hero-inner-scene {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.02)),
+    var(--hero-photo) center 32%/cover no-repeat;
+  filter: saturate(1.02);
+}
+.hero-inner-scene > * {
+  display: none;
+}
+
+.hero-logo {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  text-align: center;
+  color: #2f433b;
+  text-shadow: none;
+  padding: 10px 18px 8px;
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.72));
+  box-shadow: 0 10px 24px rgba(41, 57, 49, .10);
+  backdrop-filter: blur(8px);
+}
+.hero-logo-mark {
+  width: 20px;
+  height: 20px;
+  margin: 0 auto;
+}
+.hero-logo-name {
+  font-family: var(--font-display);
+  font-size: 18px;
+  line-height: 1;
+  margin-top: 2px;
+}
+.hero-logo-sub {
+  font-size: 8px;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: rgba(58,80,69,.78);
+  margin-top: 3px;
+}
+
+.hero-copy {
+  position: relative;
+  z-index: 3;
+  text-align: center;
+  padding: 150px 24px 22px;
+}
+.hero-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 23px;
+  line-height: 1.04;
+  letter-spacing: -.04em;
+  color: #3b4e45;
+}
+.hero-sub {
+  margin: 8px 0 0;
+  font-size: 13px;
+  line-height: 1.4;
+  color: #8b978f;
+}
+
+.panel {
+  padding: 0 12px 16px;
+}
+.segment {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 2px;
+}
+.segment button {
+  height: 44px;
+  border-radius: 15px;
+  background: white;
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+  box-shadow: var(--shadow-card);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.segment button.active {
+  background: linear-gradient(180deg, #455f54 0%, #385247 100%);
+  color: white;
+  border-color: transparent;
+  box-shadow: 0 12px 22px rgba(52, 80, 71, .22);
+}
+
+.row-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 10px;
+  min-height: 48px;
+  padding: 0 14px;
+  border-radius: 16px;
+  background: var(--card-strong);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-card);
+}
+.row-card.buttonlike {
+  cursor: pointer;
+}
+.row-card.small {
+  gap: 10px;
+  justify-content: space-between;
+}
+.row-icon {
+  width: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #85958c;
+}
+.row-label {
+  color: #7b8d84;
+  font-size: 13px;
+  font-weight: 600;
+}
+.row-value {
+  margin-left: auto;
+  font-size: 13px;
+  font-weight: 600;
+  color: #566960;
+}
+.row-chevron {
+  color: #98a59f;
+  font-size: 12px;
+}
+
+.section {
+  margin-top: 14px;
+}
+.section-title {
+  margin: 0 4px 8px;
+  color: #84958c;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .08em;
+}
+.chips {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.chip {
+  height: 42px;
+  border-radius: 15px;
+  border: 1px solid var(--line);
+  background: var(--card-strong);
+  color: #768880;
+  font-size: 13px;
+  font-weight: 700;
+  box-shadow: var(--shadow-card);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.chip.active {
+  background: linear-gradient(180deg, #3f5a4f 0%, #31483f 100%);
+  color: white;
+  border-color: transparent;
+}
+.chips.two {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.map-card {
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 20px;
+  background: linear-gradient(180deg, #ffffff 0%, #fffdf8 100%);
+  border: 1px solid #eee6d8;
+  box-shadow: var(--shadow-card);
+}
+.map {
+  position: relative;
+  overflow: hidden;
+  padding: 54px 12px 18px;
+  border-radius: 18px;
+  background:
+    linear-gradient(180deg, #96d8f0 0%, #d9f3fb 18%, #f2e4c3 18%, #ebddb8 100%);
+  min-height: 310px;
+}
+.map::before {
+  content: "MARE";
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255,255,255,.96);
+  font-size: 10px;
+  letter-spacing: .38em;
+  font-weight: 700;
+}
+.map-grid {
+  display: grid;
+  gap: 10px;
+  margin-top: 28px;
+}
+.map-row {
+  display: grid;
+  grid-template-columns: 18px repeat(9, 1fr);
+  gap: 7px;
+  align-items: center;
+}
+.map-row-label {
+  color: #8e9a93;
+  font-size: 10px;
+  font-weight: 700;
+}
+.spot {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background:
+    conic-gradient(from 0deg, currentColor 0 45deg, #fff 45deg 90deg, currentColor 90deg 135deg, #fff 135deg 180deg, currentColor 180deg 225deg, #fff 225deg 270deg, currentColor 270deg 315deg, #fff 315deg 360deg);
+  color: var(--green-500);
+  box-shadow: 0 6px 12px rgba(68, 96, 85, .14);
+}
+.spot::before {
+  content: attr(data-id);
+  position: absolute;
+  top: -11px;
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 14px;
+  padding: 1px 3px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.95);
+  color: #7d8a84;
+  font-size: 8px;
+  font-weight: 700;
+}
+.spot.occupied {
+  color: var(--coral-500);
+}
+.spot.unavailable {
+  color: #d7d3c8;
+  opacity: .72;
+  box-shadow: 0 5px 10px rgba(126, 127, 120, .08);
+}
+.spot.selected {
+  color: #5b9384;
+  box-shadow: 0 10px 18px rgba(83, 134, 120, .28);
+}
+.spot.selected::after {
+  content: "✓";
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.floating-pick {
+  margin-top: 10px;
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: rgba(255,255,255,.98);
+  box-shadow: 0 18px 28px rgba(61, 81, 71, .16);
+  text-align: left;
+}
+.pick-code {
+  font-size: 13px;
+  font-weight: 700;
+  color: #49685d;
+}
+.pick-meta {
+  margin-top: 2px;
+  font-size: 9px;
+  color: #94a199;
+}
+.pick-price {
+  margin-top: 8px;
+  font-family: var(--font-display);
+  font-size: 21px;
+  line-height: 1;
+}
+
+.legend {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+  margin-top: 10px;
+}
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #8d9b94;
+  font-size: 11px;
+}
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.legend-dot.available { background: var(--green-500); }
+.legend-dot.occupied { background: var(--coral-500); }
+.availability-note {
+  margin-top: 10px;
+  text-align: center;
+  color: #8f9c95;
+  font-size: 11px;
+  line-height: 1.45;
+}
+.availability-note.error {
+  color: #b66d62;
+}
+.availability-note.loading {
+  color: #788881;
+}
+
+.summary {
+  margin-top: 12px;
+  padding: 14px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #fffefb 0%, #f8f1e4 100%);
+  border: 1px solid #ecdfcb;
+}
+.summary-title {
+  margin: 0 0 10px;
+  font-family: var(--font-display);
+  font-size: 15px;
+  color: #4d6158;
+}
+.summary-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 30px;
+  color: #7d8f86;
+  font-size: 12px;
+}
+.summary-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.summary-row strong {
+  margin-left: auto;
+  color: #51645c;
+  font-size: 12px;
+}
+.summary-row.total strong {
+  font-size: 15px;
+  color: #2e433a;
+}
+
+.step {
+  display: block;
+}
+
+.step-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.step-back {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,.92);
+  color: #61756b;
+  box-shadow: var(--shadow-card);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.step-kicker {
+  margin: 0;
+  color: #9aa79f;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.step-heading {
+  margin: 4px 0 0;
+  font-family: var(--font-display);
+  font-size: 21px;
+  line-height: 1.05;
+  color: #3a4f45;
+}
+
+.mini-summary {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(255,255,255,.98), rgba(251,246,238,.98));
+  border: 1px solid #eee1cd;
+  box-shadow: var(--shadow-card);
+}
+
+.mini-summary-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.mini-summary-title {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: #95a39b;
+}
+
+.mini-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 24px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: #eef4f0;
+  color: #5f756b;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.mini-summary-main {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.mini-summary-label {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 20px;
+  line-height: 1.02;
+  color: #3d5249;
+}
+
+.mini-summary-sub {
+  margin: 4px 0 0;
+  color: #93a099;
+  font-size: 12px;
+}
+
+.mini-summary-price {
+  font-family: var(--font-display);
+  font-size: 28px;
+  line-height: 1;
+  color: #2f463d;
+  white-space: nowrap;
+}
+
+.form-card {
+  margin-top: 12px;
+  padding: 14px;
+  border-radius: 20px;
+  background: linear-gradient(180deg, #fffefb 0%, #fdf8f0 100%);
+  border: 1px solid #eee2d0;
+  box-shadow: var(--shadow-card);
+}
+
+.form-intro {
+  margin: 0 0 12px;
+  color: #8c9991;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.form-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.field-row.two {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.field-label {
+  display: block;
+  margin: 0 0 6px 2px;
+  color: #7f8f87;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.field-input,
+.field-textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  background: rgba(255,255,255,.96);
+  color: #385046;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.8);
+}
+
+.field-input {
+  height: 48px;
+  padding: 0 14px;
+}
+
+.field-textarea {
+  min-height: 92px;
+  padding: 12px 14px;
+  resize: vertical;
+}
+
+.field-input::placeholder,
+.field-textarea::placeholder {
+  color: #a8b1ac;
+}
+
+.check-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: rgba(255,255,255,.8);
+  border: 1px solid #eee4d6;
+}
+
+.check-card input {
+  margin-top: 2px;
+  accent-color: #466156;
+}
+
+.check-copy {
+  color: #819089;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.ghost-cta {
+  width: 100%;
+  height: 46px;
+  margin-top: 10px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,.92);
+  color: #61756b;
+  font-size: 14px;
+  font-weight: 700;
+  box-shadow: var(--shadow-card);
+}
+
+.payment-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.payment-option {
+  display: block;
+  cursor: pointer;
+}
+
+.payment-option input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.payment-shell {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px;
+  border-radius: 18px;
+  border: 1px solid #eadfce;
+  background: rgba(255,255,255,.94);
+  box-shadow: var(--shadow-card);
+  transition: border-color .15s ease, box-shadow .15s ease, transform .15s ease;
+}
+
+.payment-option input:checked + .payment-shell {
+  border-color: rgba(199, 161, 87, .72);
+  box-shadow: 0 16px 28px rgba(193, 154, 76, .16);
+  transform: translateY(-1px);
+}
+
+.payment-mark {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  border-radius: 50%;
+  border: 1.5px solid #d8c6a2;
+  background: white;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.payment-option input:checked + .payment-shell .payment-mark::after {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #d4b26f 0%, #bd9248 100%);
+}
+
+.payment-copy {
+  flex: 1;
+  min-width: 0;
+}
+
+.payment-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  color: #40564d;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.payment-price {
+  color: #b2873f;
+  white-space: nowrap;
+}
+
+.payment-sub {
+  margin-top: 4px;
+  color: #8c9992;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.closing-summary {
+  margin-top: 12px;
+  padding: 14px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #fffefb 0%, #f7f0e3 100%);
+  border: 1px solid #eadcca;
+}
+
+.closing-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 30px;
+  color: #7e8f87;
+  font-size: 12px;
+}
+
+.closing-line strong {
+  color: #42584e;
+  font-size: 12px;
+}
+
+.closing-line.total strong {
+  font-family: var(--font-display);
+  font-size: 22px;
+  color: #2f463d;
+}
+
+.fineprint {
+  margin: 10px 4px 0;
+  color: #9aa6a0;
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.success-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  align-items: end;
+  justify-content: center;
+  padding: 18px;
+  background: rgba(35, 43, 38, .46);
+  backdrop-filter: blur(8px);
+}
+
+.success-card {
+  width: min(100%, 390px);
+  padding: 20px 18px 18px;
+  border-radius: 28px;
+  background: linear-gradient(180deg, #fffefc 0%, #f8f1e4 100%);
+  border: 1px solid #eadcca;
+  box-shadow: 0 24px 44px rgba(42, 54, 47, .20);
+}
+
+.success-mark {
+  width: 54px;
+  height: 54px;
+  display: grid;
+  place-items: center;
+  margin: 0 auto 12px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #547366 0%, #3c5449 100%);
+  color: white;
+}
+
+.success-title {
+  margin: 0;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 26px;
+  line-height: 1.02;
+  color: #354b41;
+}
+
+.success-sub {
+  margin: 8px 0 0;
+  text-align: center;
+  color: #84938b;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.success-details {
+  margin-top: 16px;
+  padding: 14px;
+  border-radius: 18px;
+  background: rgba(255,255,255,.78);
+  border: 1px solid #ece1d1;
+}
+
+.success-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 32px;
+  color: #7d8d85;
+  font-size: 12px;
+}
+
+.success-row strong {
+  color: #3f554c;
+  font-size: 13px;
+  text-align: right;
+}
+
+.cta {
+  width: 100%;
+  height: 48px;
+  margin-top: 12px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #cca75f 0%, #c39a4c 100%);
+  color: white;
+  font-size: 15px;
+  font-weight: 700;
+  box-shadow: 0 14px 22px rgba(193, 154, 76, .22);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.icon {
+  width: 16px;
+  height: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.icon.sm {
+  width: 14px;
+  height: 14px;
+}
+.icon.md {
+  width: 18px;
+  height: 18px;
+}
+.icon.lg {
+  width: 22px;
+  height: 22px;
+}
+.safe-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 10px;
+  color: #a1aba6;
+  font-size: 11px;
+}
+.hidden {
+  display: none !important;
+}
+.hint-note {
+  margin: 8px 4px 0;
+  color: #9aa6a0;
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+@media (max-width: 560px) {
+  .stage {
+    padding: 0;
+  }
+  .phone {
+    width: 100%;
+    min-height: 100vh;
+    border-radius: 0;
+  }
+  .screen {
+    min-height: 100vh;
+    border-radius: 0;
+    box-shadow: none;
+    border: 0;
+  }
+  .hero {
+    margin: 0;
+    border-radius: 0 0 28px 28px;
+  }
+  .statusbar {
+    padding-top: 16px;
+  }
+  .panel {
+    padding: 0 14px 18px;
+  }
+}
+</style>
+</head>
+<body>
+  <div class="stage">
+    <div class="phone">
+      <div class="screen">
+        <section class="hero">
+          <div class="hero-inner-scene" aria-hidden="true">
+            <div class="hero-inner-club">
+              <div class="hero-inner-main"></div>
+              <div class="hero-inner-sign"></div>
+            </div>
+            <div class="hero-sand-furniture">
+              <div class="hero-small-umb s1"></div>
+              <div class="hero-small-umb s2"></div>
+              <div class="hero-small-umb s3"></div>
+              <div class="hero-bed b1"></div>
+              <div class="hero-bed b2"></div>
+              <div class="hero-bed b3"></div>
+              <div class="hero-bed b4"></div>
+            </div>
+          </div>
+          <div class="hero-logo">
+            <div class="hero-logo-mark"><span class="icon lg" id="heroLogoIcon"></span></div>
+            <div class="hero-logo-name">Dolphin's</div>
+            <div class="hero-logo-sub">Beach Bar</div>
+          </div>
+          <div class="hero-copy">
+            <h1 class="hero-title">Prenota il tuo<br>ombrellone o lettino</h1>
+            <p class="hero-sub">Scegli la tua postazione e goditi la giornata.</p>
+          </div>
+        </section>
+
+        <div class="panel">
+          <section class="step" id="stepSelection">
+          <div class="segment">
+            <button class="active" type="button" data-kind="umbrella"><span class="icon sm" data-icon="umbrella"></span>Ombrellone</button>
+            <button type="button" data-kind="sunbed"><span class="icon sm" data-icon="sunbed"></span>Lettino</button>
+          </div>
+
+          <button class="row-card buttonlike" type="button" id="dateButton">
+            <div class="row-icon"><span class="icon sm" data-icon="calendar"></span></div>
+            <div class="row-label">Data</div>
+            <div class="row-value" id="dateValue">02 maggio 2026</div>
+            <div class="row-chevron">⌄</div>
+          </button>
+          <input type="date" id="dateInput" class="hidden" value="2026-05-02">
+
+          <div class="section">
+            <p class="section-title">Tipo di prenotazione</p>
+            <div class="chips">
+              <button class="chip active" type="button" data-type="daily"><span class="icon sm" data-icon="sun"></span>Giornata</button>
+              <button class="chip" type="button" data-type="am"><span class="icon sm" data-icon="sunrise"></span>Mattina</button>
+              <button class="chip" type="button" data-type="pm"><span class="icon sm" data-icon="sunset"></span>Pomeriggio</button>
+            </div>
+          </div>
+
+          <div class="map-card" id="umbrellaMapCard">
+            <div class="map">
+              <div class="map-grid" id="mapGrid"></div>
+            </div>
+
+            <div class="legend">
+              <div class="legend-item"><span class="legend-dot available"></span> Disponibile</div>
+              <div class="legend-item"><span class="legend-dot occupied"></span> Occupato</div>
+            </div>
+            <div class="floating-pick hidden" id="floatingPick">
+              <div class="pick-code" id="pickCode">A3</div>
+              <div class="pick-meta" id="pickMeta">Prima fila • Centrale</div>
+              <div class="pick-price" id="pickPrice">25€</div>
+            </div>
+            <div class="availability-note" id="availabilityNote">Disponibilità in caricamento…</div>
+          </div>
+
+          <div class="map-card hidden" id="sunbedCard">
+            <div class="section-title" style="margin:0 2px 10px">Scegli quanti lettini vuoi</div>
+            <div class="chips two" id="sunbedQtyChips">
+              <button class="chip active" type="button" data-qty="1">1 lettino</button>
+              <button class="chip" type="button" data-qty="2">2 lettini</button>
+            </div>
+            <p class="hint-note">Zona spiaggia libera attrezzata. La postazione precisa verrà assegnata all'arrivo.</p>
+            <div class="availability-note" id="sunbedAvailabilityNote">Disponibilità lettini in caricamento…</div>
+          </div>
+
+          <div class="summary">
+            <h3 class="summary-title">Riepilogo prenotazione</h3>
+            <div class="summary-row"><span class="summary-label"><span class="icon sm" data-icon="calendar"></span>Data</span><strong id="summaryDate">02 maggio 2026</strong></div>
+            <div class="summary-row"><span class="summary-label" id="summaryLabelIcon"><span class="icon sm" data-icon="umbrella"></span>Postazione</span><strong id="summarySpot">Ombrellone A3</strong></div>
+            <div class="summary-row total"><span class="summary-label"><span class="icon sm" data-icon="tag"></span>Totale</span><strong id="summaryTotal">25,00 €</strong></div>
+          </div>
+
+          <button class="cta" type="button" id="continueBtn">Continua <span class="icon sm" data-icon="arrow-right"></span></button>
+          <div class="safe-note"><span class="icon sm" data-icon="lock"></span>Prenotazione sicura e conferma immediata</div>
+          </section>
+
+          <section class="step hidden" id="stepCustomer">
+            <div class="step-header">
+              <button class="step-back" type="button" id="backToSelection"><span class="icon sm" data-icon="chevron-left"></span></button>
+              <div style="flex:1">
+                <p class="step-kicker">Step 2 di 3</p>
+                <h2 class="step-heading">I tuoi dati per<br>confermare</h2>
+              </div>
+            </div>
+
+            <div class="mini-summary">
+              <div class="mini-summary-top">
+                <p class="mini-summary-title">Selezione attuale</p>
+                <span class="mini-badge" id="customerSummaryBadge">Ombrellone</span>
+              </div>
+              <div class="mini-summary-main">
+                <div>
+                  <p class="mini-summary-label" id="customerSummarySpot">Ombrellone A3</p>
+                  <p class="mini-summary-sub" id="customerSummaryMeta">02 maggio 2026 • Giornata</p>
+                </div>
+                <div class="mini-summary-price" id="customerSummaryTotal">25,00 €</div>
+              </div>
+            </div>
+
+            <div class="form-card">
+              <p class="form-intro">Inserisci i tuoi dati per ricevere conferma immediata e dettagli della prenotazione.</p>
+
+              <div class="form-grid">
+                <div class="field-row two">
+                  <label>
+                    <span class="field-label">Nome</span>
+                    <input class="field-input" id="guestFirstName" type="text" placeholder="Francesco">
+                  </label>
+                  <label>
+                    <span class="field-label">Cognome</span>
+                    <input class="field-input" id="guestLastName" type="text" placeholder="Serra">
+                  </label>
+                </div>
+
+                <label>
+                  <span class="field-label">Telefono</span>
+                  <input class="field-input" id="guestPhone" type="tel" inputmode="tel" placeholder="+39 340 000 0000">
+                </label>
+
+                <label>
+                  <span class="field-label">Email</span>
+                  <input class="field-input" id="guestEmail" type="email" inputmode="email" placeholder="nome@email.com">
+                </label>
+
+                <label>
+                  <span class="field-label">Note opzionali</span>
+                  <textarea class="field-textarea" id="guestNotes" placeholder="Orario di arrivo, richieste particolari, preferenze..."></textarea>
+                </label>
+              </div>
+            </div>
+
+            <label class="check-card">
+              <input id="privacyCheck" type="checkbox">
+              <span class="check-copy">Accetto di essere ricontattato per la gestione della prenotazione e confermo che i dati inseriti sono corretti.</span>
+            </label>
+
+            <button class="cta" type="button" id="goToPaymentBtn">Vai al riepilogo <span class="icon sm" data-icon="arrow-right"></span></button>
+            <button class="ghost-cta" type="button" id="changeSelectionBtn">Modifica selezione</button>
+            <div class="safe-note"><span class="icon sm" data-icon="lock"></span>I dati sono usati solo per la tua prenotazione</div>
+          </section>
+
+          <section class="step hidden" id="stepPayment">
+            <div class="step-header">
+              <button class="step-back" type="button" id="backToCustomer"><span class="icon sm" data-icon="chevron-left"></span></button>
+              <div style="flex:1">
+                <p class="step-kicker">Step 3 di 3</p>
+                <h2 class="step-heading">Conferma e<br>pagamento</h2>
+              </div>
+            </div>
+
+            <div class="mini-summary">
+              <div class="mini-summary-top">
+                <p class="mini-summary-title">La tua prenotazione</p>
+                <span class="mini-badge" id="paymentSummaryBadge">Ombrellone</span>
+              </div>
+              <div class="mini-summary-main">
+                <div>
+                  <p class="mini-summary-label" id="paymentSummarySpot">Ombrellone A3</p>
+                  <p class="mini-summary-sub" id="paymentSummaryMeta">02 maggio 2026 • Giornata</p>
+                </div>
+                <div class="mini-summary-price" id="paymentSummaryTotal">25,00 €</div>
+              </div>
+            </div>
+
+            <div class="form-card">
+              <p class="form-intro">Scegli come vuoi confermare la prenotazione. Puoi versare un acconto oppure saldare tutto subito.</p>
+
+              <div class="payment-grid">
+                <label class="payment-option">
+                  <input type="radio" name="paymentMode" value="deposit" checked>
+                  <span class="payment-shell">
+                    <span class="payment-mark"></span>
+                    <span class="payment-copy">
+                      <span class="payment-title">
+                        <span>Acconto 30%</span>
+                        <span class="payment-price" id="depositAmount">7,50 €</span>
+                      </span>
+                      <span class="payment-sub">Blocchi subito la postazione e saldi il resto in spiaggia.</span>
+                    </span>
+                  </span>
+                </label>
+
+                <label class="payment-option">
+                  <input type="radio" name="paymentMode" value="full">
+                  <span class="payment-shell">
+                    <span class="payment-mark"></span>
+                    <span class="payment-copy">
+                      <span class="payment-title">
+                        <span>Pagamento completo</span>
+                        <span class="payment-price" id="fullAmount">25,00 €</span>
+                      </span>
+                      <span class="payment-sub">Conferma immediata e nessun saldo residuo all'arrivo.</span>
+                    </span>
+                  </span>
+                </label>
+              </div>
+            </div>
+
+            <div class="closing-summary">
+              <div class="closing-line"><span>Cliente</span><strong id="closingGuest">Francesco Serra</strong></div>
+              <div class="closing-line"><span>Contatto</span><strong id="closingContact">+39 340 000 0000</strong></div>
+              <div class="closing-line"><span>Formula scelta</span><strong id="closingPaymentMode">Acconto 30%</strong></div>
+              <div class="closing-line total"><span>Da pagare ora</span><strong id="closingPayNow">7,50 €</strong></div>
+            </div>
+
+            <button class="cta" type="button" id="confirmBookingBtn">Conferma e paga <span class="icon sm" data-icon="arrow-right"></span></button>
+            <button class="ghost-cta" type="button" id="editCustomerBtn">Modifica dati cliente</button>
+            <p class="fineprint">Nel prodotto finale qui entreranno il checkout reale, il link di pagamento e la conferma automatica nel gestionale.</p>
+          </section>
+        </div>
+
+        <div class="success-sheet hidden" id="successSheet">
+          <div class="success-card">
+            <div class="success-mark"><span class="icon lg" data-icon="check"></span></div>
+            <h3 class="success-title">Prenotazione<br>ricevuta</h3>
+            <p class="success-sub">La tua richiesta è entrata nel gestionale. Riceverai conferma e dettagli pagamento al recapito indicato.</p>
+            <div class="success-details">
+              <div class="success-row"><span>Codice pratica</span><strong id="successBookingId">—</strong></div>
+              <div class="success-row"><span>Postazione</span><strong id="successBookingSpot">—</strong></div>
+              <div class="success-row"><span>Data</span><strong id="successBookingDate">—</strong></div>
+              <div class="success-row"><span>Da pagare ora</span><strong id="successBookingAmount">—</strong></div>
+            </div>
+            <button class="cta" type="button" id="closeSuccessBtn">Chiudi</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<script>
+const SUPABASE_URL = 'https://aupzdwkrvjoibphowmnp.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_VUmZIAFnHt36sKI4s6ESIg_x6WyxPHU';
+const OPERATING_TIME_ZONE = 'Europe/Rome';
+const PUBLIC_SUNBED_CAPACITY = 12;
+
+let sb = null;
+let availabilityChannel = null;
+
+if (window.supabase) {
+  sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+    }
+  });
+}
+
+const liveState = {
+  loading: false,
+  error: '',
+  umbrellas: [],
+  occupiedUmbrellaIds: new Set(),
+  unavailableUmbrellaIds: new Set(),
+  sunbedsBookedQty: 0,
+};
+
+function getRomeToday() {
+  const formatter = new Intl.DateTimeFormat('en-CA', {
+    timeZone: OPERATING_TIME_ZONE,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  });
+  return formatter.format(new Date());
+}
+
+const bookingState = {
+  step: 'selection',
+  kind: 'umbrella',
+  date: getRomeToday(),
+  bookingType: 'daily',
+  selectedSpot: 'A3',
+  sunbedQty: 1,
+  hasUserPickedSpot: false,
+};
+
+const customerState = {
+  firstName: '',
+  lastName: '',
+  phone: '',
+  email: '',
+  notes: '',
+  acceptedPrivacy: false,
+};
+
+const paymentState = {
+  mode: 'deposit',
+};
+
+let isSubmittingBooking = false;
+let lastBookingResult = null;
+
+const pricing = {
+  umbrella: { daily: 25, am: 15, pm: 15 },
+  sunbed: { daily: 12, am: 8, pm: 8 },
+};
+
+const ICONS = {
+  logo: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15c2.2-3.7 5.1-5.5 8.7-5.5 2.7 0 4.9.9 6.8 2.8-2 .2-3.2.9-3.8 2.1-1.5-1.1-3-1.6-4.7-1.6-2.1 0-4.2.8-6.2 2.2"/><path d="M7 18c3.2.9 6.4.9 9.6 0"/></svg>',
+  umbrella: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v10"/><path d="M4 11a8 8 0 0 1 16 0"/><path d="M6 11c.8 0 1.4.3 2 .9.6-.6 1.2-.9 2-.9s1.4.3 2 .9c.6-.6 1.2-.9 2-.9s1.4.3 2 .9c.6-.6 1.2-.9 2-.9"/><path d="M12 13v4a2 2 0 0 0 4 0"/></svg>',
+  sunbed: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14h10l4 4"/><path d="M5 10h7a2 2 0 0 1 2 2v2"/><path d="M4 18h16"/><path d="M6 6h4"/></svg>',
+  calendar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M8 3v4M16 3v4M4 9h16"/></svg>',
+  sun: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M2 12h3M19 12h3M4.9 19.1 7 17M17 7l2.1-2.1"/></svg>',
+  sunrise: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17h16"/><path d="M7 17a5 5 0 0 1 10 0"/><path d="M12 4v4"/><path d="M5 10l2 2M19 10l-2 2M3 14h2M19 14h2"/></svg>',
+  sunset: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17h16"/><path d="M7 17a5 5 0 0 1 10 0"/><path d="M12 10v4"/><path d="m9 12 3 3 3-3M3 14h2M19 14h2"/></svg>',
+  tag: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13 11 22 2 13V4h9l9 9Z"/><circle cx="7.5" cy="8.5" r="1"/></svg>',
+  lock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="3"/><path d="M8 11V8a4 4 0 1 1 8 0v3"/></svg>',
+  chevronLeft: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>',
+  arrowRight: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>',
+  check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>',
+};
+
+function paintStaticIcons() {
+  document.querySelectorAll('[data-icon]').forEach(node => {
+    const key = node.dataset.icon;
+    if (key === 'arrow-right') node.innerHTML = ICONS.arrowRight;
+    else if (key === 'chevron-left') node.innerHTML = ICONS.chevronLeft;
+    else if (key === 'calendar') node.innerHTML = ICONS.calendar;
+    else if (key === 'umbrella') node.innerHTML = ICONS.umbrella;
+    else if (key === 'sunbed') node.innerHTML = ICONS.sunbed;
+    else if (key === 'sun') node.innerHTML = ICONS.sun;
+    else if (key === 'sunrise') node.innerHTML = ICONS.sunrise;
+    else if (key === 'sunset') node.innerHTML = ICONS.sunset;
+    else if (key === 'tag') node.innerHTML = ICONS.tag;
+    else if (key === 'lock') node.innerHTML = ICONS.lock;
+    else if (key === 'check') node.innerHTML = ICONS.check;
+  });
+  const heroLogoIcon = document.getElementById('heroLogoIcon');
+  if (heroLogoIcon) heroLogoIcon.innerHTML = ICONS.logo;
+}
+
+function createFallbackUmbrellas() {
+  const rows = ['A', 'B', 'C', 'D', 'E'];
+  const items = [];
+  let id = 1;
+  rows.forEach(rowLabel => {
+    for (let colNumber = 1; colNumber <= 9; colNumber += 1) {
+      items.push({
+        id,
+        row_label: rowLabel,
+        col_number: colNumber,
+        state: 'active',
+        active: true,
+      });
+      id += 1;
+    }
+  });
+  return items;
+}
+
+function formatItalianDate(dateValue) {
+  const date = new Date(dateValue + 'T12:00:00');
+  return date.toLocaleDateString('it-IT', {
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric',
+  });
+}
+
+function getSpotMeta(code) {
+  const row = code.slice(0, 1);
+  const number = Number(code.slice(1));
+  const rowRank = row === 'A' ? 'Prima fila' : row === 'B' ? 'Seconda fila' : row === 'C' ? 'Terza fila' : row === 'D' ? 'Quarta fila' : 'Quinta fila';
+  const zone = number <= 3 ? 'Sinistra' : number <= 6 ? 'Centrale' : 'Destra';
+  return `${rowRank} • ${zone}`;
+}
+
+function getCurrentTotal() {
+  if (bookingState.kind === 'umbrella') {
+    return pricing.umbrella[bookingState.bookingType];
+  }
+  return pricing.sunbed[bookingState.bookingType] * bookingState.sunbedQty;
+}
+
+function normalizeBookingType(type) {
+  if (type === 'am') return 'half_day_am';
+  if (type === 'pm') return 'half_day_pm';
+  return 'daily';
+}
+
+function bookingOccupiesSlot(existingType, desiredType) {
+  const normalizedDesired = normalizeBookingType(desiredType);
+  if (!existingType || existingType === 'daily') return true;
+  if (existingType === 'reduced_nursery') return normalizedDesired !== 'half_day_pm';
+  if (normalizedDesired === 'daily') return true;
+  return existingType === normalizedDesired;
+}
+
+function getUmbrellaCode(umbrella) {
+  if (umbrella?.row_label && umbrella?.col_number != null) {
+    return `${umbrella.row_label}${umbrella.col_number}`;
+  }
+  return `U${umbrella?.id ?? ''}`;
+}
+
+function getSelectedUmbrella() {
+  return liveState.umbrellas.find(umbrella => getUmbrellaCode(umbrella) === bookingState.selectedSpot) || null;
+}
+
+function getUmbrellaAvailability(umbrella) {
+  if (!umbrella) return 'occupied';
+  if (liveState.unavailableUmbrellaIds.has(umbrella.id)) return 'unavailable';
+  if (liveState.occupiedUmbrellaIds.has(umbrella.id)) return 'occupied';
+  return 'available';
+}
+
+function getFirstAvailableUmbrellaCode() {
+  const available = liveState.umbrellas.find(umbrella => getUmbrellaAvailability(umbrella) === 'available');
+  return available ? getUmbrellaCode(available) : '';
+}
+
+function getSunbedsRemaining() {
+  return Math.max(0, PUBLIC_SUNBED_CAPACITY - liveState.sunbedsBookedQty);
+}
+
+function renderMapGrid() {
+  const mapGrid = document.getElementById('mapGrid');
+  if (!mapGrid) return;
+  mapGrid.innerHTML = '';
+
+  const umbrellas = [...liveState.umbrellas].sort((left, right) => {
+    if ((left.row_label || '') !== (right.row_label || '')) return String(left.row_label || '').localeCompare(String(right.row_label || ''));
+    return Number(left.col_number || 0) - Number(right.col_number || 0);
+  });
+
+  const rows = umbrellas.reduce((accumulator, umbrella) => {
+    const rowLabel = umbrella.row_label || '?';
+    (accumulator[rowLabel] ||= []).push(umbrella);
+    return accumulator;
+  }, {});
+
+  Object.entries(rows).forEach(([rowLabel, rowItems]) => {
+    const row = document.createElement('div');
+    row.className = 'map-row';
+
+    const label = document.createElement('div');
+    label.className = 'map-row-label';
+    label.textContent = rowLabel;
+    row.appendChild(label);
+
+    rowItems.forEach(umbrella => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'spot';
+      button.dataset.id = String(umbrella.id);
+      button.dataset.code = getUmbrellaCode(umbrella);
+      button.setAttribute('aria-label', `Ombrellone ${getUmbrellaCode(umbrella)}`);
+
+      const availability = getUmbrellaAvailability(umbrella);
+      if (availability !== 'available') {
+        button.classList.add(availability);
+        button.disabled = true;
+      }
+
+      if (availability === 'available' && bookingState.kind === 'umbrella' && bookingState.selectedSpot === getUmbrellaCode(umbrella)) {
+        button.classList.add('selected');
+      }
+
+      button.addEventListener('click', () => {
+        if (bookingState.selectedSpot === getUmbrellaCode(umbrella) && bookingState.hasUserPickedSpot) {
+          bookingState.hasUserPickedSpot = false;
+          renderState();
+          return;
+        }
+        bookingState.kind = 'umbrella';
+        bookingState.selectedSpot = getUmbrellaCode(umbrella);
+        bookingState.hasUserPickedSpot = true;
+        renderState();
+      });
+
+      row.appendChild(button);
+    });
+
+    mapGrid.appendChild(row);
+  });
+}
+
+async function loadLivePricing() {
+  if (!sb) return;
+  const { data, error } = await sb
+    .from('pricing')
+    .select('product_type, booking_type, price, active')
+    .eq('active', true);
+  if (error) return;
+
+  (data || []).forEach(item => {
+    if (item.product_type === 'umbrella_package') {
+      if (item.booking_type === 'daily') pricing.umbrella.daily = item.price;
+      if (item.booking_type === 'half_day_am') pricing.umbrella.am = item.price;
+      if (item.booking_type === 'half_day_pm') pricing.umbrella.pm = item.price;
+    }
+    if (item.product_type === 'single_sunbed') {
+      if (item.booking_type === 'daily') pricing.sunbed.daily = item.price;
+      if (item.booking_type === 'half_day_am') pricing.sunbed.am = item.price;
+      if (item.booking_type === 'half_day_pm') pricing.sunbed.pm = item.price;
+    }
+  });
+}
+
+async function loadAvailability() {
+  liveState.loading = true;
+  liveState.error = '';
+  renderState();
+
+  if (!sb) {
+    liveState.umbrellas = createFallbackUmbrellas();
+    liveState.occupiedUmbrellaIds = new Set();
+    liveState.unavailableUmbrellaIds = new Set();
+    liveState.sunbedsBookedQty = 0;
+    liveState.loading = false;
+    renderState();
+    return;
+  }
+
+  try {
+    const date = bookingState.date;
+    const desiredType = bookingState.bookingType;
+    const [umbrellasRes, bookingsRes, outagesRes, sunbedsRes] = await Promise.all([
+      sb.from('umbrellas').select('id, row_label, col_number, state').order('id'),
+      sb.from('bookings').select('id, umbrella_id, booking_type, status, date_from, date_to').lte('date_from', date).gte('date_to', date),
+      sb.from('umbrella_outages').select('umbrella_id, date_from, date_to').lte('date_from', date).or(`date_to.gte.${date},date_to.is.null`),
+      sb.from('single_sunbed_bookings').select('quantity, booking_type, status, date_booking').eq('date_booking', date),
+    ]);
+
+    if (umbrellasRes.error) throw umbrellasRes.error;
+    if (bookingsRes.error) throw bookingsRes.error;
+    if (outagesRes.error) throw outagesRes.error;
+    if (sunbedsRes.error) throw sunbedsRes.error;
+
+    liveState.umbrellas = (umbrellasRes.data || []).map(umbrella => ({
+      ...umbrella,
+      active: umbrella.state === 'active',
+    }));
+    if (!liveState.umbrellas.length) {
+      liveState.umbrellas = createFallbackUmbrellas();
+    }
+
+    const blockedBookings = (bookingsRes.data || []).filter(booking => {
+      if (['cancelled', 'completed'].includes(booking.status)) return false;
+      return bookingOccupiesSlot(booking.booking_type, desiredType);
+    });
+
+    liveState.occupiedUmbrellaIds = new Set(blockedBookings.map(booking => booking.umbrella_id));
+    liveState.unavailableUmbrellaIds = new Set([
+      ...liveState.umbrellas.filter(umbrella => umbrella.state !== 'active').map(umbrella => umbrella.id),
+      ...(outagesRes.data || []).map(item => item.umbrella_id),
+    ]);
+
+    const activeSunbeds = (sunbedsRes.data || []).filter(item => !['cancelled', 'completed'].includes(item.status));
+    liveState.sunbedsBookedQty = activeSunbeds
+      .filter(item => bookingOccupiesSlot(item.booking_type, desiredType))
+      .reduce((total, item) => total + Number(item.quantity || 0), 0);
+
+    const selectedUmbrella = getSelectedUmbrella();
+    if (!selectedUmbrella || getUmbrellaAvailability(selectedUmbrella) !== 'available') {
+      bookingState.selectedSpot = getFirstAvailableUmbrellaCode();
+    }
+  } catch (error) {
+    liveState.error = error?.message || 'Impossibile leggere la disponibilità live';
+    if (!liveState.umbrellas.length) {
+      liveState.umbrellas = createFallbackUmbrellas();
+    }
+  } finally {
+    liveState.loading = false;
+    renderState();
+  }
+}
+
+function setupRealtime() {
+  if (!sb || availabilityChannel) return;
+  availabilityChannel = sb
+    .channel('public-booking-live')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'bookings' }, () => {
+      loadAvailability();
+    })
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'single_sunbed_bookings' }, () => {
+      loadAvailability();
+    })
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'umbrella_outages' }, () => {
+      loadAvailability();
+    })
+    .subscribe();
+}
+
+async function findOrCreateCustomer() {
+  const phone = customerState.phone || null;
+  const email = customerState.email || null;
+  let customerId = null;
+
+  if (phone) {
+    const { data: existingByPhone, error: phoneError } = await sb
+      .from('customers')
+      .select('id')
+      .eq('phone', phone)
+      .eq('first_name', customerState.firstName)
+      .eq('last_name', customerState.lastName)
+      .maybeSingle();
+    if (phoneError) throw phoneError;
+    if (existingByPhone) customerId = existingByPhone.id;
+  }
+
+  if (!customerId && email) {
+    const { data: existingByEmail, error: emailError } = await sb
+      .from('customers')
+      .select('id')
+      .eq('email', email)
+      .maybeSingle();
+    if (emailError) throw emailError;
+    if (existingByEmail) customerId = existingByEmail.id;
+  }
+
+  if (!customerId) {
+    const { data, error } = await sb
+      .from('customers')
+      .insert({
+        first_name: customerState.firstName,
+        last_name: customerState.lastName,
+        phone,
+        email,
+      })
+      .select('id')
+      .single();
+    if (error) throw error;
+    customerId = data.id;
+  }
+
+  return customerId;
+}
+
+async function submitPublicBooking() {
+  if (!sb) throw new Error('Connessione database non disponibile');
+
+  await loadAvailability();
+  const customerId = await findOrCreateCustomer();
+  const total = getCurrentTotal();
+  const payNow = getPayNowAmount();
+
+  if (bookingState.kind === 'umbrella') {
+    const selectedUmbrella = getSelectedUmbrella();
+    if (!selectedUmbrella || getUmbrellaAvailability(selectedUmbrella) !== 'available') {
+      throw new Error('Questo ombrellone non è più disponibile');
+    }
+
+    const payload = {
+      umbrella_id: selectedUmbrella.id,
+      customer_id: customerId,
+      booking_type: normalizeBookingType(bookingState.bookingType),
+      date_from: bookingState.date,
+      date_to: bookingState.date,
+      adults: 2,
+      children: 0,
+      disability_discount: false,
+      price_base: total,
+      price_extras: 0,
+      price_total: total,
+      price_paid: 0,
+      deposit_amount: paymentState.mode === 'deposit' ? payNow : 0,
+      deposit_token: paymentState.mode === 'deposit' ? generateToken() : null,
+      deposit_expires_at: paymentState.mode === 'deposit' ? new Date(Date.now() + 72 * 3600 * 1000).toISOString() : null,
+      payment_status: 'pending',
+      status: 'confirmed',
+      source: 'staff',
+      notes: getPublicBookingNote() || null,
+    };
+
+    const { data, error } = await sb.from('bookings').insert(payload).select('id').single();
+    if (error) throw error;
+    return { kind: 'umbrella', bookingId: data.id, label: bookingState.selectedSpot };
+  }
+
+  const remaining = getSunbedsRemaining();
+  if (remaining < bookingState.sunbedQty) {
+    throw new Error('I lettini selezionati non sono più disponibili');
+  }
+
+  const payload = {
+    customer_id: customerId,
+    booking_type: normalizeBookingType(bookingState.bookingType),
+    date_booking: bookingState.date,
+    quantity: bookingState.sunbedQty,
+    price_unit: pricing.sunbed[bookingState.bookingType],
+    price_total: total,
+    disability_discount: false,
+    status: 'confirmed',
+    payment_status: 'pending',
+    notes: getPublicBookingNote() || null,
+  };
+
+  const { data, error } = await sb.from('single_sunbed_bookings').insert(payload).select('id').single();
+  if (error) throw error;
+  return { kind: 'sunbed', bookingId: data.id, label: `${bookingState.sunbedQty} lettino${bookingState.sunbedQty > 1 ? 'i' : ''}` };
+}
+
+function getBookingTypeLabel(type) {
+  if (type === 'am') return 'Mattina';
+  if (type === 'pm') return 'Pomeriggio';
+  return 'Giornata';
+}
+
+function formatEuro(value) {
+  return `${value.toFixed(2).replace('.', ',')} €`;
+}
+
+function getPayNowAmount() {
+  const total = getCurrentTotal();
+  if (paymentState.mode === 'full') return total;
+  return total * 0.3;
+}
+
+function generateToken() {
+  return Math.random().toString(36).slice(2, 10).toUpperCase();
+}
+
+function getCustomerFullName() {
+  return `${customerState.firstName || 'Cliente'} ${customerState.lastName || ''}`.trim();
+}
+
+function getPublicBookingNote() {
+  const parts = [];
+  if (customerState.notes) parts.push(customerState.notes);
+  parts.push(paymentState.mode === 'full' ? 'Pagamento completo richiesto da app utente' : 'Acconto 30% richiesto da app utente');
+  return parts.join(' | ');
+}
+
+function resetBookingFlow() {
+  bookingState.step = 'selection';
+  bookingState.hasUserPickedSpot = false;
+  customerState.firstName = '';
+  customerState.lastName = '';
+  customerState.phone = '';
+  customerState.email = '';
+  customerState.notes = '';
+  customerState.acceptedPrivacy = false;
+  paymentState.mode = 'deposit';
+  document.getElementById('guestFirstName').value = '';
+  document.getElementById('guestLastName').value = '';
+  document.getElementById('guestPhone').value = '';
+  document.getElementById('guestEmail').value = '';
+  document.getElementById('guestNotes').value = '';
+  document.getElementById('privacyCheck').checked = false;
+}
+
+function openSuccessSheet(result) {
+  lastBookingResult = result;
+  document.getElementById('successBookingId').textContent = result.bookingId;
+  document.getElementById('successBookingSpot').textContent = result.kind === 'umbrella' ? `Ombrellone ${result.label}` : result.label;
+  document.getElementById('successBookingDate').textContent = formatItalianDate(bookingState.date);
+  document.getElementById('successBookingAmount').textContent = formatEuro(getPayNowAmount());
+  document.getElementById('successSheet').classList.remove('hidden');
+}
+
+function closeSuccessSheet() {
+  document.getElementById('successSheet').classList.add('hidden');
+  lastBookingResult = null;
+}
+
+function renderStep() {
+  document.getElementById('stepSelection').classList.toggle('hidden', bookingState.step !== 'selection');
+  document.getElementById('stepCustomer').classList.toggle('hidden', bookingState.step !== 'customer');
+  document.getElementById('stepPayment').classList.toggle('hidden', bookingState.step !== 'payment');
+}
+
+function renderState() {
+  renderStep();
+  renderMapGrid();
+
+  document.querySelectorAll('.segment button').forEach(button => {
+    button.classList.toggle('active', button.dataset.kind === bookingState.kind);
+  });
+
+  document.querySelectorAll('.chips:not(#sunbedQtyChips) .chip').forEach(button => {
+    button.classList.toggle('active', button.dataset.type === bookingState.bookingType);
+  });
+
+  document.querySelectorAll('#sunbedQtyChips .chip').forEach(button => {
+    button.classList.toggle('active', Number(button.dataset.qty) === bookingState.sunbedQty);
+  });
+
+  document.getElementById('dateInput').value = bookingState.date;
+  document.getElementById('dateValue').textContent = formatItalianDate(bookingState.date);
+  document.getElementById('summaryDate').textContent = formatItalianDate(bookingState.date);
+
+  const isUmbrella = bookingState.kind === 'umbrella';
+  document.getElementById('umbrellaMapCard').classList.toggle('hidden', !isUmbrella);
+  document.getElementById('sunbedCard').classList.toggle('hidden', isUmbrella);
+
+  const availabilityNote = document.getElementById('availabilityNote');
+  availabilityNote.className = 'availability-note';
+  if (liveState.loading) {
+    availabilityNote.textContent = 'Disponibilità live in caricamento…';
+    availabilityNote.classList.add('loading');
+  } else if (liveState.error) {
+    availabilityNote.textContent = 'Live non disponibile ora: sto mostrando la mappa ma non la disponibilità aggiornata.';
+    availabilityNote.classList.add('error');
+  } else {
+    const availableCount = liveState.umbrellas.filter(umbrella => getUmbrellaAvailability(umbrella) === 'available').length;
+    availabilityNote.textContent = `${availableCount} ombrelloni prenotabili per ${getBookingTypeLabel(bookingState.bookingType).toLowerCase()}.`;
+  }
+
+  const sunbedAvailabilityNote = document.getElementById('sunbedAvailabilityNote');
+  const sunbedsRemaining = getSunbedsRemaining();
+  sunbedAvailabilityNote.className = 'availability-note';
+  if (liveState.loading) {
+    sunbedAvailabilityNote.textContent = 'Disponibilità lettini in caricamento…';
+    sunbedAvailabilityNote.classList.add('loading');
+  } else if (liveState.error) {
+    sunbedAvailabilityNote.textContent = 'Disponibilità lettini non aggiornata in questo momento.';
+    sunbedAvailabilityNote.classList.add('error');
+  } else if (sunbedsRemaining > 0) {
+    sunbedAvailabilityNote.textContent = `${sunbedsRemaining} lettini ancora prenotabili per questa fascia.`;
+  } else {
+    sunbedAvailabilityNote.textContent = 'Lettini terminati per questa fascia oraria.';
+    sunbedAvailabilityNote.classList.add('error');
+  }
+
+  document.querySelectorAll('#sunbedQtyChips .chip').forEach(button => {
+    const qty = Number(button.dataset.qty);
+    button.disabled = qty > sunbedsRemaining;
+    button.style.opacity = qty > sunbedsRemaining ? '.5' : '1';
+  });
+  if (bookingState.sunbedQty > Math.max(1, sunbedsRemaining) && sunbedsRemaining > 0) {
+    bookingState.sunbedQty = Math.min(bookingState.sunbedQty, sunbedsRemaining);
+  }
+
+  if (isUmbrella) {
+    const selectedUmbrella = getSelectedUmbrella();
+    const currentCode = selectedUmbrella ? getUmbrellaCode(selectedUmbrella) : bookingState.selectedSpot || '—';
+    document.getElementById('floatingPick').classList.toggle('hidden', !bookingState.hasUserPickedSpot || currentCode === '—');
+    document.getElementById('pickCode').textContent = currentCode;
+    document.getElementById('pickMeta').textContent = selectedUmbrella ? getSpotMeta(currentCode) : 'Disponibilità da aggiornare';
+    document.getElementById('pickPrice').textContent = `${pricing.umbrella[bookingState.bookingType]}€`;
+    document.getElementById('summaryLabelIcon').innerHTML = `<span class="icon sm">${ICONS.umbrella}</span>Postazione`;
+    document.getElementById('summarySpot').textContent = currentCode !== '—' ? `Ombrellone ${currentCode}` : 'Seleziona un ombrellone';
+    document.getElementById('customerSummaryBadge').textContent = 'Ombrellone';
+    document.getElementById('customerSummarySpot').textContent = currentCode !== '—' ? `Ombrellone ${currentCode}` : 'Seleziona un ombrellone';
+  } else {
+    document.getElementById('floatingPick').classList.add('hidden');
+    document.getElementById('summaryLabelIcon').innerHTML = `<span class="icon sm">${ICONS.sunbed}</span>Selezione`;
+    document.getElementById('summarySpot').textContent = `${bookingState.sunbedQty} lettino${bookingState.sunbedQty > 1 ? 'i' : ''}`;
+    document.getElementById('customerSummaryBadge').textContent = 'Lettino';
+    document.getElementById('customerSummarySpot').textContent = `${bookingState.sunbedQty} lettino${bookingState.sunbedQty > 1 ? 'i' : ''}`;
+  }
+
+  const total = getCurrentTotal();
+  document.getElementById('summaryTotal').textContent = formatEuro(total);
+  document.getElementById('customerSummaryMeta').textContent = `${formatItalianDate(bookingState.date)} • ${getBookingTypeLabel(bookingState.bookingType)}`;
+  document.getElementById('customerSummaryTotal').textContent = formatEuro(total);
+  document.getElementById('paymentSummaryMeta').textContent = `${formatItalianDate(bookingState.date)} • ${getBookingTypeLabel(bookingState.bookingType)}`;
+  document.getElementById('paymentSummaryTotal').textContent = formatEuro(total);
+  document.getElementById('depositAmount').textContent = formatEuro(total * 0.3);
+  document.getElementById('fullAmount').textContent = formatEuro(total);
+  document.getElementById('closingGuest').textContent = `${customerState.firstName || 'Cliente'} ${customerState.lastName || ''}`.trim();
+  document.getElementById('closingContact').textContent = customerState.phone || 'Contatto da inserire';
+  document.getElementById('closingPaymentMode').textContent = paymentState.mode === 'full' ? 'Pagamento completo' : 'Acconto 30%';
+  document.getElementById('closingPayNow').textContent = formatEuro(getPayNowAmount());
+  document.getElementById('privacyCheck').checked = customerState.acceptedPrivacy;
+
+  document.querySelectorAll('input[name="paymentMode"]').forEach(input => {
+    input.checked = input.value === paymentState.mode;
+  });
+
+  if (isUmbrella) {
+    document.getElementById('paymentSummaryBadge').textContent = 'Ombrellone';
+    document.getElementById('paymentSummarySpot').textContent = `Ombrellone ${bookingState.selectedSpot}`;
+  } else {
+    document.getElementById('paymentSummaryBadge').textContent = 'Lettino';
+    document.getElementById('paymentSummarySpot').textContent = `${bookingState.sunbedQty} lettino${bookingState.sunbedQty > 1 ? 'i' : ''}`;
+  }
+}
+
+function collectCustomerState() {
+  customerState.firstName = document.getElementById('guestFirstName').value.trim();
+  customerState.lastName = document.getElementById('guestLastName').value.trim();
+  customerState.phone = document.getElementById('guestPhone').value.trim();
+  customerState.email = document.getElementById('guestEmail').value.trim();
+  customerState.notes = document.getElementById('guestNotes').value.trim();
+  customerState.acceptedPrivacy = document.getElementById('privacyCheck').checked;
+}
+
+document.getElementById('dateButton').addEventListener('click', () => {
+  document.getElementById('dateInput').showPicker?.();
+  document.getElementById('dateInput').click();
+});
+
+document.getElementById('dateInput').addEventListener('change', event => {
+  bookingState.date = event.target.value;
+  loadAvailability();
+});
+
+document.querySelectorAll('.segment button').forEach(button => {
+  button.addEventListener('click', () => {
+    bookingState.kind = button.dataset.kind;
+    renderState();
+  });
+});
+
+document.querySelectorAll('.chips:not(#sunbedQtyChips) .chip').forEach(button => {
+  button.addEventListener('click', () => {
+    bookingState.bookingType = button.dataset.type;
+    loadAvailability();
+  });
+});
+
+document.querySelectorAll('#sunbedQtyChips .chip').forEach(button => {
+  button.addEventListener('click', () => {
+    bookingState.sunbedQty = Number(button.dataset.qty);
+    renderState();
+  });
+});
+
+document.getElementById('continueBtn').addEventListener('click', () => {
+  if (bookingState.kind === 'umbrella' && !bookingState.selectedSpot) {
+    alert('Nessun ombrellone disponibile per questa data e fascia oraria.');
+    return;
+  }
+  if (bookingState.kind === 'sunbed' && getSunbedsRemaining() <= 0) {
+    alert('Nessun lettino disponibile per questa fascia oraria.');
+    return;
+  }
+  bookingState.step = 'customer';
+  renderState();
+});
+
+document.getElementById('backToSelection').addEventListener('click', () => {
+  collectCustomerState();
+  bookingState.step = 'selection';
+  renderState();
+});
+
+document.getElementById('changeSelectionBtn').addEventListener('click', () => {
+  collectCustomerState();
+  bookingState.step = 'selection';
+  renderState();
+});
+
+document.getElementById('goToPaymentBtn').addEventListener('click', () => {
+  collectCustomerState();
+  const missing = [];
+  if (!customerState.firstName) missing.push('nome');
+  if (!customerState.lastName) missing.push('cognome');
+  if (!customerState.phone) missing.push('telefono');
+  if (!customerState.email) missing.push('email');
+  if (!customerState.acceptedPrivacy) missing.push('privacy');
+
+  if (missing.length) {
+    alert(`Completa: ${missing.join(', ')}.`);
+    return;
+  }
+
+  bookingState.step = 'payment';
+  renderState();
+});
+
+document.getElementById('backToCustomer').addEventListener('click', () => {
+  bookingState.step = 'customer';
+  renderState();
+});
+
+document.getElementById('editCustomerBtn').addEventListener('click', () => {
+  bookingState.step = 'customer';
+  renderState();
+});
+
+document.querySelectorAll('input[name="paymentMode"]').forEach(input => {
+  input.addEventListener('change', () => {
+    paymentState.mode = input.value;
+    renderState();
+  });
+});
+
+document.getElementById('confirmBookingBtn').addEventListener('click', async () => {
+  if (isSubmittingBooking) return;
+  isSubmittingBooking = true;
+
+  const button = document.getElementById('confirmBookingBtn');
+  const originalLabel = button.textContent;
+  button.textContent = 'Prenotazione in corso…';
+  button.disabled = true;
+
+  try {
+    const result = await submitPublicBooking();
+    await loadAvailability();
+    resetBookingFlow();
+    openSuccessSheet(result);
+  } catch (error) {
+    alert(`Errore: ${error?.message || 'prenotazione non riuscita'}`);
+  } finally {
+    isSubmittingBooking = false;
+    button.textContent = originalLabel;
+    button.disabled = false;
+    renderState();
+  }
+});
+
+async function initApp() {
+  liveState.umbrellas = createFallbackUmbrellas();
+  await loadLivePricing();
+  await loadAvailability();
+  setupRealtime();
+}
+
+window.addEventListener('focus', () => {
+  loadAvailability();
+});
+
+document.getElementById('closeSuccessBtn').addEventListener('click', () => {
+  closeSuccessSheet();
+  renderState();
+});
+
+initApp();
+paintStaticIcons();
+</script>
+</body>
+</html>
