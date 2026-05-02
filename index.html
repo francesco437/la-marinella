@@ -653,8 +653,8 @@ body {
   align-items: flex-start;
   gap: 10px;
   margin-top: 12px;
-  padding: 12px 14px;
-  border-radius: 16px;
+  padding: 10px 12px;
+  border-radius: 14px;
   background: rgba(255,255,255,.8);
   border: 1px solid #eee4d6;
 }
@@ -666,8 +666,8 @@ body {
 
 .check-copy {
   color: #819089;
-  font-size: 12px;
-  line-height: 1.45;
+  font-size: 11px;
+  line-height: 1.42;
 }
 
 .check-copy strong {
@@ -681,34 +681,35 @@ body {
 }
 
 .health-consent-card {
-  margin-top: 10px;
+  margin-top: 8px;
   background: linear-gradient(180deg, #fffaf5 0%, #fff4e8 100%);
   border-color: #eedbc0;
 }
 
 .legal-links {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 16px;
+  flex-wrap: wrap;
 }
 
 .legal-btn {
-  min-height: 42px;
-  padding: 0 10px;
-  border-radius: 14px;
-  border: 1px solid var(--line);
-  background: rgba(255,255,255,.94);
-  color: #61756b;
-  font-size: 12px;
+  min-height: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #768880;
+  font-size: 11px;
   font-weight: 700;
-  box-shadow: var(--shadow-card);
+  box-shadow: none;
 }
 
 .policy-note {
-  margin: 10px 4px 0;
+  margin: 8px 16px 0;
   color: #8e9c95;
-  font-size: 11px;
+  font-size: 10px;
   line-height: 1.45;
   text-align: center;
 }
@@ -1106,9 +1107,6 @@ body {
   .map-row {
     column-gap: 10px;
   }
-  .legal-links {
-    grid-template-columns: 1fr;
-  }
 }
 </style>
 </head>
@@ -1274,13 +1272,6 @@ body {
               <span class="check-copy">Richiedendo la tariffa agevolata, <strong>autodichiaro di avere i requisiti previsti</strong> e presto <strong>consenso esplicito</strong> al trattamento del dato relativo alla salute esclusivamente per applicare lo sconto e verificare il diritto in struttura.</span>
             </label>
 
-            <div class="legal-links">
-              <button class="legal-btn" type="button" data-open-policy="privacy">Privacy</button>
-              <button class="legal-btn" type="button" data-open-policy="terms">Termini</button>
-              <button class="legal-btn" type="button" data-open-policy="cookies">Cookie</button>
-            </div>
-            <div class="policy-note">Questa app non usa cookie di profilazione propri. Sono presenti solo strumenti tecnici necessari alla prenotazione.</div>
-
             <button class="cta" type="button" id="goToPaymentBtn">Vai al riepilogo <span class="icon sm" data-icon="arrow-right"></span></button>
             <button class="ghost-cta" type="button" id="changeSelectionBtn">Modifica selezione</button>
             <div class="safe-note"><span class="icon sm" data-icon="lock"></span>I dati sono usati solo per la tua prenotazione</div>
@@ -1354,6 +1345,13 @@ body {
             <button class="ghost-cta" type="button" id="editCustomerBtn">Modifica dati cliente</button>
             <p class="fineprint">Nel prodotto finale qui entreranno il checkout reale, il link di pagamento e la conferma automatica nel gestionale.</p>
           </section>
+
+          <div class="legal-links">
+            <button class="legal-btn" type="button" data-open-policy="privacy">Privacy</button>
+            <button class="legal-btn" type="button" data-open-policy="terms">Termini</button>
+            <button class="legal-btn" type="button" data-open-policy="cookies">Cookie</button>
+          </div>
+          <div class="policy-note">Questa app non usa cookie di profilazione propri. Sono presenti solo strumenti tecnici necessari alla prenotazione.</div>
         </div>
 
         <div class="success-sheet hidden" id="successSheet">
