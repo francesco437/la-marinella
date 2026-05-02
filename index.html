@@ -11,6 +11,7 @@
 <style>
 :root {
   --hero-photo: url("./booking-hero.png");
+  --brand-logo: url("./booking-logo.png");
   --bg-sky: #cfe8ff;
   --bg-sand: #f5efe5;
   --card: rgba(255,255,255,.92);
@@ -122,9 +123,10 @@ body {
   backdrop-filter: blur(8px);
 }
 .hero-logo-mark {
-  width: 20px;
-  height: 20px;
+  width: 40px;
+  height: 30px;
   margin: 0 auto;
+  background: var(--brand-logo) center/contain no-repeat;
 }
 .hero-logo-name {
   font-family: var(--font-display);
@@ -989,7 +991,7 @@ body {
             </div>
           </div>
           <div class="hero-logo">
-            <div class="hero-logo-mark"><span class="icon lg" id="heroLogoIcon"></span></div>
+            <div class="hero-logo-mark" aria-hidden="true"></div>
             <div class="hero-logo-name">Dolphin's</div>
             <div class="hero-logo-sub">Beach Bar</div>
           </div>
