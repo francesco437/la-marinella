@@ -2817,10 +2817,6 @@ tr:last-child td { border-bottom: none; }
           <div class="kpi-label">Occupazione</div>
           <div class="kpi-value" id="kpiOccupancy">–<small>%</small></div>
         </div>
-        <div class="kpi k-revenue">
-          <div class="kpi-label">Incasso giorno</div>
-          <div class="kpi-value" id="kpiRevenue">–<small>€</small></div>
-        </div>
         <div class="kpi k-free">
           <div class="kpi-label">Incassato</div>
           <div class="kpi-value" id="kpiPaid">–<small>€</small></div>
@@ -3367,6 +3363,7 @@ if (isConfigured) {
 // AUTH FLOW
 // ============================================================
 let currentUser = null;
+let bookingsRealtimeChannel = null;
 const LOCAL_AUTH_USERS = {
   eugenio: 'Eugenio',
   francesco: 'Francesco',
@@ -3442,6 +3439,10 @@ async function handleLogin(event) {
 async function handleLogout() {
   if (!confirm('Uscire dal gestionale?')) return;
   window.localStorage.removeItem(LOCAL_AUTH_STORAGE_KEY);
+  if (bookingsRealtimeChannel && sb?.removeChannel) {
+    try { await sb.removeChannel(bookingsRealtimeChannel); } catch (_) {}
+    bookingsRealtimeChannel = null;
+  }
   if (isConfigured && sb?.auth) {
     await sb.auth.signOut();
   }
@@ -3459,6 +3460,7 @@ const state = {
   sunbedsDate: getTodayInItaly(),
   umbrellas: [],
   bookings: [],          // prenotazioni che toccano currentDate
+  dailyFinance: { paid: 0, unpaid: 0 },
   allBookings: [],
   customers: [],
   pricing: [],
@@ -3534,10 +3536,37 @@ document.querySelectorAll('.nav-item').forEach(btn => {
   btn.addEventListener('click', () => switchView(btn.dataset.view));
 });
 
+function syncSharedDateInputs(value = state.currentDate) {
+  ['currentDate', 'bookingsDate', 'customersDate', 'plannerDateInput', 'cassaDateInput'].forEach(id => {
+    const input = document.getElementById(id);
+    if (input) input.value = value;
+  });
+}
+
+async function setOperationalDate(value, options = {}) {
+  if (!value) return;
+  const {
+    syncPlanner = true,
+    syncSunbeds = false,
+    refresh = true,
+  } = options;
+
+  state.currentDate = value;
+  if (syncPlanner) state.plannerStart = value;
+  if (syncSunbeds) state.sunbedsDate = value;
+
+  syncSharedDateInputs(value);
+  if (syncSunbeds) {
+    const sunbedsInput = document.getElementById('sunbedsDate');
+    if (sunbedsInput) sunbedsInput.value = value;
+  }
+
+  if (refresh) await loadForDate();
+}
+
 if (currentDateInput) {
   currentDateInput.addEventListener('change', e => {
-    state.currentDate = e.target.value;
-    loadForDate();
+    setOperationalDate(e.target.value);
   });
 }
 
@@ -3682,11 +3711,119 @@ async function loadExtras() {
   state.extras = data || [];
 }
 
+async function loadDailyFinance(date) {
+  const bookingStatusesForCassa = ['confirmed','checked_in','completed'];
+
+  if (!isConfigured) {
+    const bookings = DEMO_BOOKINGS.filter(b => b.date_from === date && bookingStatusesForCassa.includes(b.status));
+    const sunbeds = DEMO_SUNBED_BOOKINGS.filter(r => r.date_booking === date && bookingStatusesForCassa.includes(r.status));
+    const paid = bookings.reduce((sum, b) => sum + Number(b.price_paid || 0), 0)
+      + sunbeds.reduce((sum, r) => sum + (r.payment_status === 'paid' ? Number(r.price_total || 0) : 0), 0);
+    const unpaid = bookings.reduce((sum, b) => sum + Math.max(0, Number(b.price_total || 0) - Number(b.price_paid || 0)), 0)
+      + sunbeds.reduce((sum, r) => sum + (r.payment_status === 'paid' ? 0 : Number(r.price_total || 0)), 0);
+    return { paid, unpaid };
+  }
+
+  const [{ data: bookingData }, { data: sunbedData }, { data: dayPayments }] = await Promise.all([
+    sb.from('bookings')
+      .select('id, price_total, price_paid, payment_method, payment_status')
+      .eq('date_from', date)
+      .in('status', bookingStatusesForCassa),
+    sb.from('single_sunbed_bookings')
+      .select('id, price_total, payment_status')
+      .eq('date_booking', date)
+      .in('status', bookingStatusesForCassa),
+    sb.from('payments')
+      .select('booking_id, single_sunbed_booking_id, amount, method, type')
+      .gte('created_at', date + 'T00:00:00')
+      .lte('created_at', date + 'T23:59:59'),
+  ]);
+
+  const bookings = bookingData || [];
+  const sunbeds = sunbedData || [];
+  const payments = dayPayments || [];
+
+  const bookingIds = bookings.map(b => b.id);
+  const sunbedIds = sunbeds.map(r => r.id);
+
+  let bookingPayments = [];
+  let sunbedPayments = [];
+  if (bookingIds.length) {
+    const { data } = await sb.from('payments').select('booking_id, amount, type').in('booking_id', bookingIds);
+    bookingPayments = data || [];
+  }
+  if (sunbedIds.length) {
+    const { data } = await sb.from('payments').select('single_sunbed_booking_id, amount, type').in('single_sunbed_booking_id', sunbedIds);
+    sunbedPayments = data || [];
+  }
+
+  const bookingPaidMap = {};
+  bookingPayments.forEach(p => {
+    if (!p.booking_id) return;
+    const delta = p.type === 'refund' ? -Number(p.amount || 0) : Number(p.amount || 0);
+    bookingPaidMap[p.booking_id] = (bookingPaidMap[p.booking_id] || 0) + delta;
+  });
+
+  const sunbedPaidMap = {};
+  sunbedPayments.forEach(p => {
+    if (!p.single_sunbed_booking_id) return;
+    const delta = p.type === 'refund' ? -Number(p.amount || 0) : Number(p.amount || 0);
+    sunbedPaidMap[p.single_sunbed_booking_id] = (sunbedPaidMap[p.single_sunbed_booking_id] || 0) + delta;
+  });
+
+  const paymentEntries = [...payments];
+  const paymentKeys = new Set(paymentEntries.map(p =>
+    p.booking_id ? `booking:${p.booking_id}` :
+    p.single_sunbed_booking_id ? `sunbed:${p.single_sunbed_booking_id}` :
+    ''
+  ));
+
+  bookings.forEach(item => {
+    const paidAmount = Math.max(0, bookingPaidMap[item.id] ?? Number(item.price_paid || 0));
+    if (paidAmount > 0 && !paymentKeys.has(`booking:${item.id}`)) {
+      paymentEntries.push({
+        booking_id: item.id,
+        amount: paidAmount,
+        method: item.payment_method || 'cash',
+        type: 'payment',
+      });
+    }
+  });
+
+  sunbeds.forEach(item => {
+    const paidAmount = Math.max(0, sunbedPaidMap[item.id] || 0);
+    if (paidAmount > 0 && !paymentKeys.has(`sunbed:${item.id}`)) {
+      paymentEntries.push({
+        single_sunbed_booking_id: item.id,
+        amount: paidAmount,
+        method: 'cash',
+        type: 'payment',
+      });
+    }
+  });
+
+  const paid = paymentEntries.reduce((sum, p) => {
+    const delta = p.type === 'refund' ? -Number(p.amount || 0) : Number(p.amount || 0);
+    return sum + delta;
+  }, 0);
+
+  const unpaid = bookings.reduce((sum, item) => {
+    const paidAmount = Math.max(0, bookingPaidMap[item.id] ?? Number(item.price_paid || 0));
+    return sum + Math.max(0, Number(item.price_total || 0) - paidAmount);
+  }, 0) + sunbeds.reduce((sum, item) => {
+    const paidAmount = Math.max(0, sunbedPaidMap[item.id] || 0);
+    return sum + Math.max(0, Number(item.price_total || 0) - paidAmount);
+  }, 0);
+
+  return { paid, unpaid };
+}
+
 async function loadForDate() {
   if (!isConfigured) {
     state.bookings = DEMO_BOOKINGS.filter(b =>
       b.date_from <= state.currentDate && b.date_to >= state.currentDate
     );
+    state.dailyFinance = await loadDailyFinance(state.currentDate);
     render();
     return;
   }
@@ -3705,7 +3842,9 @@ async function loadForDate() {
     customer_phone: b.customers?.phone,
     customer_email: b.customers?.email,
   }));
+  state.dailyFinance = await loadDailyFinance(state.currentDate);
   render();
+  await refreshActiveViewData();
 }
 
 async function loadAllBookings() {
@@ -3785,7 +3924,8 @@ async function loadPlannerBookings() {
 // ============================================================
 function setupRealtime() {
   if (!isConfigured) return;
-  sb.channel('bookings-changes')
+  if (bookingsRealtimeChannel) return;
+  bookingsRealtimeChannel = sb.channel('bookings-changes')
     .on('postgres_changes', { event: '*', schema: 'public', table: 'bookings' }, () => {
       loadForDate();
       const visible = [...document.querySelectorAll('.view:not(.hidden)')][0]?.id;
@@ -3803,6 +3943,16 @@ function render() {
   renderMap();
   renderKPIs();
   renderArrivals();
+}
+
+function refreshActiveViewData() {
+  const visible = document.querySelector('.view:not(.hidden)')?.id;
+  if (visible === 'view-bookings') return loadAllBookings();
+  if (visible === 'view-customers') return loadCustomers();
+  if (visible === 'view-planner') return loadPlannerBookings();
+  if (visible === 'view-cassa') return loadCassa();
+  if (visible === 'view-sunbeds') return loadSunbeds();
+  if (visible === 'view-arrivals') return renderArrivals();
 }
 
 // Genera l'SVG dell'ombrellone a 8 spicchi alternati colorati/bianchi
@@ -3922,20 +4072,12 @@ function renderKPIs() {
   const booked = state.bookings.length;
   const free = total - booked;
   const occ = total > 0 ? Math.round((booked / total) * 100) : 0;
-  const revenue = state.bookings.reduce((s,b) => {
-    if (b.booking_type === 'daily' || (b.booking_type || '').startsWith('half_day')) {
-      return s + (b.price_total || 0);
-    }
-    const days = daysBetween(b.date_from, b.date_to) + 1;
-    return s + ((b.price_total || 0) / days);
-  }, 0);
-  const paid = state.bookings.reduce((s, b) => s + (b.price_paid || 0), 0);
-  const unpaid = state.bookings.reduce((s, b) => s + Math.max(0, (b.price_total || 0) - (b.price_paid || 0)), 0);
+  const paid = Number(state.dailyFinance?.paid || 0);
+  const unpaid = Number(state.dailyFinance?.unpaid || 0);
 
   document.getElementById('kpiBooked').innerHTML = `${booked}<small>/${total}</small>`;
   document.getElementById('kpiFree').textContent = free;
   document.getElementById('kpiOccupancy').innerHTML = `${occ}<small>%</small>`;
-  document.getElementById('kpiRevenue').innerHTML = `${Math.round(revenue)}<small>€</small>`;
   document.getElementById('kpiPaid').innerHTML = `${Math.round(paid)}<small>€</small>`;
   document.getElementById('kpiUnpaid').innerHTML = `${Math.round(unpaid)}<small>€</small>`;
 }
@@ -4237,7 +4379,7 @@ function renderPlanner(bookings) {
            <div class="planner-customer-meta">${typeLabel(booking.booking_type)} · ${formatDate(booking.date_from)}${booking.date_from !== booking.date_to ? ' → ' + formatDate(booking.date_to) : ''}</div>
            ${noteMarkup}`
         : `<div class="planner-empty">Postazione libera</div>`;
-      const clickAction = booking ? `openBookingFromPlanner('${booking.id}', ${u.id})` : `plannerCellClick(${u.id}, '${day}')`;
+      const clickAction = booking ? `openBookingFromPlanner('${booking.id}', ${u.id}, '${day}')` : `plannerCellClick(${u.id}, '${day}')`;
 
       return `
         <div class="planner-card ${rowState}${rowState === 'arrived' ? ' planner-card-arrived' : ''}" onclick="${clickAction}">
@@ -4290,25 +4432,23 @@ function renderPlanner(bookings) {
 }
 
 function plannerShift(delta) {
-  state.plannerStart = addDays(state.plannerStart, delta);
-  loadPlannerBookings();
+  setOperationalDate(addDays(state.plannerStart, delta));
 }
 
 function plannerToday() {
-  state.plannerStart = getTodayInItaly();
-  loadPlannerBookings();
+  setOperationalDate(getTodayInItaly());
 }
 
 function plannerPickDate(value) {
   if (!value) return;
-  state.plannerStart = value;
-  loadPlannerBookings();
+  setOperationalDate(value);
 }
 
 function plannerCellClick(umbrellaId, date) {
   const u = state.umbrellas.find(x => x.id === umbrellaId);
   state.currentDate = date;
-  document.getElementById('currentDate').value = date;
+  state.plannerStart = date;
+  syncSharedDateInputs(date);
   // cerca prenotazione esistente su questa data
   const booking = (state.allBookings.length ? state.allBookings : state.bookings).find(b =>
     b.umbrella_id === umbrellaId && b.date_from <= date && b.date_to >= date &&
@@ -4317,9 +4457,14 @@ function plannerCellClick(umbrellaId, date) {
   openModal(u, booking);
 }
 
-function openBookingFromPlanner(bookingId, umbrellaId) {
+function openBookingFromPlanner(bookingId, umbrellaId, day) {
   const u = state.umbrellas.find(x => x.id === umbrellaId);
   const booking = [...state.bookings, ...state.allBookings].find(b => b.id === bookingId);
+  if (day) {
+    state.currentDate = day;
+    state.plannerStart = day;
+    syncSharedDateInputs(day);
+  }
   openModal(u, booking);
 }
 
@@ -4408,7 +4553,7 @@ async function quickCheckIn(bookingId) {
   if (!isConfigured) {
     const b = DEMO_BOOKINGS.find(x => x.id === bookingId);
     if (b) b.arrived_at = new Date().toISOString();
-    loadForDate();
+    await loadForDate();
     toast('Check-in registrato (demo)', 'ok');
     return;
   }
@@ -4417,14 +4562,14 @@ async function quickCheckIn(bookingId) {
     .eq('id', bookingId);
   if (error) { toast('Errore check-in', 'err'); return; }
   toast('Check-in registrato', 'ok');
-  loadForDate();
+  await loadForDate();
 }
 
 async function quickDepart(bookingId) {
   if (!isConfigured) {
     const b = DEMO_BOOKINGS.find(x => x.id === bookingId);
     if (b) b.departed_at = new Date().toISOString();
-    loadForDate();
+    await loadForDate();
     toast('Partenza registrata (demo)', 'ok');
     return;
   }
@@ -4433,7 +4578,7 @@ async function quickDepart(bookingId) {
     .eq('id', bookingId);
   if (error) { toast('Errore partenza', 'err'); return; }
   toast('Partenza registrata', 'ok');
-  loadForDate();
+  await loadForDate();
 }
 
 // ============================================================
@@ -5022,7 +5167,6 @@ async function saveBooking() {
         deposit_amount: deposit,
         deposit_token: depositToken,
         deposit_expires_at: deposit > 0 ? new Date(Date.now() + 72*3600*1000).toISOString() : null,
-        payment_method: payment || null,
         payment_status: nextPaid >= total ? 'paid' : nextPaid > 0 ? 'partial' : 'pending',
         status: 'confirmed',
         source: 'staff',
@@ -5073,7 +5217,7 @@ async function saveBooking() {
     }
 
     multiClear();
-    loadForDate();
+    await loadForDate();
   } catch (e) {
     console.error(e);
     toast(e.message?.includes('overlap') ? 'Date sovrapposte già prenotate' : 'Errore: ' + (e.message || 'sconosciuto'), 'err');
@@ -5091,7 +5235,7 @@ async function deleteBooking() {
   if (error) { toast('Errore', 'err'); return; }
   toast('Prenotazione cancellata', 'ok');
   closeModal();
-  loadForDate();
+  await loadForDate();
 }
 
 async function checkIn() {
@@ -5102,7 +5246,7 @@ async function checkIn() {
     if (demo) demo.arrived_at = new Date().toISOString();
     toast('Check-in registrato (demo)', 'ok');
     closeModal();
-    loadForDate();
+    await loadForDate();
     return;
   }
   const { error } = await sb.from('bookings')
@@ -5111,7 +5255,7 @@ async function checkIn() {
   if (error) { toast('Errore check-in', 'err'); return; }
   toast('Check-in registrato', 'ok');
   closeModal();
-  loadForDate();
+  await loadForDate();
 }
 
 // ============================================================
@@ -5176,6 +5320,14 @@ function switchView(name) {
   document.getElementById('viewTitle').textContent = titles[name];
   document.getElementById('datePicker').style.visibility = (name === 'map' || name === 'arrivals') ? 'visible' : 'hidden';
 
+  if (name === 'planner') {
+    state.plannerStart = state.currentDate;
+    syncSharedDateInputs(state.currentDate);
+  }
+  if (name === 'bookings' || name === 'customers' || name === 'cassa') {
+    syncSharedDateInputs(state.currentDate);
+  }
+
   if (name === 'bookings') loadAllBookings();
   if (name === 'customers') loadCustomers();
   if (name === 'pricing') renderPricing();
@@ -5187,25 +5339,16 @@ function switchView(name) {
 }
 
 function shiftDate(delta) {
-  state.currentDate = addDays(state.currentDate, delta);
-  document.getElementById('currentDate').value = state.currentDate;
-  loadForDate();
+  setOperationalDate(addDays(state.currentDate, delta));
 }
 
 function goToday() {
-  state.currentDate = getTodayInItaly();
-  document.getElementById('currentDate').value = state.currentDate;
-  loadForDate();
+  setOperationalDate(getTodayInItaly());
 }
 
 function setBookingsDate(value) {
   if (!value) return;
-  state.currentDate = value;
-  const currentDateInput = document.getElementById('currentDate');
-  if (currentDateInput) currentDateInput.value = value;
-  const bookingsDateInput = document.getElementById('bookingsDate');
-  if (bookingsDateInput) bookingsDateInput.value = value;
-  loadAllBookings();
+  setOperationalDate(value);
 }
 
 function shiftBookingsDate(delta) {
@@ -5218,12 +5361,7 @@ function goTodayBookings() {
 
 function setCustomersDate(value) {
   if (!value) return;
-  state.currentDate = value;
-  const currentDateInput = document.getElementById('currentDate');
-  if (currentDateInput) currentDateInput.value = value;
-  const customersDateInput = document.getElementById('customersDate');
-  if (customersDateInput) customersDateInput.value = value;
-  loadCustomers();
+  setOperationalDate(value);
 }
 
 function shiftCustomersDate(delta) {
@@ -5507,6 +5645,7 @@ async function saveSunbedBooking() {
     toast('Lettino prenotato (demo)', 'ok');
     closeSunbedModal();
     loadSunbeds();
+    if (date === state.currentDate) await loadForDate();
     return;
   }
 
@@ -5553,6 +5692,7 @@ async function saveSunbedBooking() {
     toast('Lettino prenotato', 'ok');
     closeSunbedModal();
     loadSunbeds();
+    if (date === state.currentDate) await loadForDate();
   } catch (e) {
     toast('Errore: ' + e.message, 'err');
   }
@@ -5632,6 +5772,7 @@ async function incassaSunbed(id, method, amount) {
     toast(`Incassato ${amount} € (demo)`, 'ok');
     loadSunbeds();
     loadCassa();
+    if (state.sunbedsDate === state.currentDate) await loadForDate();
     return;
   }
   try {
@@ -5645,6 +5786,7 @@ async function incassaSunbed(id, method, amount) {
     toast(`Incassato ${amount} €`, 'ok');
     loadSunbeds();
     loadCassa();
+    if (state.sunbedsDate === state.currentDate) await loadForDate();
   } catch (e) {
     toast('Errore: ' + e.message, 'err');
   }
@@ -5654,29 +5796,16 @@ async function incassaSunbed(id, method, amount) {
 // CASSA
 // ============================================================
 function cassaToday() {
-  state.currentDate = getTodayInItaly();
-  const currentDateInput = document.getElementById('currentDate');
-  if (currentDateInput) currentDateInput.value = state.currentDate;
-  const cassaDateInput = document.getElementById('cassaDateInput');
-  if (cassaDateInput) cassaDateInput.value = state.currentDate;
-  loadForDate();
+  setOperationalDate(getTodayInItaly());
 }
 
 function cassaShift(delta) {
-  state.currentDate = addDays(state.currentDate, delta);
-  const currentDateInput = document.getElementById('currentDate');
-  if (currentDateInput) currentDateInput.value = state.currentDate;
-  const cassaDateInput = document.getElementById('cassaDateInput');
-  if (cassaDateInput) cassaDateInput.value = state.currentDate;
-  loadForDate();
+  setOperationalDate(addDays(state.currentDate, delta));
 }
 
 function cassaPickDate(value) {
   if (!value) return;
-  state.currentDate = value;
-  const currentDateInput = document.getElementById('currentDate');
-  if (currentDateInput) currentDateInput.value = state.currentDate;
-  loadForDate();
+  setOperationalDate(value);
 }
 
 function formatCassaDateLabel(date) {
@@ -5696,6 +5825,12 @@ function formatCassaDateLabel(date) {
 function cassaMethodLabel(method) {
   if (method === 'cash') return 'Contanti';
   if (method === 'card_pos') return 'Carta';
+  if (method === 'sumup') return 'SumUp';
+  if (method === 'nexi') return 'Nexi';
+  if (method === 'satispay') return 'Satispay';
+  if (method === 'bank_transfer') return 'Bonifico';
+  if (method === 'stripe') return 'Stripe';
+  if (method === 'other') return 'Altro';
   return method || 'Altro';
 }
 
@@ -5718,22 +5853,26 @@ async function loadCassa() {
   let bookings = [];
   let sunbeds = [];
   let payments = [];
+  const bookingStatusesForCassa = ['confirmed','checked_in','completed'];
 
   if (!isConfigured) {
-    bookings = state.bookings.map(b => ({
-      kind: 'booking',
-      id: b.id,
-      label: `#${b.umbrella_id}`,
-      customer_name: b.customer_name,
-      booking_type: b.booking_type,
-      date_label: `${formatDate(b.date_from)}${b.date_from !== b.date_to ? ' → ' + formatDate(b.date_to) : ''}`,
-      price_total: Number(b.price_total || 0),
-      paid_amount: Number(b.price_paid || 0),
-      payment_status: Number(b.price_paid || 0) >= Number(b.price_total || 0) ? 'paid' : Number(b.price_paid || 0) > 0 ? 'partial' : 'pending',
-      notes: b.notes || '',
-    }));
+    bookings = DEMO_BOOKINGS
+      .filter(b => b.date_from === date && bookingStatusesForCassa.includes(b.status))
+      .map(b => ({
+        kind: 'booking',
+        id: b.id,
+        label: `#${b.umbrella_id}`,
+        customer_name: b.customer_name,
+        booking_type: b.booking_type,
+        date_label: `${formatDate(b.date_from)}${b.date_from !== b.date_to ? ' → ' + formatDate(b.date_to) : ''}`,
+        price_total: Number(b.price_total || 0),
+        paid_amount: Number(b.price_paid || 0),
+        payment_status: Number(b.price_paid || 0) >= Number(b.price_total || 0) ? 'paid' : Number(b.price_paid || 0) > 0 ? 'partial' : 'pending',
+        payment_method: b.payment_method || 'cash',
+        notes: b.notes || '',
+      }));
     sunbeds = DEMO_SUNBED_BOOKINGS
-      .filter(r => r.date_booking === date)
+      .filter(r => r.date_booking === date && bookingStatusesForCassa.includes(r.status))
       .map(r => ({
         kind: 'sunbed',
         id: r.id,
@@ -5744,6 +5883,7 @@ async function loadCassa() {
         price_total: Number(r.price_total || 0),
         paid_amount: r.payment_status === 'paid' ? Number(r.price_total || 0) : 0,
         payment_status: r.payment_status || 'pending',
+        payment_method: 'cash',
         notes: r.notes || '',
       }));
     payments = [
@@ -5765,14 +5905,13 @@ async function loadCassa() {
   } else {
     const [{ data: bookingData }, { data: sunbedData }, { data: dayPayments }] = await Promise.all([
       sb.from('bookings')
-        .select('id, umbrella_id, booking_type, date_from, date_to, price_total, price_paid, payment_status, notes, customers(first_name, last_name, phone)')
-        .lte('date_from', date)
-        .gte('date_to', date)
-        .in('status', ['confirmed','checked_in','completed']),
+        .select('id, umbrella_id, booking_type, date_from, date_to, price_total, price_paid, payment_method, payment_status, notes, customers(first_name, last_name, phone)')
+        .eq('date_from', date)
+        .in('status', bookingStatusesForCassa),
       sb.from('single_sunbed_bookings')
         .select('id, booking_type, date_booking, quantity, price_total, payment_status, notes, customers(first_name, last_name, phone)')
         .eq('date_booking', date)
-        .in('status', ['confirmed','checked_in','completed']),
+        .in('status', bookingStatusesForCassa),
       sb.from('payments')
         .select('*')
         .gte('created_at', date + 'T00:00:00')
@@ -5827,6 +5966,7 @@ async function loadCassa() {
         price_total: total,
         paid_amount: paidAmount,
         payment_status: paidAmount >= total ? 'paid' : paidAmount > 0 ? 'partial' : 'pending',
+        payment_method: b.payment_method || 'cash',
         notes: b.notes || '',
       };
     });
@@ -5844,16 +5984,48 @@ async function loadCassa() {
         price_total: total,
         paid_amount: paidAmount,
         payment_status: paidAmount >= total ? 'paid' : paidAmount > 0 ? 'partial' : 'pending',
+        payment_method: 'cash',
         notes: r.notes || '',
       };
     });
   }
 
+  const paymentEntries = [...payments];
+  const paymentKeys = new Set(paymentEntries.map(p =>
+    p.booking_id ? `booking:${p.booking_id}` :
+    p.single_sunbed_booking_id ? `sunbed:${p.single_sunbed_booking_id}` :
+    ''
+  ));
+
+  bookings.forEach(item => {
+    if (item.paid_amount > 0 && !paymentKeys.has(`booking:${item.id}`)) {
+      paymentEntries.push({
+        booking_id: item.id,
+        amount: item.paid_amount,
+        method: item.payment_method || 'cash',
+        type: 'payment',
+        created_at: `${date}T12:00:00`,
+      });
+    }
+  });
+
+  sunbeds.forEach(item => {
+    if (item.paid_amount > 0 && !paymentKeys.has(`sunbed:${item.id}`)) {
+      paymentEntries.push({
+        single_sunbed_booking_id: item.id,
+        amount: item.paid_amount,
+        method: item.payment_method || 'cash',
+        type: 'payment',
+        created_at: `${date}T13:00:00`,
+      });
+    }
+  });
+
   let cashTotal = 0, cardTotal = 0;
-  payments.forEach(p => {
+  paymentEntries.forEach(p => {
     const amt = p.type === 'refund' ? -Number(p.amount || 0) : Number(p.amount || 0);
     if (p.method === 'cash') cashTotal += amt;
-    else if (p.method === 'card_pos') cardTotal += amt;
+    else cardTotal += amt;
   });
 
   const allItems = [...bookings, ...sunbeds];
@@ -5868,7 +6040,7 @@ async function loadCassa() {
 
   document.getElementById('cassaUnpaidCount').textContent = unpaid.length;
   document.getElementById('cassaPaidCount').textContent = paid.length;
-  document.getElementById('cassaMovementsCount').textContent = payments.length;
+  document.getElementById('cassaMovementsCount').textContent = paymentEntries.length;
   document.getElementById('cassaCash').textContent = cashTotal.toFixed(2) + ' €';
   document.getElementById('cassaCard').textContent = cardTotal.toFixed(2) + ' €';
   document.getElementById('cassaTotale').textContent = (cashTotal + cardTotal).toFixed(2) + ' €';
@@ -5882,10 +6054,10 @@ async function loadCassa() {
   const cassaOutstandingNote = document.getElementById('cassaOutstandingNote');
   if (cassaHeroDate) cassaHeroDate.textContent = `Incasso giornaliero · ${formatCassaDateLabel(date)}`;
   if (cassaHeroTotal) cassaHeroTotal.textContent = (cashTotal + cardTotal).toFixed(2) + ' €';
-  if (cassaHeroSub) cassaHeroSub.textContent = `${payments.length} movimenti registrati · ${unpaid.length} posizioni aperte`;
+  if (cassaHeroSub) cassaHeroSub.textContent = `${paymentEntries.length} movimenti registrati · ${unpaid.length} posizioni aperte`;
   if (cassaCollectedHero) cassaCollectedHero.innerHTML = `${(cashTotal + cardTotal).toFixed(2)}<small> €</small>`;
   if (cassaOutstandingHero) cassaOutstandingHero.innerHTML = `${daIncassare.toFixed(2)}<small> €</small>`;
-  if (cassaCollectedNote) cassaCollectedNote.textContent = `${payments.length} movimenti in data ${formatDate(date)}.`;
+  if (cassaCollectedNote) cassaCollectedNote.textContent = `${paymentEntries.length} movimenti in data ${formatDate(date)}.`;
   if (cassaOutstandingNote) cassaOutstandingNote.textContent = unpaid.length
     ? `${unpaid.length} posizioni ancora aperte nel giorno selezionato.`
     : 'Saldo completamente chiuso per questa data.';
@@ -5949,12 +6121,12 @@ async function loadCassa() {
   }
 
   const movementsList = document.getElementById('cassaMovementsList');
-  if (!payments.length) {
+  if (!paymentEntries.length) {
     movementsList.innerHTML = '<div class="cassa-empty">Nessun movimento registrato in questa data</div>';
   } else {
     const bookingMap = Object.fromEntries(bookings.map(item => [item.id, item]));
     const sunbedMap = Object.fromEntries(sunbeds.map(item => [item.id, item]));
-    movementsList.innerHTML = payments.map(p => {
+    movementsList.innerHTML = paymentEntries.map(p => {
       const related = p.booking_id ? bookingMap[p.booking_id] : sunbedMap[p.single_sunbed_booking_id];
       const title = related
         ? `${related.customer_name} · ${related.label}`
@@ -6005,7 +6177,7 @@ async function incassa(bookingId, method, amount) {
     }
     toast(`Incassato ${parsedAmount.toFixed(2)} € (${method === 'cash' ? 'contanti' : 'carta'})`, 'ok');
     loadCassa();
-    loadForDate();
+    await loadForDate();
   } catch (e) {
     toast('Errore: ' + e.message, 'err');
   }
