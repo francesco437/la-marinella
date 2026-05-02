@@ -206,6 +206,30 @@ body {
 .row-card.buttonlike {
   cursor: pointer;
 }
+.row-card.date-trigger {
+  gap: 10px;
+}
+.row-card.date-trigger input[type="date"] {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #566960;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 600;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.row-card.date-trigger input[type="date"]::-webkit-date-and-time-value {
+  text-align: left;
+}
+.row-card.date-trigger input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0;
+  width: 20px;
+  cursor: pointer;
+}
 .row-card.small {
   gap: 10px;
   justify-content: space-between;
@@ -984,13 +1008,12 @@ body {
             <button type="button" data-kind="sunbed"><span class="icon sm" data-icon="sunbed"></span>Lettino</button>
           </div>
 
-          <button class="row-card buttonlike" type="button" id="dateButton">
+          <label class="row-card buttonlike date-trigger" id="dateButton">
             <div class="row-icon"><span class="icon sm" data-icon="calendar"></span></div>
             <div class="row-label">Data</div>
-            <div class="row-value" id="dateValue">02 maggio 2026</div>
+            <input type="date" id="dateInput" value="2026-05-02" aria-label="Data prenotazione">
             <div class="row-chevron">⌄</div>
-          </button>
-          <input type="date" id="dateInput" class="hidden" value="2026-05-02">
+          </label>
 
           <div class="section">
             <p class="section-title">Tipo di prenotazione</p>
@@ -1741,7 +1764,6 @@ function renderState() {
   });
 
   document.getElementById('dateInput').value = bookingState.date;
-  document.getElementById('dateValue').textContent = formatItalianDate(bookingState.date);
   document.getElementById('summaryDate').textContent = formatItalianDate(bookingState.date);
 
   const isUmbrella = bookingState.kind === 'umbrella';
@@ -1840,11 +1862,6 @@ function collectCustomerState() {
   customerState.notes = document.getElementById('guestNotes').value.trim();
   customerState.acceptedPrivacy = document.getElementById('privacyCheck').checked;
 }
-
-document.getElementById('dateButton').addEventListener('click', () => {
-  document.getElementById('dateInput').showPicker?.();
-  document.getElementById('dateInput').click();
-});
 
 document.getElementById('dateInput').addEventListener('change', event => {
   bookingState.date = event.target.value;
