@@ -3931,13 +3931,27 @@ async function loadPlannerBookings() {
 function setupRealtime() {
   if (!isConfigured) return;
   if (bookingsRealtimeChannel) return;
+
+  const refreshRealtimeState = async ({ reloadUmbrellas = false } = {}) => {
+    if (reloadUmbrellas) await loadUmbrellas();
+    await loadForDate();
+  };
+
   bookingsRealtimeChannel = sb.channel('bookings-changes')
     .on('postgres_changes', { event: '*', schema: 'public', table: 'bookings' }, () => {
-      loadForDate();
-      const visible = [...document.querySelectorAll('.view:not(.hidden)')][0]?.id;
-      if (visible === 'view-bookings')  loadAllBookings();
-      if (visible === 'view-planner')   loadPlannerBookings();
-      if (visible === 'view-arrivals')  renderArrivals();
+      refreshRealtimeState();
+    })
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'payments' }, () => {
+      refreshRealtimeState();
+    })
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'single_sunbed_bookings' }, () => {
+      refreshRealtimeState();
+    })
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'umbrellas' }, () => {
+      refreshRealtimeState({ reloadUmbrellas: true });
+    })
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'umbrella_outages' }, () => {
+      refreshRealtimeState({ reloadUmbrellas: true });
     })
     .subscribe();
 }
@@ -4574,13 +4588,16 @@ async function quickCheckIn(bookingId) {
 async function quickDepart(bookingId) {
   if (!isConfigured) {
     const b = DEMO_BOOKINGS.find(x => x.id === bookingId);
-    if (b) b.departed_at = new Date().toISOString();
+    if (b) {
+      b.departed_at = new Date().toISOString();
+      b.status = 'completed';
+    }
     await loadForDate();
     toast('Partenza registrata (demo)', 'ok');
     return;
   }
   const { error } = await sb.from('bookings')
-    .update({ departed_at: new Date().toISOString() })
+    .update({ departed_at: new Date().toISOString(), status: 'completed' })
     .eq('id', bookingId);
   if (error) { toast('Errore partenza', 'err'); return; }
   toast('Partenza registrata', 'ok');
