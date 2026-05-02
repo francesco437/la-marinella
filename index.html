@@ -306,11 +306,11 @@ body {
 .map {
   position: relative;
   overflow: hidden;
-  padding: 54px 12px 18px;
+  padding: 56px 14px 22px;
   border-radius: 18px;
   background:
     linear-gradient(180deg, #96d8f0 0%, #d9f3fb 18%, #f2e4c3 18%, #ebddb8 100%);
-  min-height: 310px;
+  min-height: 332px;
 }
 .map::before {
   content: "MARE";
@@ -325,19 +325,20 @@ body {
 }
 .map-grid {
   display: grid;
-  gap: 10px;
-  margin-top: 28px;
+  gap: 14px;
+  margin-top: 30px;
 }
 .map-row {
   display: grid;
   grid-template-columns: 18px repeat(9, 1fr);
-  gap: 7px;
+  column-gap: 9px;
   align-items: center;
 }
 .map-row-label {
   color: #8e9a93;
   font-size: 10px;
   font-weight: 700;
+  align-self: center;
 }
 .spot {
   position: relative;
@@ -350,20 +351,6 @@ body {
     conic-gradient(from 0deg, currentColor 0 45deg, #fff 45deg 90deg, currentColor 90deg 135deg, #fff 135deg 180deg, currentColor 180deg 225deg, #fff 225deg 270deg, currentColor 270deg 315deg, #fff 315deg 360deg);
   color: var(--green-500);
   box-shadow: 0 6px 12px rgba(68, 96, 85, .14);
-}
-.spot::before {
-  content: attr(data-id);
-  position: absolute;
-  top: -11px;
-  left: 50%;
-  transform: translateX(-50%);
-  min-width: 14px;
-  padding: 1px 3px;
-  border-radius: 999px;
-  background: rgba(255,255,255,.95);
-  color: #7d8a84;
-  font-size: 8px;
-  font-weight: 700;
 }
 .spot.occupied {
   color: var(--coral-500);
@@ -966,6 +953,17 @@ body {
   }
   .panel {
     padding: 0 14px 18px;
+  }
+  .map {
+    min-height: 346px;
+    padding: 58px 14px 22px;
+  }
+  .map-grid {
+    gap: 15px;
+    margin-top: 32px;
+  }
+  .map-row {
+    column-gap: 10px;
   }
 }
 </style>
