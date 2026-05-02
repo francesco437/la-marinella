@@ -930,6 +930,32 @@ body {
   font-size: 11px;
   line-height: 1.45;
 }
+.benefit-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #fffaf5 0%, #fff6ed 100%);
+  border: 1px solid #f0dcc0;
+}
+.benefit-card input {
+  margin-top: 2px;
+  accent-color: #466156;
+}
+.benefit-copy {
+  color: #7f8c84;
+  font-size: 12px;
+  line-height: 1.45;
+}
+.benefit-copy strong {
+  color: #445950;
+}
+.benefit-copy .discount {
+  color: #c27754;
+  font-weight: 700;
+}
 
 @media (max-width: 560px) {
   .stage {
@@ -1050,6 +1076,11 @@ body {
             <p class="hint-note">Zona spiaggia libera attrezzata. La postazione precisa verrà assegnata all'arrivo.</p>
             <div class="availability-note" id="sunbedAvailabilityNote">Disponibilità lettini in caricamento…</div>
           </div>
+
+          <label class="benefit-card">
+            <input id="disabilityDiscount" type="checkbox">
+            <span class="benefit-copy">Sconto disabili <strong>&gt;74% invalidità</strong> <span class="discount">−30%</span><br>Applicato automaticamente al totale come da dashboard.</span>
+          </label>
 
           <div class="summary">
             <h3 class="summary-title">Riepilogo prenotazione</h3>
@@ -1259,6 +1290,7 @@ const bookingState = {
   selectedSpot: 'A3',
   sunbedQty: 1,
   hasUserPickedSpot: false,
+  disabilityDiscount: false,
 };
 
 const customerState = {
@@ -1353,10 +1385,16 @@ function getSpotMeta(code) {
 }
 
 function getCurrentTotal() {
+  let total = 0;
   if (bookingState.kind === 'umbrella') {
-    return pricing.umbrella[bookingState.bookingType];
+    total = pricing.umbrella[bookingState.bookingType];
+  } else {
+    total = pricing.sunbed[bookingState.bookingType] * bookingState.sunbedQty;
   }
-  return pricing.sunbed[bookingState.bookingType] * bookingState.sunbedQty;
+  if (bookingState.disabilityDiscount) {
+    total = Math.round(total * 0.7);
+  }
+  return total;
 }
 
 function normalizeBookingType(type) {
@@ -1636,7 +1674,7 @@ async function submitPublicBooking() {
       date_to: bookingState.date,
       adults: 2,
       children: 0,
-      disability_discount: false,
+      disability_discount: bookingState.disabilityDiscount,
       price_base: total,
       price_extras: 0,
       price_total: total,
@@ -1667,7 +1705,7 @@ async function submitPublicBooking() {
     quantity: bookingState.sunbedQty,
     price_unit: pricing.sunbed[bookingState.bookingType],
     price_total: total,
-    disability_discount: false,
+    disability_discount: bookingState.disabilityDiscount,
     status: 'confirmed',
     payment_status: 'pending',
     notes: getPublicBookingNote() || null,
@@ -1705,6 +1743,7 @@ function getCustomerFullName() {
 function getPublicBookingNote() {
   const parts = [];
   if (customerState.notes) parts.push(customerState.notes);
+  if (bookingState.disabilityDiscount) parts.push('Sconto disabili -30% applicato da app utente');
   parts.push(paymentState.mode === 'full' ? 'Pagamento completo richiesto da app utente' : 'Acconto 30% richiesto da app utente');
   return parts.join(' | ');
 }
@@ -1718,6 +1757,7 @@ function getUmbrellaBookingLabel(code) {
 function resetBookingFlow() {
   bookingState.step = 'selection';
   bookingState.hasUserPickedSpot = false;
+  bookingState.disabilityDiscount = false;
   customerState.firstName = '';
   customerState.lastName = '';
   customerState.phone = '';
@@ -1731,6 +1771,7 @@ function resetBookingFlow() {
   document.getElementById('guestEmail').value = '';
   document.getElementById('guestNotes').value = '';
   document.getElementById('privacyCheck').checked = false;
+  document.getElementById('disabilityDiscount').checked = false;
 }
 
 function openSuccessSheet(result) {
@@ -1771,6 +1812,7 @@ function renderState() {
 
   document.getElementById('dateInput').value = bookingState.date;
   document.getElementById('summaryDate').textContent = formatItalianDate(bookingState.date);
+  document.getElementById('disabilityDiscount').checked = bookingState.disabilityDiscount;
 
   const isUmbrella = bookingState.kind === 'umbrella';
   document.getElementById('umbrellaMapCard').classList.toggle('hidden', !isUmbrella);
@@ -1820,7 +1862,7 @@ function renderState() {
     document.getElementById('floatingPick').classList.toggle('hidden', !bookingState.hasUserPickedSpot || currentCode === '—');
     document.getElementById('pickCode').textContent = currentCode;
     document.getElementById('pickMeta').textContent = selectedUmbrella ? getSpotMeta(currentCode) : 'Disponibilità da aggiornare';
-    document.getElementById('pickPrice').textContent = `${pricing.umbrella[bookingState.bookingType]}€`;
+    document.getElementById('pickPrice').textContent = `${getCurrentTotal()}€`;
     document.getElementById('summaryLabelIcon').innerHTML = `<span class="icon sm">${ICONS.umbrella}</span>Postazione`;
     document.getElementById('summarySpot').textContent = getUmbrellaBookingLabel(currentCode);
     document.getElementById('customerSummaryBadge').textContent = 'Ombrellone';
@@ -1872,6 +1914,11 @@ function collectCustomerState() {
 document.getElementById('dateInput').addEventListener('change', event => {
   bookingState.date = event.target.value;
   loadAvailability();
+});
+
+document.getElementById('disabilityDiscount').addEventListener('change', event => {
+  bookingState.disabilityDiscount = event.target.checked;
+  renderState();
 });
 
 document.querySelectorAll('.segment button').forEach(button => {
