@@ -3533,7 +3533,11 @@ const sunbedsDateInput = document.getElementById('sunbedsDate');
 if (sunbedsDateInput) sunbedsDateInput.value = state.sunbedsDate;
 
 document.querySelectorAll('.nav-item').forEach(btn => {
-  btn.addEventListener('click', () => switchView(btn.dataset.view));
+  btn.addEventListener('click', () => {
+    const viewName = btn.dataset.view;
+    if (!viewName) return;
+    switchView(viewName);
+  });
 });
 
 function syncSharedDateInputs(value = state.currentDate) {
